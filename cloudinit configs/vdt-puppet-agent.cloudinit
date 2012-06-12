@@ -94,6 +94,47 @@ apt_sources:
         KOhy7hsK2sB3rDiQYo0xR3A0NhC6UdkMj5SMkieGtqbKeB3NkuN14Q==
         =djBi
         -----END PGP PUBLIC KEY BLOCK-----
+ - source: deb http://ubuntu.avira-cloud.net/avira avira-amt main
+   key: |
+        -----BEGIN PGP PUBLIC KEY BLOCK-----
+        Version: GnuPG v1.4.11 (GNU/Linux)
+
+        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
+        =y04a
+        -----END PGP PUBLIC KEY BLOCK-----
 
 apt_update: true
 apt_upgrade: false
