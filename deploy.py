@@ -35,7 +35,9 @@ class CloudstackDeployment(cmd.Cmd):
     def do_status(self, line):
         "Shows running instances, specify 'all' to show all instances"
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
-        machines = [x for x in response if x['state'] == u'Running']
+        machines = [x for x in response if x['state'] in ['Running',
+                                                          'Stopping',
+                                                          'Starting']]
         if line == 'all':
             machines = [x for x in response]
         machines = sorted(machines, key=itemgetter('displayname'))
