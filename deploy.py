@@ -93,7 +93,7 @@ class CloudstackDeployment(cmd.Cmd):
         else:
             machine_id = str(machine[0])
             response = self.client.destroyVirtualMachine({'id': machine_id})
-            print "destroying machine with id %s" % x
+            print "destroying machine with id %s" % machine_id
 
     def do_list(self, line):
         "Usage : list <value>"
