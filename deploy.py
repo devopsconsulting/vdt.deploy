@@ -87,7 +87,7 @@ class CloudstackDeployment(cmd.Cmd):
             print "Specify the machine id (status)"
             return
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
-        machine = [x['id'] for x in response if x['id'] == line]
+        machine = [x['id'] for x in response if str(x['id']) == line]
         if not machine:
             print "No machine found with the id %s" % line
         else:
