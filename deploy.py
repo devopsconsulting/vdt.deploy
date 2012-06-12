@@ -186,7 +186,8 @@ class CloudstackDeployment(cmd.Cmd):
             'publicport': machine_id,
             'protocol': 'TCP',
             'virtualmachineid': machine_id})
-        print "machine %s is now reachable via port %s" % (machine_id, ip_id)
+        print "machine %s is now reachable (via port %s)" % (machine_id,
+                                                             machine_id)
         return
 
 
