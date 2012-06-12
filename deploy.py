@@ -98,17 +98,30 @@ class CloudstackDeployment(cmd.Cmd):
             print "destroying machine with id %s" % machine_id
 
     def do_start(self, line):
-        "Usage : deploy <machine id>"
+        "Usage : start <machine id>"
         if not line:
             print "Specify the machine id"
             return
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
         machine_ids = [str(x['id']) for x in response]
         if not line in machine_ids:
-            print "Machine with id %s is not found" % line
+            print "machine with id %s is not found" % line
             return
         response = self.client.startVirtualMachine({'id': line})
         print "starting machine with id %s" % line
+
+    def do_stop(self, line):
+        "Usage : stop <machine id>"
+        if not line:
+            print "Specify the machine id"
+            return
+        response = self.client.listVirtualMachines({'domainid': DOMAINID})
+        machine_ids = [str(x['id']) for x in response]
+        if not line in machine_ids:
+            print "machine with id %s is not found" % line
+            return
+        response = self.client.stopVirtualMachine({'id': line})
+        print "stopping machine with id %s" % line
 
     def do_list(self, line):
         "Usage : list <value>"
