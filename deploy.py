@@ -110,7 +110,7 @@ class CloudstackDeployment(cmd.Cmd):
         response = self.client.startVirtualMachine({'id': line})
         print "starting machine with id %s" % line
 
-    def do_stop(self, line):
+    def do_reboot(self, line):
         "Usage : stop <machine id>"
         if not line:
             print "Specify the machine id"
@@ -120,7 +120,7 @@ class CloudstackDeployment(cmd.Cmd):
         if not line in machine_ids:
             print "machine with id %s is not found" % line
             return
-        response = self.client.stopVirtualMachine({'id': line})
+        response = self.client.rebootVirtualMachine({'id': line})
         print "stopping machine with id %s" % line
 
     def do_list(self, line):
