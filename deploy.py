@@ -194,28 +194,24 @@ class CloudstackDeployment(cmd.Cmd):
             print e.message
 
     def do_ssh(self, line):
-        "Usage: ssh <ip id> <machine id>"
-        cmdargs = line.split()
-        ip_id = cmdargs[0]
-        machine_id = cmdargs[1]
-        machines = self.client.listVirtualMachines({'domainid': DOMAINID})
-        machines = [x['id'] for x in machines]
-        ips = self.client.listPublicIpAddresses()
-        ips = [x['id'] for x in ips['publicipaddress']]
-        if not int(ip_id) in ips:
-            print "no ip found with id %s" % ip_id
+        "Usage: ssh <machine id>"
+        # Todo : check if portforward exists
+        response = self.client.listVirtualMachines({'domainid': DOMAINID})
+        machine_ids = [str(x['id']) for x in response]
+        ips = self.client.listPublicIpAddresses()['publicipaddress']
+        if not line in machine_ids:
+            print "no machine found with id %s" % line
             return
-        if not int(machine_id) in machines:
-            print "no machine found with id %s" % machine_id
-            return
-        self.client.createPortForwardingRule({
-            'ipaddressid': ip_id,
-            'privateport': "22",
-            'publicport': machine_id,
-            'protocol': 'TCP',
-            'virtualmachineid': machine_id})
-        print "machine %s is now reachable (via port %s)" % (machine_id,
-                                                             machine_id)
+        for ip in ips:
+            self.client.createPortForwardingRule({
+                'ipaddressid': ip['id'],
+                'privateport': "22",
+                'publicport': line,
+                'protocol': 'TCP',
+                'virtualmachineid': line})
+            print "machine %s is now reachable (via %s:%s)" % (line,
+                                                               ip['ipaddress'],
+                                                               line)
         return
 
 
