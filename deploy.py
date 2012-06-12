@@ -196,6 +196,7 @@ class CloudstackDeployment(cmd.Cmd):
     def do_ssh(self, line):
         "Usage: ssh <machine id>"
         # Todo : check if portforward exists
+        # Todo : remove portforwards on removal
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
         machine_ids = [str(x['id']) for x in response]
         ips = self.client.listPublicIpAddresses()['publicipaddress']
