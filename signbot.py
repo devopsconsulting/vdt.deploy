@@ -1,3 +1,5 @@
+# This signbot must run on the puppetmaster : it will sign the certificates
+# for machines which are deployed with the deployment tool.
 import time
 import os
 import syslog
