@@ -205,7 +205,7 @@ class CloudstackDeployment(cmd.Cmd):
             return
         for ip in ips:
             self.client.createPortForwardingRule({
-                'ipaddressid': ip['id'],
+                'ipaddressid': str(ip['id']),
                 'privateport': "22",
                 'publicport': line,
                 'protocol': 'TCP',
