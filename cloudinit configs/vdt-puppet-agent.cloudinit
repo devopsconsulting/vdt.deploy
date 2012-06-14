@@ -45,7 +45,7 @@ apt_sources:
         G7E5veVcAQDbsnNL61wgvgBJaQYXiQdDBrYPf8CVGboT8X/JtKn8fw==
         =y04a
         -----END PGP PUBLIC KEY BLOCK-----
- - source: deb http://ubuntu.avira-cloud.net/puppet lucid main
+ - source: deb http:///apt.puppetlabs.com lucid main
    key: |
         -----BEGIN PGP PUBLIC KEY BLOCK-----
         Version: GnuPG v1.4.11 (GNU/Linux)
