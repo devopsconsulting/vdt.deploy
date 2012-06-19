@@ -293,12 +293,12 @@ class CloudstackDeployment(cmd.Cmd):
         This adds a port forward under the machine id to port 22 on the machine,
         eg:
         
-        machine id is 5034, after running:
+        machine id is 5034, after running::
         
             deploy> ssh 5034
         
         I can now access the machine though ssh on all my registered ip
-        addresses as follows:
+        addresses as follows::
         
             ssh ipaddress -p 5034
         """
