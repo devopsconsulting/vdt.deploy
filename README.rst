@@ -96,7 +96,7 @@ shows you what a command does and what parameters it requires::
 So status will show you the running instances.
 
 The help for each command is shown below, but the names of the commands are
-prefixed with 'do_'.
+prefixed with 'do'.
     
 .. automethod:: deploy.CloudstackDeployment.do_deploy(name, userdata=None, cloudinit_config=CLOUDINIT_PUPPET)
 
