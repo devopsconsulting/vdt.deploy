@@ -33,7 +33,13 @@ class CloudstackDeployment(cmd.Cmd):
                 "could not find server named %(server_name)s" % locals())
 
     def do_status(self, line):
-        "Shows running instances, specify 'all' to show all instances"
+        """
+        Shows running instances, specify 'all' to show all instances
+        
+        Usage::
+            
+            deploy> status [all]
+        """
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
         machines = [x for x in response if x['state'] in ['Running',
                                                           'Stopping',
@@ -48,7 +54,22 @@ class CloudstackDeployment(cmd.Cmd):
                                          x['state'])
 
     def do_deploy(self, line):
-        "Usage : deploy <name> <userdata> optional: <cloudinit config>"
+        """
+        Create a vm with a specific name and add some userdata.
+        
+        Optionally specify a specific cloudinit config.
+        
+        Usage::
+            
+            deploy> deploy <name> <userdata> optional: <cloudinit config>
+        
+        To specify the puppet role in the userdata, which will install and
+        configure the machine according to the specified role use::
+        
+            deploy> deploy loadbalancer1 role=lvs
+        
+        This will install the machine as a Linux virtual server.
+        """
         if not line:
             print "Specify the machine userdata"
             return
@@ -84,7 +105,13 @@ class CloudstackDeployment(cmd.Cmd):
         print "%s started, machine id %s" % (name, response['id'])
 
     def do_destroy(self, line):
-        "Usage : destroy <machine id>"
+        """
+        Destroy a machine.
+        
+        Usage::
+            
+            deploy> destroy <machine id>
+        """
         if not line:
             print "Specify the machine id (status)"
             return
@@ -98,7 +125,13 @@ class CloudstackDeployment(cmd.Cmd):
             print "destroying machine with id %s" % machine_id
 
     def do_start(self, line):
-        "Usage : start <machine id>"
+        """
+        Start a stopped machine.
+        
+        Usage:
+        
+            deploy> start <machine id>
+        """
         if not line:
             print "Specify the machine id"
             return
@@ -111,7 +144,13 @@ class CloudstackDeployment(cmd.Cmd):
         print "starting machine with id %s" % line
 
     def do_stop(self, line):
-        "Usage : stop <machine id>"
+        """
+        Stop a running machine.
+        
+        Usage:
+            
+            deploy> stop <machine id>
+        """
         if not line:
             print "Specify the machine id"
             return
@@ -124,7 +163,13 @@ class CloudstackDeployment(cmd.Cmd):
         print "stoping machine with id %s" % line
 
     def do_reboot(self, line):
-        "Usage : stop <machine id>"
+        """
+        Reboot a running machine.
+        
+        Usage::
+        
+            deploy> reboot <machine id>
+        """
         if not line:
             print "Specify the machine id"
             return
@@ -137,7 +182,13 @@ class CloudstackDeployment(cmd.Cmd):
         print "stopping machine with id %s" % line
 
     def do_list(self, line):
-        "Usage : list <value>"
+        """
+        list the available templates|diskofferings|ipadresses.
+        
+        Usage:
+            
+            deploy> list <templates|diskofferings|ip>
+        """
         if not line:
             print "Usage : list <value>, example : list templates"
             return
@@ -169,7 +220,13 @@ class CloudstackDeployment(cmd.Cmd):
         print "Not implemented"
 
     def do_request(self, line):
-        "Request <type>, for example 'ip'"
+        """
+        Create an ip address.
+        
+        Usage::
+        
+            deploy> request ip
+        """
         if line == "ip":
             args = {'zoneid': ZONEID}
             response = self.client.associateIpAddress(args)
@@ -178,7 +235,13 @@ class CloudstackDeployment(cmd.Cmd):
         print "Not implemented"
 
     def do_release(self, line):
-        "Release <type> <id>, for example 'ip'"
+        """
+        Destroy an ip address with a specific id.
+        
+        Usage::
+        
+            deploy> release ip <id>
+        """
         cmdargs = line.split()
         cmd = cmdargs[0]
         release_id = cmdargs[1]
@@ -191,11 +254,24 @@ class CloudstackDeployment(cmd.Cmd):
         print "Not implemented"
 
     def do_quit(self, line):
-        "Quit the deployment tool"
+        """
+        Quit the deployment tool.
+        
+        Usage::
+            
+            deploy> quit
+        """
         sys.exit(0)
 
     def do_kick(self, line):
-        "Kick a server"
+        """
+        Trigger a puppet run on a server. This command only works when used
+        on the puppetmaster.
+        
+        Usage::
+        
+            deploy> kick <machine_id>
+        """
         try:
             ipaddress = self._nic_of(line)['ipaddress']
             try:
@@ -207,7 +283,25 @@ class CloudstackDeployment(cmd.Cmd):
             print e.message
 
     def do_ssh(self, line):
-        "Usage: ssh <machine id>"
+        """
+        Make a machine accessible through ssh.
+        
+        Usage::
+        
+            deploy> ssh <machine id>
+        
+        This adds a port forward under the machine id to port 22 on the machine,
+        eg:
+        
+        machine id is 5034, after running:
+        
+            deploy> ssh 5034
+        
+        I can now access the machine though ssh on all my registered ip
+        addresses as follows:
+        
+            ssh ipaddress -p 5034
+        """
         # Todo : check if portforward exists
         # Todo : remove portforwards on removal
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
@@ -230,8 +324,12 @@ class CloudstackDeployment(cmd.Cmd):
 
 
 if __name__ == '__main__':
+    deploy = CloudstackDeployment()
     if len(sys.argv) > 1:
         line = " ".join(sys.argv[1:])
-        CloudstackDeployment().onecmd(line)
+        deploy.onecmd(line)
     else:
-        CloudstackDeployment().cmdloop()
+        try:
+            deploy.cmdloop()
+        except KeyboardInterrupt:
+            deploy.do_quit('now')
