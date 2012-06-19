@@ -9,7 +9,7 @@ configured as an lvs load balancer.
 Deployment of a server is a 3 phase process.
 
 1. Create vm with cloudstack api.
-2. Boot vm and run `cloud-init https://code.launchpad.net/cloud-init`_ to
+2. Boot vm and run `cloud-init <https://code.launchpad.net/cloud-init>`_ to
    initialize the base ubuntu installation. cloud-init will also install
    puppet.
 3. puppet will start and choose the correct manifests based on the puppet
