@@ -128,7 +128,7 @@ class CloudstackDeployment(cmd.Cmd):
         """
         Start a stopped machine.
         
-        Usage:
+        Usage::
         
             deploy> start <machine id>
         """
@@ -147,7 +147,7 @@ class CloudstackDeployment(cmd.Cmd):
         """
         Stop a running machine.
         
-        Usage:
+        Usage::
             
             deploy> stop <machine id>
         """
@@ -185,7 +185,7 @@ class CloudstackDeployment(cmd.Cmd):
         """
         list the available templates|diskofferings|ipadresses.
         
-        Usage:
+        Usage::
             
             deploy> list <templates|diskofferings|ip>
         """
