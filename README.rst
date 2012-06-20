@@ -16,6 +16,9 @@ Deployment of a server is a 3 phase process.
    role. Puppet will install and configure the machine and register with
    the load balancer.
 
+.. index:: Configuration, avira.deploy configuration
+
+.. _avira-deploy-configuration:
 
 Configuration
 +++++++++++++
@@ -54,6 +57,10 @@ You've got to enter your cloudstack apikey and secretkey. Options are::
     cloudinit_base:   The cloud-init configuration for installations that are
                       need to be completed manually (eg. puppetmaster)
 
+.. index:: Usage, avira.deploy usage
+
+.. _avira-deploy-usage:
+
 Usage
 +++++
 
@@ -77,6 +84,11 @@ Let's start with interactive mode::
     
     deploy>
 
+index::
+    single: avira.deploy; help
+
+.. _avira-deploy-help:
+
 Typing ``help`` shows you all available commands. typing::
 
     deploy> help <commandname>
@@ -94,6 +106,21 @@ shows you what a command does and what parameters it requires::
     deploy>
 
 So status will show you the running instances.
+
+.. _avira-deploy-commands:
+
+index::
+    single: avira.deploy; deploy
+    single: avira.deploy; destroy
+    single: avira.deploy; kick
+    single: avira.deploy; list
+    single: avira.deploy; quit
+    single: avira.deploy; release
+    single: avira.deploy; request
+    single: avira.deploy; ssh
+    single: avira.deploy; start
+    single: avira.deploy; status
+    single: avira.deploy; reboot
 
 The help for each command is shown below, but the names of the commands are
 prefixed with 'do'. (Not in github readme).
