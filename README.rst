@@ -16,7 +16,7 @@ Deployment of a server is a 3 phase process.
    role. Puppet will install and configure the machine and register with
    the load balancer.
 
-.. index:: Configuration, avira.deploy configuration
+.. index:: Configuration, avira.deploy; configuration
 
 .. _avira-deploy-configuration:
 
@@ -57,7 +57,7 @@ You've got to enter your cloudstack apikey and secretkey. Options are::
     cloudinit_base:   The cloud-init configuration for installations that are
                       need to be completed manually (eg. puppetmaster)
 
-.. index:: Usage, avira.deploy usage
+.. index:: Usage, avira.deploy; usage
 
 .. _avira-deploy-usage:
 
@@ -109,7 +109,7 @@ So status will show you the running instances.
 
 .. _avira-deploy-commands:
 
-index::
+.. index::
     single: avira.deploy; deploy
     single: avira.deploy; destroy
     single: avira.deploy; kick
