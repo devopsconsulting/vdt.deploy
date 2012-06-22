@@ -84,7 +84,7 @@ Let's start with interactive mode::
     
     deploy>
 
-index::
+.. index::
     single: avira.deploy; help
 
 .. _avira-deploy-help:
