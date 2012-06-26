@@ -6,7 +6,7 @@ import syslog
 from daemon import runner
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from config import PUPPET_CERT_DIRECTORY, PUPPET_BINARY
+from config import PUPPET_CERT_DIRECTORY, PUPPET_BINARY, CERT_REQ
 
 
 class PuppetCertificateHandler(FileSystemEventHandler):
@@ -16,6 +16,16 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                 certname = event.src_path.split(os.sep)[-1]
                 msg = "Puppet Cert Watchdog: Certificate request for %s" % \
                                                                     certname
+                f = open(CERT_REQ)
+                ids = [x for x in f.read().split('\n') if not x == '']
+                for x in ids:
+                    if x in msg:
+                        # we found a machine which is deployed by the
+                        # deployment tool with a waiting certificate :
+                        # sign it
+                        msg = "Signing certificate for machine %s" % x
+                        ids.remove(x)
+                        syslog.syslog(syslog.LOG_ALERT, msg)
                 syslog.syslog(syslog.LOG_ALERT, msg)
             except:
                 syslog.syslog(syslog.LOG_ALERT, "Error: file %s")
@@ -30,7 +40,6 @@ class App():
         self.pidfile_timeout = 5
 
     def run(self):
-        
         event_handler = PuppetCertificateHandler()
         observer = Observer()
         observer.schedule(event_handler,
@@ -39,7 +48,6 @@ class App():
         observer.start()
         try:
             while True:
-                
                 time.sleep(60)
         except KeyboardInterrupt:
             observer.stop()
