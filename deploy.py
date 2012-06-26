@@ -35,9 +35,9 @@ class CloudstackDeployment(cmd.Cmd):
     def do_status(self, line):
         """
         Shows running instances, specify 'all' to show all instances
-        
+
         Usage::
-            
+
             deploy> status [all]
         """
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
@@ -56,18 +56,18 @@ class CloudstackDeployment(cmd.Cmd):
     def do_deploy(self, line):
         """
         Create a vm with a specific name and add some userdata.
-        
+
         Optionally specify a specific cloudinit config.
-        
+
         Usage::
-            
+
             deploy> deploy <name> <userdata> optional: <cloudinit config>
-        
+
         To specify the puppet role in the userdata, which will install and
         configure the machine according to the specified role use::
-        
+
             deploy> deploy loadbalancer1 role=lvs
-        
+
         This will install the machine as a Linux virtual server.
         """
         if not line:
@@ -107,9 +107,9 @@ class CloudstackDeployment(cmd.Cmd):
     def do_destroy(self, line):
         """
         Destroy a machine.
-        
+
         Usage::
-            
+
             deploy> destroy <machine id>
         """
         if not line:
@@ -127,9 +127,9 @@ class CloudstackDeployment(cmd.Cmd):
     def do_start(self, line):
         """
         Start a stopped machine.
-        
+
         Usage::
-        
+
             deploy> start <machine id>
         """
         if not line:
@@ -146,9 +146,9 @@ class CloudstackDeployment(cmd.Cmd):
     def do_stop(self, line):
         """
         Stop a running machine.
-        
+
         Usage::
-            
+
             deploy> stop <machine id>
         """
         if not line:
@@ -165,9 +165,9 @@ class CloudstackDeployment(cmd.Cmd):
     def do_reboot(self, line):
         """
         Reboot a running machine.
-        
+
         Usage::
-        
+
             deploy> reboot <machine id>
         """
         if not line:
@@ -183,11 +183,11 @@ class CloudstackDeployment(cmd.Cmd):
 
     def do_list(self, line):
         """
-        list the available templates|diskofferings|ipadresses.
-        
+        list the available templates|serviceofferings|diskofferings|ipadresses.
+
         Usage::
-            
-            deploy> list <templates|diskofferings|ip>
+
+            deploy> list <templates|serviceofferings|diskofferings|ip>
         """
         if not line:
             print "Usage : list <value>, example : list templates"
@@ -203,6 +203,13 @@ class CloudstackDeployment(cmd.Cmd):
                 print "%40s %15s  %s" % (x['name'],
                                          x['id'],
                                          zones[x['zoneid']])
+            return
+        elif line == "serviceofferings":
+            serviceofferings = self.client.listServiceOfferings()
+            for x in serviceofferings:
+                print "%5s %s" % (x['id'],
+                                  x['displaytext'],
+                                 )
             return
         elif line == "diskofferings":
             diskofferings = self.client.listDiskOfferings()
@@ -222,9 +229,9 @@ class CloudstackDeployment(cmd.Cmd):
     def do_request(self, line):
         """
         Request a public ip address on the virtual router
-        
+
         Usage::
-        
+
             deploy> request ip
         """
         if line == "ip":
@@ -237,9 +244,9 @@ class CloudstackDeployment(cmd.Cmd):
     def do_release(self, line):
         """
         Release a public ip address with a specific id.
-        
+
         Usage::
-        
+
             deploy> release ip <id>
         """
         cmdargs = line.split()
@@ -256,9 +263,9 @@ class CloudstackDeployment(cmd.Cmd):
     def do_quit(self, line):
         """
         Quit the deployment tool.
-        
+
         Usage::
-            
+
             deploy> quit
         """
         sys.exit(0)
@@ -267,9 +274,9 @@ class CloudstackDeployment(cmd.Cmd):
         """
         Trigger a puppet run on a server. This command only works when used
         on the puppetmaster.
-        
+
         Usage::
-        
+
             deploy> kick <machine_id>
         """
         try:
@@ -285,21 +292,21 @@ class CloudstackDeployment(cmd.Cmd):
     def do_ssh(self, line):
         """
         Make a machine accessible through ssh.
-        
+
         Usage::
-        
+
             deploy> ssh <machine id>
-        
-        This adds a port forward under the machine id to port 22 on the machine,
+
+        This adds a port forward under the machine id to port 22 on the machine
         eg:
-        
+
         machine id is 5034, after running::
-        
+
             deploy> ssh 5034
-        
+
         I can now access the machine though ssh on all my registered ip
         addresses as follows::
-        
+
             ssh ipaddress -p 5034
         """
         # Todo : check if portforward exists
