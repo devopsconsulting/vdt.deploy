@@ -4,6 +4,7 @@ import time
 import os
 import re
 import syslog
+import subprocess
 from daemon import runner
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -41,6 +42,10 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                     ids = self._certificate_requests()
                     if machine_id in ids:
                         msg = "Signing certificate for machine %s" % machine_id
+                        subprocess.call([PUPPET_BINARY,
+                                         "cert",
+                                         "--sign",
+                                         certname])
                         syslog.syslog(syslog.LOG_ALERT, msg)
                     else:
                         msg = "Invalid machine %s" % machine_id
