@@ -1,5 +1,6 @@
 #! /usr/bin/python
 import sys
+import os
 import cmd
 import subprocess
 from CloudStack.Client import Client
@@ -24,10 +25,12 @@ class CloudstackDeployment(cmd.Cmd):
         cmd.Cmd.__init__(self)
 
     def _add_cert_machine(self, machine_id):
-        f = open(CERT_REQ, "r")
-        ids = [x for x in f.read().split('\n') if not x == '']
-        f.close()
-        if not str(machine_id) in ids:
+        ids = []
+        if os.path.exists(CERT_REQ):
+            f = open(CERT_REQ, "r")
+            ids = [x for x in f.read().split('\n') if not x == '']
+            f.close()
+        if not machine_id in ids:
             ids.append(machine_id)
         data = "\n".join(ids)
         f = open(CERT_REQ, "w")
@@ -116,7 +119,7 @@ class CloudstackDeployment(cmd.Cmd):
         # response = self.client.deployVirtualMachine(args)
         # we add the machine id to the cert req file, so the puppet daemon can
         # sign the certificate
-        response = {'id': 1234}
+        response = {'id': "1234"}
         self._add_cert_machine(response['id'])
         print "%s started, machine id %s" % (name, response['id'])
 
