@@ -1,7 +1,8 @@
-# This signbot must run on the puppetmaster : it will sign the certificates
+# This puppet must run on the puppetmaster : it will sign the certificates
 # for machines which are deployed with the deployment tool.
 import time
 import os
+import re
 import syslog
 from daemon import runner
 from watchdog.observers import Observer
@@ -10,22 +11,41 @@ from config import PUPPET_CERT_DIRECTORY, PUPPET_BINARY, CERT_REQ
 
 
 class PuppetCertificateHandler(FileSystemEventHandler):
+    def _certificate_requests(self):
+        if os.path.exists(CERT_REQ):
+            f = open(CERT_REQ)
+            ids = [x for x in f.read().split('\n') if not x == '']
+            f.close()
+            return ids
+        return []
+
+    def _clean_certificate(self, machine_id):
+        ids = self.__certificate_requests()
+        if machine_id in ids:
+            ids.remove(machine_id)
+        data = "\n".join(ids)
+        f = open(CERT_REQ, "w")
+        f.write(data)
+        f.close()
+
     def on_created(self, event):
         if not event.is_directory:
             try:
                 certname = event.src_path.split(os.sep)[-1]
                 msg = "Puppet Cert Watchdog: Certificate request for %s" % \
                                                                     certname
-                f = open(CERT_REQ)
-                ids = [x for x in f.read().split('\n') if not x == '']
-                for x in ids:
-                    if x in msg:
-                        # we found a machine which is deployed by the
-                        # deployment tool with a waiting certificate :
-                        # sign it
-                        msg = "Signing certificate for machine %s" % x
-                        ids.remove(x)
+                m = re.search("^i\-[^\-]+\-(\d+)")
+                if m:
+                    machine_id = m.group(1)
+                    ids = self._certificate_requests()
+                    if machine_id in ids:
+                        msg = "Signing certificate for machine %s" % machine_id
                         syslog.syslog(syslog.LOG_ALERT, msg)
+                    else:
+                        msg = "Invalid machine %s" % machine_id
+                        syslog.syslog(syslog.LOG_ALERT, msg)
+                # clean up
+                self._clean_certificate(machine_id)
                 syslog.syslog(syslog.LOG_ALERT, msg)
             except:
                 syslog.syslog(syslog.LOG_ALERT, "Error: file %s")
