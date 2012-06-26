@@ -20,7 +20,7 @@ class PuppetCertificateHandler(FileSystemEventHandler):
         return []
 
     def _clean_certificate(self, machine_id):
-        ids = self.__certificate_requests()
+        ids = self._certificate_requests()
         if machine_id in ids:
             ids.remove(machine_id)
         data = "\n".join(ids)
@@ -34,7 +34,8 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                 certname = event.src_path.split(os.sep)[-1]
                 msg = "Puppet Cert Watchdog: Certificate request for %s" % \
                                                                     certname
-                m = re.search("^i\-[^\-]+\-(\d+)")
+                syslog.syslog(syslog.LOG_ALERT, msg)
+                m = re.search("^i\-[^\-]+\-(\d+)", certname)
                 if m:
                     machine_id = m.group(1)
                     ids = self._certificate_requests()
@@ -47,8 +48,8 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                 # clean up
                 self._clean_certificate(machine_id)
                 syslog.syslog(syslog.LOG_ALERT, msg)
-            except:
-                syslog.syslog(syslog.LOG_ALERT, "Error: file %s")
+            except Exception, e:
+                syslog.syslog(syslog.LOG_ALERT, "Error: %s" % e)
 
 
 class App():
