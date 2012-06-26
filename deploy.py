@@ -221,7 +221,7 @@ class CloudstackDeployment(cmd.Cmd):
 
     def do_request(self, line):
         """
-        Create an ip address.
+        Request a public ip address on the virtual router
         
         Usage::
         
@@ -236,7 +236,7 @@ class CloudstackDeployment(cmd.Cmd):
 
     def do_release(self, line):
         """
-        Destroy an ip address with a specific id.
+        Release a public ip address with a specific id.
         
         Usage::
         
