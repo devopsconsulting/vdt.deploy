@@ -46,7 +46,7 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                                                "cert",
                                                "--sign",
                                                certname])
-                        syslog.syslog(syslog.LOG_ALERT, res)
+                        syslog.syslog(syslog.LOG_ALERT, str(res))
                         syslog.syslog(syslog.LOG_ALERT, msg)
                     else:
                         msg = "Invalid machine %s" % machine_id
