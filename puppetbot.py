@@ -6,7 +6,7 @@ import syslog
 from daemon import runner
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from config import PUPPET_CERT_DIRECTORY
+from config import PUPPET_CERT_DIRECTORY, PUPPET_BINARY
 
 
 class PuppetCertificateHandler(FileSystemEventHandler):
@@ -30,6 +30,7 @@ class App():
         self.pidfile_timeout = 5
 
     def run(self):
+        
         event_handler = PuppetCertificateHandler()
         observer = Observer()
         observer.schedule(event_handler,
@@ -38,7 +39,8 @@ class App():
         observer.start()
         try:
             while True:
-                time.sleep(1)
+                
+                time.sleep(60)
         except KeyboardInterrupt:
             observer.stop()
             observer.join()
