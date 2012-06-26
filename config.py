@@ -17,7 +17,7 @@ if not os.path.isfile(configfile):
     config.set('deployment', 'cloudinit_base', 'http://joe.avira-cloud.net/autodeploy/vdt-base.cloudinit')
     config.add_section('puppetbot')
     config.set('puppetbot', 'puppet_binary', '/usr/bin/puppet')
-    config.set('puppetbot', 'puppet_cert_directory', '/var/lib/puppet/')
+    config.set('puppetbot', 'puppet_cert_directory', '/var/lib/puppet/ssl/certificate_requests')
     config.set('puppetbot', 'cert_req', '/var/lib/puppet/cert_req.txt')
     with open(configfile, 'wb') as f:
         config.write(f)
