@@ -24,10 +24,14 @@ class CloudstackDeployment(cmd.Cmd):
         cmd.Cmd.__init__(self)
 
     def _add_cert_machine(self, machine_id):
-        f = open(CERT_REQ, "r+")
-        ids = f.read().split('\n')
+        f = open(CERT_REQ, "r")
+        ids = [x for x in f.read().split('\n') if not x == '']
+        f.close()
         if not str(machine_id) in ids:
-            f.write("%s\n" % machine_id)
+            ids.append(machine_id)
+        data = "\n".join(ids)
+        f = open(CERT_REQ, "w")
+        f.write(data)
         f.close()
 
     def _nic_of(self, server_name):
@@ -112,8 +116,8 @@ class CloudstackDeployment(cmd.Cmd):
         # response = self.client.deployVirtualMachine(args)
         # we add the machine id to the cert req file, so the puppet daemon can
         # sign the certificate
-        response = {'id' : 1234}
-        self._add_cert_machine(self, response['id'])
+        response = {'id': 1234}
+        self._add_cert_machine(response['id'])
         print "%s started, machine id %s" % (name, response['id'])
 
     def do_destroy(self, line):
