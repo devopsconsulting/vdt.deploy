@@ -25,6 +25,7 @@ class CloudstackDeployment(cmd.Cmd):
         cmd.Cmd.__init__(self)
 
     def _add_cert_machine(self, machine_id):
+        machine_id = str(machine_id)
         ids = []
         if os.path.exists(CERT_REQ):
             f = open(CERT_REQ, "r")
