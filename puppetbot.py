@@ -50,6 +50,11 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                     else:
                         msg = "Invalid machine %s" % machine_id
                         syslog.syslog(syslog.LOG_ALERT, msg)
+                        msg = "Cleaning up certificate %s" % certname
+                        syslog.syslog(syslog.LOG_ALERT, msg)
+                        cmd = "%s node clean %s" % (PUPPET_BINARY, certname)
+                        syslog.syslog(syslog.LOG_ALERT, cmd)
+                        subprocess.call(cmd, shell=True)
                 # clean up
                 self._clean_certificate(machine_id)
             except Exception, e:
