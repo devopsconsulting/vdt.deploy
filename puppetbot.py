@@ -33,6 +33,7 @@ class PuppetCertificateHandler(FileSystemEventHandler):
         if not event.is_directory:
             try:
                 certname = event.src_path.split(os.sep)[-1]
+                certname = os.path.splitext(certname)[0]
                 msg = "Puppet Cert Watchdog: Certificate request for %s" % \
                                                                     certname
                 syslog.syslog(syslog.LOG_ALERT, msg)
