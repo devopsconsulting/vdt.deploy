@@ -1,10 +1,12 @@
 #! /usr/bin/python
 import sys
+import os
 import cmd
 import subprocess
 from CloudStack.Client import Client
 from config import (APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, TEMPLATEID,
-                    SERVICEID, CLOUDINIT_BASE, CLOUDINIT_PUPPET
+                    SERVICEID, CLOUDINIT_BASE, CLOUDINIT_PUPPET,
+                    CERT_REQ
                    )
 from base64 import encodestring
 from operator import itemgetter
@@ -21,6 +23,19 @@ class CloudstackDeployment(cmd.Cmd):
     def __init__(self):
         self.client = Client(APIURL, APIKEY, SECRETKEY)
         cmd.Cmd.__init__(self)
+
+    def _add_cert_machine(self, machine_id):
+        ids = []
+        if os.path.exists(CERT_REQ):
+            f = open(CERT_REQ, "r")
+            ids = [x for x in f.read().split('\n') if not x == '']
+            f.close()
+        if not machine_id in ids:
+            ids.append(machine_id)
+        data = "\n".join(ids)
+        f = open(CERT_REQ, "w")
+        f.write(data)
+        f.close()
 
     def _nic_of(self, server_name):
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
@@ -101,7 +116,11 @@ class CloudstackDeployment(cmd.Cmd):
                 'displayname': name,
                 'userdata': userdata
                 }
-        response = self.client.deployVirtualMachine(args)
+        # response = self.client.deployVirtualMachine(args)
+        # we add the machine id to the cert req file, so the puppet daemon can
+        # sign the certificate
+        response = {'id': "1234"}
+        self._add_cert_machine(response['id'])
         print "%s started, machine id %s" % (name, response['id'])
 
     def do_destroy(self, line):
