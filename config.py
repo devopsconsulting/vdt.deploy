@@ -19,6 +19,8 @@ if not os.path.isfile(configfile):
     config.set('puppetbot', 'puppet_binary', '/usr/bin/puppet')
     config.set('puppetbot', 'puppet_cert_directory', '/var/lib/puppet/ssl/certificate_requests')
     config.set('puppetbot', 'cert_req', '/var/lib/puppet/cert_req.txt')
+    config.add_section('fabric')
+    config.set('fabric', 'puppetmaster_ssh_port', '')
     with open(configfile, 'wb') as f:
         config.write(f)
         f.close()
@@ -37,3 +39,4 @@ CLOUDINIT_BASE = config.get('deployment', 'cloudinit_base')
 PUPPET_BINARY = config.get('puppetbot', 'puppet_binary')
 PUPPET_CERT_DIRECTORY = config.get('puppetbot', 'puppet_cert_directory')
 CERT_REQ = config.get('puppetbot', 'cert_req')
+PUPPETMASTER_SSH_PORT = config.get('fabric', 'puppetmaster_ssh_port')
