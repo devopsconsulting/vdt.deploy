@@ -46,6 +46,7 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                         cmd = "%s cert --sign %s" % (PUPPET_BINARY, certname)
                         syslog.syslog(syslog.LOG_ALERT, cmd)
                         res = subprocess.call(cmd, shell=True)
+                        syslog.syslog(syslog.LOG_ALERT, res)
                         syslog.syslog(syslog.LOG_ALERT, msg)
                     else:
                         msg = "Invalid machine %s" % machine_id
