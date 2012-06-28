@@ -5,7 +5,8 @@ import cmd
 import subprocess
 from CloudStack.Client import Client
 from config import (APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, TEMPLATEID,
-                    SERVICEID, CLOUDINIT_PUPPET, CERT_REQ, PUPPET_BINARY
+                    SERVICEID, CLOUDINIT_PUPPET, CERT_REQ, PUPPET_BINARY,
+                    PUPPETMASTER_VERIFIED
                    )
 from base64 import encodestring
 from operator import itemgetter
@@ -385,6 +386,11 @@ class CloudstackDeployment(cmd.Cmd):
 
 
 if __name__ == '__main__':
+    if not PUPPETMASTER_VERIFIED == '1':
+        print "\nPlease edit your configfile : \n"
+        print "Set puppetmaster_verified to 1 if you are sure you run this " \
+               "deployment tool on the puppetmaster."
+        sys.exit(0)
     deploy = CloudstackDeployment()
     if len(sys.argv) > 1:
         line = " ".join(sys.argv[1:])
