@@ -110,8 +110,6 @@ class CloudstackDeployment(cmd.Cmd):
         params = "\n".join(["#%s" % x for x in params])
         # now we also put the puppetmaster ip/hostname in the config
         puppetmaster = PUPPETMASTER
-        if not puppetmaster:
-            puppetmaster = socket.gethostbyname(socket.gethostname())
         params += "\n#puppetmaster=%s" % puppetmaster
         userdata = "#include %s\n%s" % (CLOUDINIT_PUPPET, params)
         userdata = encodestring(userdata)
@@ -395,6 +393,9 @@ if __name__ == '__main__':
         print "\nPlease edit your configfile : \n"
         print "Set puppetmaster_verified to 1 if you are sure you run this " \
                "deployment tool on the puppetmaster."
+        sys.exit(0)
+    elif not PUPPETMASTER:
+        print "Please specify the fqdn of the puppetmaster in the config"
         sys.exit(0)
     deploy = CloudstackDeployment()
     if len(sys.argv) > 1:
