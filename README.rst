@@ -131,7 +131,7 @@ prefixed with 'do'. (Not in github readme).
 
 .. automethod:: deploy.CloudstackDeployment.do_kick(machine_id)
 
-.. automethod:: deploy.CloudstackDeployment.do_list(type="templates or diskofferings or ip")
+.. automethod:: deploy.CloudstackDeployment.do_list(type="templates or diskofferings or ip or networking")
 
 .. automethod:: deploy.CloudstackDeployment.do_quit()
 
