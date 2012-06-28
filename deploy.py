@@ -224,11 +224,12 @@ class CloudstackDeployment(cmd.Cmd):
 
     def do_list(self, line):
         """
-        list the available templates|serviceofferings|diskofferings|ipadresses.
+        list the available templates|serviceofferings|
+                           diskofferings|ipadresses|networks
 
         Usage::
 
-            deploy> list <templates|serviceofferings|diskofferings|ip>
+            deploy> list <templates|serviceofferings|diskofferings|ip|networks>
         """
         if not line:
             print "Usage : list <value>, example : list templates"
@@ -241,29 +242,37 @@ class CloudstackDeployment(cmd.Cmd):
             templates = self.client.listTemplates(args)
             templates = sorted(templates, key=itemgetter('name'))
             for x in templates:
-                print "%40s %15s  %s" % (x['name'],
-                                         x['id'],
-                                         zones[x['zoneid']])
+                print "%5s   %40s   %s" % (x['id'],
+                                           x['name'],
+                                           zones[x['zoneid']])
             return
         elif line == "serviceofferings":
             serviceofferings = self.client.listServiceOfferings()
             for x in serviceofferings:
-                print "%5s %s" % (x['id'],
-                                  x['displaytext'],
+                print "%5s    %s" % (x['id'],
+                                     x['displaytext'],
                                  )
             return
         elif line == "diskofferings":
             diskofferings = self.client.listDiskOfferings()
             for x in diskofferings:
-                print "%30s %5s %8s" % (x['name'],
-                                         x['id'],
-                                         "%s GB" % x['disksize'])
+                print "%5s   %30s %8s" % (x['id'],
+                                          x['name'],
+                                          "%s GB" % x['disksize'])
             return
         elif line == "ip":
             response = self.client.listPublicIpAddresses()
             for x in response['publicipaddress']:
                 print "%5s   %15s" % (x['id'],
                                       x['ipaddress'])
+            return
+        elif line == "networks":
+            args = {'zoneid': ZONEID}
+            response = self.client.listNetworks(args)
+            networks = sorted(response, key=itemgetter('id'))
+            for x in networks:
+                print "%5s   %15s" % (x['id'],
+                                      x['name'])
             return
         print "Not implemented"
 
