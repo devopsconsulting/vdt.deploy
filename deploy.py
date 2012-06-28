@@ -142,9 +142,9 @@ class CloudstackDeployment(cmd.Cmd):
             machine_id = str(machine[0])
             response = self.client.destroyVirtualMachine({'id': machine_id})
             print "destroying machine with id %s" % machine_id
-            puppetcerts = subprocess.check_output([PUPPET_BINARY, 
-                                                   'cert', 
-                                                   '--list', 
+            puppetcerts = subprocess.check_output([PUPPET_BINARY,
+                                                   'cert',
+                                                   '--list',
                                                    '--all'])
             puppetcerts = puppetcerts.split("\n")
             puppetcerts = [x.split(' ')[1] for x in puppetcerts if x]
@@ -157,6 +157,11 @@ class CloudstackDeployment(cmd.Cmd):
                                                       "node",
                                                       "clean",
                                                       "--unexport",
+                                                      cert])
+                        print res
+                        res = subprocess.check_output([PUPPET_BINARY,
+                                                      "node",
+                                                      "clean",
                                                       cert])
                         print res
 
