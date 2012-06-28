@@ -112,7 +112,7 @@ class CloudstackDeployment(cmd.Cmd):
         puppetmaster = PUPPETMASTER
         if not puppetmaster:
             puppetmaster = socket.gethostbyname(socket.gethostname())
-        params +="\n#puppetmaster=%s" % puppetmaster
+        params += "\n#puppetmaster=%s" % puppetmaster
         userdata = "#include %s\n%s" % (CLOUDINIT_PUPPET, params)
         userdata = encodestring(userdata)
         args = {'serviceofferingid': SERVICEID,
