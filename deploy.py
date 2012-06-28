@@ -5,8 +5,7 @@ import cmd
 import subprocess
 from CloudStack.Client import Client
 from config import (APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, TEMPLATEID,
-                    SERVICEID, CLOUDINIT_BASE, CLOUDINIT_PUPPET,
-                    CERT_REQ, PUPPET_BINARY
+                    SERVICEID, CLOUDINIT_PUPPET, CERT_REQ, PUPPET_BINARY
                    )
 from base64 import encodestring
 from operator import itemgetter
@@ -73,11 +72,12 @@ class CloudstackDeployment(cmd.Cmd):
         """
         Create a vm with a specific name and add some userdata.
 
-        Optionally specify a specific cloudinit config.
+        Optionally specify extra network ids.
 
         Usage::
 
-            deploy> deploy <name> <userdata> optional: <cloudinit config>
+            deploy> deploy <name> <userdata>
+                    optional: <network ids>
 
         To specify the puppet role in the userdata, which will install and
         configure the machine according to the specified role use::
@@ -85,6 +85,10 @@ class CloudstackDeployment(cmd.Cmd):
             deploy> deploy loadbalancer1 role=lvs
 
         This will install the machine as a Linux virtual server.
+
+        You can also specify additional networks using the following :
+
+            deploy> deploy loadbalancer1 role=lvs networks=312,313
         """
         if not line:
             print "Specify the machine userdata"
@@ -103,12 +107,7 @@ class CloudstackDeployment(cmd.Cmd):
         # we put a # in front to be cloudinit compatible
         params = cmdargs[1].split(",")
         params = "\n".join(["#%s" % x for x in params])
-        CLOUDINIT_URL = CLOUDINIT_PUPPET
-        if len(cmdargs) > 2:
-            # we can specify a base installation without puppet
-            if cmdargs[2] == 'base':
-                CLOUDINIT_URL = CLOUDINIT_BASE
-        userdata = "#include %s\n%s" % (CLOUDINIT_URL, params)
+        userdata = "#include %s\n%s" % (CLOUDINIT_PUPPET, params)
         userdata = encodestring(userdata)
         args = {'serviceofferingid': SERVICEID,
                 'templateid': TEMPLATEID,
@@ -117,6 +116,11 @@ class CloudstackDeployment(cmd.Cmd):
                 'displayname': name,
                 'userdata': userdata
                 }
+        if len(cmdargs) > 2:
+            # we can specify additional networks here
+            if cmdargs[2].find("networks") == 0:
+                network_ids = cmdargs[2].split('=')[1].split(",")
+                args["networkids"] = network_ids
         response = self.client.deployVirtualMachine(args)
         # we add the machine id to the cert req file, so the puppet daemon can
         # sign the certificate
