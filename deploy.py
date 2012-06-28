@@ -3,11 +3,11 @@ import sys
 import os
 import cmd
 import subprocess
+import socket
 from CloudStack.Client import Client
-from config import (APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, TEMPLATEID,
-                    SERVICEID, CLOUDINIT_PUPPET, CERT_REQ, PUPPET_BINARY,
-                    PUPPETMASTER_VERIFIED
-                   )
+from config import APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, TEMPLATEID, \
+                    SERVICEID, CLOUDINIT_PUPPET, CERT_REQ, PUPPET_BINARY, \
+                    PUPPETMASTER, PUPPETMASTER_VERIFIED
 from base64 import encodestring
 from operator import itemgetter
 
@@ -108,6 +108,11 @@ class CloudstackDeployment(cmd.Cmd):
         # we put a # in front to be cloudinit compatible
         params = cmdargs[1].split(",")
         params = "\n".join(["#%s" % x for x in params])
+        # now we also put the puppetmaster ip/hostname in the config
+        puppetmaster = PUPPETMASTER
+        if not puppetmaster:
+            puppetmaster = socket.gethostbyname(socket.gethostname())
+        params +="\n#puppetmaster=%s" % puppetmaster
         userdata = "#include %s\n%s" % (CLOUDINIT_PUPPET, params)
         userdata = encodestring(userdata)
         args = {'serviceofferingid': SERVICEID,
