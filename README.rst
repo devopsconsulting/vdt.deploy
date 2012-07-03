@@ -41,21 +41,29 @@ Initially avira.deploy will create this file for you but not configured yet:
     serviceid = 17
     cloudinit_puppet = http://joe.avira-cloud.net/autodeploy/vdt-puppet-agent.cloudinit
     cloudinit_base = http://joe.avira-cloud.net/autodeploy/vdt-base.cloudinit
+    puppetmaster = 
+    puppetmaster_verified = 0
 
 
 You've got to enter your cloudstack apikey and secretkey. Options are::
 
-    apiurl:           The full url of the cloudstack api in your domain.
-    apikey:           The api key of your cloudstack domain.
-    secretkey:        The secretkey of your cloudstack domain.
-    domainid:         The numeric id of your domain.
-    zoneid:           The numeric id of the zone your domain belongs to.
-    templateid:       The id of the vm template with your base installation.
-    serviceid:        Sorry no idea.
-    cloudinit_puppet: The cloud-init configuration for installations that are
-                      completed using puppet.
-    cloudinit_base:   The cloud-init configuration for installations that are
-                      need to be completed manually (eg. puppetmaster)
+    apiurl:                 The full url of the cloudstack api in your domain.
+    apikey:                 The api key of your cloudstack domain.
+    secretkey:              The secretkey of your cloudstack domain.
+    domainid:               The numeric id of your domain.
+    zoneid:                 The numeric id of the zone your domain belongs to.
+    templateid:             The id of the vm template with your base installation.
+    serviceid:              The service offering id. Default it will be a small
+                            installation. (2 cores, 5 GB of RAM)
+    cloudinit_puppet:       The cloud-init configuration for installations that are
+                            completed using a puppet agent.
+    cloudinit_base:         The cloud-init configuration for installations that are
+                            need to be completed manually (eg. puppetmaster)
+    puppetmaster:           The FQDN of the puppetmaster. This will be passed as
+                            userdata to the deployed machines so they can find the
+                            puppetmaster.
+    puppetmaster_verified:  Defaults to zero and should be set to 1 if you are sure
+                            you run the deployment tool on the puppetmaster
 
 .. index:: Usage, avira.deploy; usage
 

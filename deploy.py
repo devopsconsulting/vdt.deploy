@@ -77,7 +77,7 @@ class CloudstackDeployment(cmd.Cmd):
         Usage::
 
             deploy> deploy <name> <userdata>
-                    optional: <network ids>
+                    optional: <network ids> <base>
 
         To specify the puppet role in the userdata, which will install and
         configure the machine according to the specified role use::
@@ -89,6 +89,13 @@ class CloudstackDeployment(cmd.Cmd):
         You can also specify additional networks using the following :
 
             deploy> deploy loadbalancer1 role=lvs networks=312,313
+
+        if you don't want pierrot-agent (puppet agent) automatically installed,
+        you can specify 'base' as a optional parameter. This is needed for the
+        puppetmaster which needs manual installation.
+
+            deploy> deploy puppetmaster role=puppetmaster base
+
         """
         if not line:
             print "Specify the machine userdata"
