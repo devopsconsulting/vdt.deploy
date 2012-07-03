@@ -258,7 +258,7 @@ class CloudstackDeployment(cmd.Cmd):
     def do_list(self, line):
         """
         list the available templates|serviceofferings|
-                           diskofferings|ipadresses|networks|portforwardings
+                           diskofferings|ip|networks|portforwardings
 
         Usage::
 
