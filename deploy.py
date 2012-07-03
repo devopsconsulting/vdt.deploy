@@ -86,13 +86,13 @@ class CloudstackDeployment(cmd.Cmd):
 
         This will install the machine as a Linux virtual server.
 
-        You can also specify additional networks using the following :
+        You can also specify additional networks using the following::
 
             deploy> deploy loadbalancer1 role=lvs networks=312,313
 
         if you don't want pierrot-agent (puppet agent) automatically installed,
         you can specify 'base' as a optional parameter. This is needed for the
-        puppetmaster which needs manual installation.
+        puppetmaster which needs manual installation::
 
             deploy> deploy puppetmaster role=puppetmaster base
 
