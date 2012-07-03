@@ -167,7 +167,7 @@ class CloudstackDeployment(cmd.Cmd):
             response = self.client.listPortForwardingRules()
             for portforward in response:
                 if str(portforward['virtualmachineid']) == machine_id:
-                    args = {'id': portforward['id']}
+                    args = {'id': str(portforward['id'])}
                     self.client.deletePortForwardingRule(args)
                     ip = portforward['ipaddress']
                     print "Removing portforward %s:%s -> %s" % (ip,
