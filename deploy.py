@@ -161,7 +161,20 @@ class CloudstackDeployment(cmd.Cmd):
         else:
             machine_id = str(machine[0])
             response = self.client.destroyVirtualMachine({'id': machine_id})
-            print "destroying machine with id %s" % machine_id
+            print "Destroying machine with id %s" % machine_id
+
+            # first we are also going to remove the portforwards
+            response = self.client.listPortForwardingRules()
+            for portforward in response:
+                if str(portforward['virtualmachineid']) == machine_id:
+                    args = {'id': machine_id}
+                    self.client.deletePortForwardingRule(args)
+                    ip = portforward['ipaddress']
+                    print "Removing portforward %s:%s -> %s" % (ip,
+                                                    portforward['publicport'],
+                                                    portforward['privateport'])
+
+            # now we cleanup the puppet database and certificates
             puppetcerts = subprocess.check_output([PUPPET_BINARY,
                                                    'cert',
                                                    '--list',
@@ -245,11 +258,12 @@ class CloudstackDeployment(cmd.Cmd):
     def do_list(self, line):
         """
         list the available templates|serviceofferings|
-                           diskofferings|ipadresses|networks
+                           diskofferings|ipadresses|networks|portforwardings
 
         Usage::
 
-            deploy> list <templates|serviceofferings|diskofferings|ip|networks>
+            deploy> list <templates|serviceofferings|
+                          diskofferings|ip|networks|portforwardings>
         """
         if not line:
             print "Usage : list <value>, example : list templates"
@@ -293,6 +307,19 @@ class CloudstackDeployment(cmd.Cmd):
             for x in networks:
                 print "%5s   %15s" % (x['id'],
                                       x['name'])
+            return
+        elif line == "portforwardings":
+            args = {'domain': DOMAINID}
+            response = self.client.listPortForwardingRules(args)
+            portforwardings = sorted(response, key=itemgetter('privateport'))
+            portforwardings.reverse()
+            for x in portforwardings:
+                print "%5s   %15s   %4s to %4s on machine %5s-%s" % (x['id'],
+                                                x['ipaddress'],
+                                                x['publicport'],
+                                                x['privateport'],
+                                                x['virtualmachineid'],
+                                                x['virtualmachinedisplayname'])
             return
         print "Not implemented"
 
