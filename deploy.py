@@ -3,11 +3,10 @@ import sys
 import os
 import cmd
 import subprocess
-import socket
 from CloudStack.Client import Client
 from config import APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, TEMPLATEID, \
-                    SERVICEID, CLOUDINIT_PUPPET, CERT_REQ, PUPPET_BINARY, \
-                    PUPPETMASTER, PUPPETMASTER_VERIFIED
+                   SERVICEID, CLOUDINIT_PUPPET, CLOUDINIT_BASE, \
+                   CERT_REQ, PUPPET_BINARY, PUPPETMASTER, PUPPETMASTER_VERIFIED
 from base64 import encodestring
 from operator import itemgetter
 
@@ -103,6 +102,23 @@ class CloudstackDeployment(cmd.Cmd):
             print "A machine with the name %s already exists" % name
             return
 
+        CLOUDINIT_URL = CLOUDINIT_PUPPET
+        args = {'serviceofferingid': SERVICEID,
+                'templateid': TEMPLATEID,
+                'zoneid': ZONEID,
+                'domainid': DOMAINID,
+                'displayname': name,
+                }
+        # check for additional options
+        if len(cmdargs) > 2:
+            for param in cmdargs[2:]:
+                # we can specify additional networks here
+                if param.find("networks") == 0:
+                    network_ids = param.split('=')[1].split(",")
+                    args["networkids"] = network_ids
+                elif param.find("base") == 0:
+                    CLOUDINIT_URL = CLOUDINIT_BASE
+
         # we add the cloudinit configuration url first
         # second argument is of the format key=value,anotherkey=anothervalue
         # we put a # in front to be cloudinit compatible
@@ -111,20 +127,9 @@ class CloudstackDeployment(cmd.Cmd):
         # now we also put the puppetmaster ip/hostname in the config
         puppetmaster = PUPPETMASTER
         params += "\n#puppetmaster=%s" % puppetmaster
-        userdata = "#include %s\n%s" % (CLOUDINIT_PUPPET, params)
+        userdata = "#include %s\n%s" % (CLOUDINIT_URL, params)
         userdata = encodestring(userdata)
-        args = {'serviceofferingid': SERVICEID,
-                'templateid': TEMPLATEID,
-                'zoneid': ZONEID,
-                'domainid': DOMAINID,
-                'displayname': name,
-                'userdata': userdata
-                }
-        if len(cmdargs) > 2:
-            # we can specify additional networks here
-            if cmdargs[2].find("networks") == 0:
-                network_ids = cmdargs[2].split('=')[1].split(",")
-                args["networkids"] = network_ids
+        args['userdata'] = userdata
         response = self.client.deployVirtualMachine(args)
         # we add the machine id to the cert req file, so the puppet daemon can
         # sign the certificate
