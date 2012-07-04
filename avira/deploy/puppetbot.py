@@ -81,8 +81,7 @@ class App():
         observer.start()
         try:
             while True:
-                # puppet node clean i-42-4266-vm.cs2acloud.internal
-                time.sleep(60)
+                time.sleep(1)
         except KeyboardInterrupt:
             observer.stop()
             observer.join()
