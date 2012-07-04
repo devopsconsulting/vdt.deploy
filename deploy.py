@@ -108,7 +108,7 @@ class CloudstackDeployment(cmd.Cmd):
         if name in machines:
             print "A machine with the name %s already exists" % name
             return
-
+        initial_machine = False
         CLOUDINIT_URL = CLOUDINIT_PUPPET
         args = {'serviceofferingid': SERVICEID,
                 'templateid': TEMPLATEID,
@@ -124,6 +124,7 @@ class CloudstackDeployment(cmd.Cmd):
                     network_ids = param.split('=')[1].split(",")
                     args["networkids"] = network_ids
                 elif param.find("base") == 0:
+                    initial_machine = True
                     CLOUDINIT_URL = CLOUDINIT_BASE
 
         # we add the cloudinit configuration url first
@@ -132,15 +133,17 @@ class CloudstackDeployment(cmd.Cmd):
         params = cmdargs[1].split(",")
         params = "\n".join(["#%s" % x for x in params])
         # now we also put the puppetmaster ip/hostname in the config
-        puppetmaster = PUPPETMASTER
-        params += "\n#puppetmaster=%s" % puppetmaster
+        if not initial_machine:
+            puppetmaster = PUPPETMASTER
+            params += "\n#puppetmaster=%s" % puppetmaster
         userdata = "#include %s\n%s" % (CLOUDINIT_URL, params)
         userdata = encodestring(userdata)
         args['userdata'] = userdata
         response = self.client.deployVirtualMachine(args)
         # we add the machine id to the cert req file, so the puppet daemon can
         # sign the certificate
-        self._add_cert_machine(response['id'])
+        if not initial_machine:
+            self._add_cert_machine(response['id'])
         print "%s started, machine id %s" % (name, response['id'])
 
     def do_destroy(self, line):
