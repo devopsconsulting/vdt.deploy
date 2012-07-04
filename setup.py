@@ -11,7 +11,7 @@ configured as an lvs load balancer.
 from setuptools import setup
 from setuptools import find_packages
 
-version = '0.1'
+version = '0.1.2'
 
 setup(name='avira.deploy',
       version=version,
@@ -32,7 +32,7 @@ setup(name='avira.deploy',
       install_requires=[
         'distribute',
         'watchdog',
-        'daemon',
+        'python-daemon',
         'pyyaml>=3.09',
         'argh>=0.8.1',
         'pathtools',
