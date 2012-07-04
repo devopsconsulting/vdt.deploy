@@ -33,6 +33,9 @@ setup(name='avira.deploy',
         'distribute',
         'watchdog',
         'daemon',
+        'pyyaml>=3.09',
+        'argh>=0.8.1',
+        'pathtools',
         # -*- Extra requirements: -*-
       ],
       entry_points={'console_scripts':
