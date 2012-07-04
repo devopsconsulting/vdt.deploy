@@ -87,6 +87,11 @@ class App():
             observer.stop()
             observer.join()
 
-app = App()
-daemon_runner = runner.DaemonRunner(app)
-daemon_runner.do_action()
+
+def main():
+    app = App()
+    daemon_runner = runner.DaemonRunner(app)
+    daemon_runner.do_action()
+
+if __name__ == '__main__':
+    main()

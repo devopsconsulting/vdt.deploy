@@ -429,7 +429,7 @@ class CloudstackDeployment(cmd.Cmd):
         return
 
 
-if __name__ == '__main__':
+def main():
     if not PUPPETMASTER_VERIFIED == '1':
         print "\nPlease edit your configfile : \n"
         print "Set puppetmaster_verified to 1 if you are sure you run this " \
@@ -447,3 +447,7 @@ if __name__ == '__main__':
             deploy.cmdloop()
         except KeyboardInterrupt:
             deploy.do_quit('now')
+
+
+if __name__ == '__main__':
+    main()
