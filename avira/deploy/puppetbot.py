@@ -69,7 +69,7 @@ class App():
         self.stdin_path = '/dev/null'
         self.stdout_path = '/dev/null'
         self.stderr_path = '/dev/null'
-        self.pidfile_path = '/var/run/signbot.pid'
+        self.pidfile_path = '/var/run/puppetbot.pid'
         self.pidfile_timeout = 5
 
     def run(self):
