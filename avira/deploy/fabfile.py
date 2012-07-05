@@ -14,60 +14,49 @@ __all__ = ('status', 'deploy', 'destroy', 'start', 'stop', 'reboot', 'list',
 
 @wraps(CloudstackDeployment.do_status)
 def status(all=''):
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py status %(all)s' % locals())
+    run('/usr/bin/avira-deploy status %(all)s' % locals())
 
 @wraps(CloudstackDeployment.do_deploy)
 def deploy(name, cloudinit_config='', **kwargs):
     kwargs_string = " ".join(["%s=%s" % (key.replace('puppet', ''), value) for key, value in kwargs.items()])
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py deploy %(name)s %(kwargs_string)s %(cloudinit_config)s' % locals())
+    run('/usr/bin/avira-deploy deploy %(name)s %(kwargs_string)s %(cloudinit_config)s' % locals())
 
 @wraps(CloudstackDeployment.do_destroy)
 def destroy(machine_id):
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py destroy %(machine_id)s' % locals())
+    run('/usr/bin/avira-deploy destroy %(machine_id)s' % locals())
 
 @wraps(CloudstackDeployment.do_start)
 def start(machine_id):
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py start %(machine_id)s' % locals())
+    run('/usr/bin/avira-deploy start %(machine_id)s' % locals())
 
 @wraps(CloudstackDeployment.do_stop)
 def stop(machine_id):
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py stop %(machine_id)s' % locals())
+    run('/usr/bin/avira-deploy stop %(machine_id)s' % locals())
 
 @wraps(CloudstackDeployment.do_reboot)
 def reboot(machine_id):
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py reboot %(machine_id)s' % locals())
+    run('/usr/bin/avira-deploy reboot %(machine_id)s' % locals())
 
 @wraps(CloudstackDeployment.do_list)
 def list(type):
     allowed_types = ['templates', 'serviceofferings', 'diskofferings', 'ip']
     if type in allowed_types:
-        with cd('/usr/local/src/avira.deploy'):
-            run('python deploy.py list %(type)s' % locals())
+        run('/usr/bin/avira-deploy list %(type)s' % locals())
     else:
         print "type should be one of %(allowed_types)s" % locals()
 
 @wraps(CloudstackDeployment.do_request)
 def request(ip):
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py request %(ip)s' % locals())
+    run('/usr/bin/avira-deploy request %(ip)s' % locals())
 
 @wraps(CloudstackDeployment.do_release)
 def release(ip):
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py release %(ip)s' % locals())
+    run('/usr/bin/avira-deploy release %(ip)s' % locals())
 
 @wraps(CloudstackDeployment.do_kick)
 def kick(machine_id):
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py kick %(machine_id)s' % locals())
+    run('/usr/bin/avira-deploy kick %(machine_id)s' % locals())
 
 @wraps(CloudstackDeployment.do_kick)
 def ssh(machine_id):
-    with cd('/usr/local/src/avira.deploy'):
-        run('python deploy.py ssh %(machine_id)s' % locals())
+    run('/usr/bin/avira-deploy ssh %(machine_id)s' % locals())
