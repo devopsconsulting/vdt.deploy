@@ -19,7 +19,7 @@ if not os.path.isfile(configfile):
     config.set('deployment', 'puppetmaster_verified', '0')
     config.add_section('puppetbot')
     config.set('puppetbot', 'puppet_binary', '/usr/bin/puppet')
-    config.set('puppetbot', 'puppet_cert_directory', '/var/lib/puppet/ssl/certificate_requests')
+    config.set('puppetbot', 'puppet_cert_directory', '/var/lib/puppet/ssl/ca/requests')
     config.set('puppetbot', 'cert_req', '/var/lib/puppet/cert_req.txt')
     config.add_section('fabric')
     config.set('fabric', 'puppetmaster_ssh_port', '')
