@@ -45,6 +45,7 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                         msg = "Signing certificate for machine %s" % machine_id
                         syslog.syslog(syslog.LOG_ALERT, msg)
                         res = subprocess.check_output([PUPPET_BINARY,
+                                                       "cert",
                                                        "--sign",
                                                        certname])
                         syslog.syslog(syslog.LOG_ALERT, res)

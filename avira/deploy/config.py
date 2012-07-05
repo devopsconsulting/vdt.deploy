@@ -11,7 +11,7 @@ if not os.path.isfile(configfile):
     config.set('deployment', 'secretkey', '')
     config.set('deployment', 'domainid', '29')
     config.set('deployment', 'zoneid', '6')
-    config.set('deployment', 'templateid', '392')
+    config.set('deployment', 'templateid', '')
     config.set('deployment', 'serviceid', '17')
     config.set('deployment', 'cloudinit_puppet', 'http://joe.avira-cloud.net/autodeploy/vdt-puppet-agent.cloudinit')
     config.set('deployment', 'cloudinit_base', 'http://joe.avira-cloud.net/autodeploy/vdt-base.cloudinit')
