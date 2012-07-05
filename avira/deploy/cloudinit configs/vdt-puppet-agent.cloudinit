@@ -4,7 +4,7 @@ ssh_pwauth: True
 
 apt_mirror: http://ubuntu.avira-cloud.net/ubuntu/
 apt_sources:
- - source: deb http://ubuntu.avira-cloud.net/avira avira main
+ - source: deb http://ubuntu.avira-cloud.net/avira avira-dev main
    key: |
         -----BEGIN PGP PUBLIC KEY BLOCK-----
         Version: GnuPG v1.4.11 (GNU/Linux)
