@@ -359,34 +359,39 @@ class CloudstackDeployment(cmd.Cmd):
             return
         print "Not implemented"
 
-    def do_quit(self, line):
+    def do_portfw(self, line):
         """
-        Quit the deployment tool.
+        Create a portforward for a specific machine and ip
 
         Usage::
 
-            deploy> quit
-        """
-        sys.exit(0)
+            deploy> portfw <machine id> <ip id> <public port> <private port>
 
-    def do_kick(self, line):
-        """
-        Trigger a puppet run on a server. This command only works when used
-        on the puppetmaster.
+        You can get the machine id by using the following command::
 
-        Usage::
+            deploy> status
 
-            deploy> kick <machine_id>
+        You can get the listed ip's by using the following command::
+
+            deploy> list ip
         """
-        try:
-            ipaddress = self._nic_of(line)['ipaddress']
-            try:
-                print subprocess.check_output(['puppet', "kick", ipaddress],
-                    stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as e:
-                print e.output
-        except ServerNotFound as e:
-            print e.message
+        cmdargs = line.split()
+        if not len(cmdargs) == 4:
+            print "Please specify the correct arguments"
+            return
+        machine_id = cmdargs[0]
+        ip_id = cmdargs[1]
+        public_port = cmdargs[2]
+        private_port = cmdargs[3]
+        self.client.createPortForwardingRule({
+            'ipaddressid': ip_id,
+            'privateport': private_port,
+            'publicport': public_port,
+            'protocol': 'TCP',
+            'virtualmachineid': machine_id})
+        print "added portforward for machine %s (%s -> %s)" % (machine_id,
+                                                               public_port,
+                                                               private_port)
 
     def do_ssh(self, line):
         """
@@ -409,24 +414,64 @@ class CloudstackDeployment(cmd.Cmd):
             ssh ipaddress -p 5034
         """
         # Todo : check if portforward exists
-        # Todo : remove portforwards on removal
+        machine_id = line.strip()
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
         machine_ids = [str(x['id']) for x in response]
-        ips = self.client.listPublicIpAddresses()['publicipaddress']
-        if not line in machine_ids:
-            print "no machine found with id %s" % line
+        if not machine_id in machine_ids:
+            print "no machine found with id %s" % machine_id
             return
+        portforwards = self.client.listPortForwardingRules()
+        ssh_portforwards = [x for x in portforwards \
+                            if (str(x['virtualmachineid']) == machine_id and \
+                                x['privateport'] == '22')]
+        ips = self.client.listPublicIpAddresses()['publicipaddress']
         for ip in ips:
+            current_fw = [x for x in ssh_portforwards \
+                          if x['ipaddressid'] == ip['id']]
+            if current_fw:
+                print "machine %s already has a ssh portforward with ip %s" % \
+                                                            (machine_id,
+                                                             ip['ipaddress'])
+                continue
             self.client.createPortForwardingRule({
                 'ipaddressid': str(ip['id']),
                 'privateport': "22",
                 'publicport': line,
                 'protocol': 'TCP',
                 'virtualmachineid': line})
-            print "machine %s is now reachable (via %s:%s)" % (line,
+            print "machine %s is now reachable (via %s:%s)" % (machine_id,
                                                                ip['ipaddress'],
                                                                line)
         return
+
+    def do_kick(self, line):
+        """
+        Trigger a puppet run on a server. This command only works when used
+        on the puppetmaster.
+
+        Usage::
+
+            deploy> kick <machine_id>
+        """
+        try:
+            ipaddress = self._nic_of(line)['ipaddress']
+            try:
+                print subprocess.check_output(['puppet', "kick", ipaddress],
+                    stderr=subprocess.STDOUT)
+            except subprocess.CalledProcessError as e:
+                print e.output
+        except ServerNotFound as e:
+            print e.message
+
+    def do_quit(self, line):
+        """
+        Quit the deployment tool.
+
+        Usage::
+
+            deploy> quit
+        """
+        sys.exit(0)
 
 
 def main():
