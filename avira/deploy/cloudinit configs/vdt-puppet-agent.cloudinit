@@ -89,7 +89,7 @@ apt_sources:
  - source: deb http://apt.puppetlabs.com lucid main
    key: |
         -----BEGIN PGP PUBLIC KEY BLOCK-----
-        Version: GnuPG v1.4.11 (GNU/Linux)
+        Version: GnuPG v1.4.12 (Darwin)
 
         mQINBEw3u0ABEAC1+aJQpU59fwZ4mxFjqNCgfZgDhONDSYQFMRnYC1dzBpJHzI6b
         fUBQeaZ8rh6N4kZ+wq1eL86YDXkCt4sCvNTP0eF2XaOLbmxtV9bdpTIBep9bQiKg
@@ -121,19 +121,31 @@ apt_sources:
         Z+jT/nbaE5uF0B7vdU7e20Q+KuJbLu3DdtL11o/ZMBVtjIWqS+m2QFvU5dFRLOpS
         5aMGZnflSVeMpCwZ5QeU6ISHzhqid0X3QDuDHRf+S00g9Gt8IaQclwO74dWdHvEq
         T4XSpv37+kYuJPeup5BOvx9ixvjEsdPu4SDWBUUHWDSR35FAfNXviQI+BBMBAgAo
-        BQJMN7tAAhsDBQkDwmcABgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRAQVLei
-        S9bsMBlrD/9ouYT96hulekhRXIJRZDES8+0z+H9IAmwbcqgc327bXp7Cz5Qewv/s
-        X3Vx5VdBB0PZ7wK1hYV4s0zRFIz2L8ozrSDgK8hCWY2p2qGLUeyAaoidnvb9csBe
-        6fSBpt8LfqsvDDaR6X5oylF/nxKtK6yRjfbU2cwQmXg6wdXaF820AiDDZ7/Ob1GG
-        gykYrGgdkK8WGc/u7YzbAyruI0MNZvp1WwunN2VV/bjbMJu5s8LHFBc6kDnqvORQ
-        +4nzmZ1XDiLX2g8gUhlUvmjCK3VLEI7EGDhvyhoxLfqESXeq1kbzfiu0t9yoCaqO
-        HHpom4ks4Bg3zhCMMRTc0jkh81Ey+W4h5NwPgO3kUJhqE3Tjm1bVFzqzkYBHxFbj
-        kZjBAPMb6SSR54bHASGoJbuc4e7BkihUm582F3bxQWfzcoYkcJC3g0EGvcrlNxjp
-        sNAQiulKmVZIMFt3enUhqhljVZIN0/05NU5JuzPQmKCVaZRYZYJ138IxJb8Pv/dV
-        Q4k5hEPCm2+1JhyMlzzVRX7XMH6u3ktr85Z7hQ45EP6NTUBOKNARoVjEFuoEGQVu
-        gARer1u1FDJ6CqT55WkeHNpw/k1gVMxOG8e5Nqk3K1wKyjlq79wzLCoKBjUN9wwn
-        KOhy7hsK2sB3rDiQYo0xR3A0NhC6UdkMj5SMkieGtqbKeB3NkuN14Q==
-        =djBi
+        AhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAUCT/Hk+gUJC0gyOgAKCRAQVLei
+        S9bsMAgpD/0e9nJ/4sdVKQKT3YpvqBySeKKff7mijPruFKvyaIYF8rh6hypDQftt
+        21aMAgvNH8gFjTGPo4cqFg/aTxMtztCFCO3R1Gk2Rf4i2ifYBmvJXu9QAOt5jPjg
+        HRs+aGIT4svjoRPkhOEsq78p+KHOQQQFr3+3Xvz5073MIzbGxdqIOEw7FUTfaBe9
+        Jko/eGa+cr8V3KVRjeda0952v6UekEugcZo8ftyMj4wQS6BTegAnSOmrdXyfjDSM
+        irZXvvB+ZsP1vIhXt1dzECnNyIr56TClA1AxJpx67EuVNkpx1KqjT+qZLYDzrdhl
+        DRkF75fJ/k4jff7L4yvL6+Xout7ZV8+be52BHXQTi1Zcn1DYKYb7M09a3vdTUUPv
+        EEjs8+86XLMJfhAmHLYWf9+/No2Menj8VKILDQe9fTV6lx6uzK6ffHE+REiPDBEz
+        2bkwnSjiGE99r3vOJtdKHxdcGeiwFDF6DqcSdvbp6itVBuobHSu679babn8mlR9E
+        SwWY04FRuLzGUo1LkJnKkfdmHzwRmJMWiU4wSH6FPqzSXrOcEAYZnib9SdpybnIM
+        eaDu6cKTgnJWilDYocyiobzzp6W76ubQBKSHKoECT2xYqm0yXc0eJhNET+b1UCS6
+        BUgHamL7y7zh/5qfgeaXjGXKKOBi7Tmmo2+ctHIkMt3rWG+IsLwZhYkCPgQTAQIA
+        KAUCTDe7QAIbAwUJA8JnAAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQEFS3
+        okvW7DAZaw//aLmE/eobpXpIUVyCUWQxEvPtM/h/SAJsG3KoHN9u216ews+UHsL/
+        7F91ceVXQQdD2e8CtYWFeLNM0RSM9i/KM60g4CvIQlmNqdqhi1HsgGqInZ72/XLA
+        Xun0gabfC36rLww2kel+aMpRf58SrSuskY321NnMEJl4OsHV2hfNtAIgw2e/zm9R
+        hoMpGKxoHZCvFhnP7u2M2wMq7iNDDWb6dVsLpzdlVf242zCbubPCxxQXOpA56rzk
+        UPuJ85mdVw4i19oPIFIZVL5owit1SxCOxBg4b8oaMS36hEl3qtZG834rtLfcqAmq
+        jhx6aJuJLOAYN84QjDEU3NI5IfNRMvluIeTcD4Dt5FCYahN045tW1Rc6s5GAR8RW
+        45GYwQDzG+kkkeeGxwEhqCW7nOHuwZIoVJufNhd28UFn83KGJHCQt4NBBr3K5TcY
+        6bDQEIrpSplWSDBbd3p1IaoZY1WSDdP9OTVOSbsz0JiglWmUWGWCdd/CMSW/D7/3
+        VUOJOYRDwptvtSYcjJc81UV+1zB+rt5La/OWe4UOORD+jU1ATijQEaFYxBbqBBkF
+        boAEXq9btRQyegqk+eVpHhzacP5NYFTMThvHuTapNytcCso5au/cMywqCgY1DfcM
+        Jyjocu4bCtrAd6w4kGKNMUdwNDYQulHZDI+UjJInhramyngdzZLjdeE=
+        =i8vT
         -----END PGP PUBLIC KEY BLOCK-----
  - source: deb http://ubuntu.avira-cloud.net/avira avira-amt main
    key: |
