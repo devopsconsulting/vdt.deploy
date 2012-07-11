@@ -158,11 +158,17 @@ class CloudstackDeployment(cmd.Cmd):
             print "Specify the machine id (status)"
             return
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
-        machine = [x['id'] for x in response if str(x['id']) == line]
+        machine = [x for x in response if str(x['id']) == line]
         if not machine:
             print "No machine found with the id %s" % line
         else:
-            machine_id = str(machine[0])
+            machine_id = str(machine[0]['id'])
+            # not a failsafe method of checking, but for now
+            # no other solution
+            fqdn = subprocess.check_output(['facter', "fqdn"])
+            if machine_id in fqdn:
+                print "You are not allowed to destroy the puppetmaster"    
+                return
             response = self.client.destroyVirtualMachine({'id': machine_id})
             print "Destroying machine with id %s" % machine_id
 
