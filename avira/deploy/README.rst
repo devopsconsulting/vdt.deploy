@@ -80,12 +80,12 @@ Let's start with interactive mode::
     python deploy.py
     deploy> 
     deploy> help
-    
+
     Documented commands (type help <topic>):
     ========================================
-    deploy   kick  quit    release  ssh    status
-    destroy  list  reboot  request  start  stop  
-    
+    deploy   kick  portfw  reboot   request  start   stop
+    destroy  list  quit    release  ssh      status    
+
     Undocumented commands:
     ======================
     help
@@ -118,41 +118,45 @@ So status will show you the running instances.
 .. _avira-deploy-commands:
 
 .. index::
+    single: avira.deploy; status
     single: avira.deploy; deploy
     single: avira.deploy; destroy
-    single: avira.deploy; kick
-    single: avira.deploy; list
-    single: avira.deploy; quit
-    single: avira.deploy; release
-    single: avira.deploy; request
-    single: avira.deploy; ssh
     single: avira.deploy; start
-    single: avira.deploy; status
+    single: avira.deploy; stop
     single: avira.deploy; reboot
+    single: avira.deploy; list
+    single: avira.deploy; request
+    single: avira.deploy; release
+    single: avira.deploy; portfw
+    single: avira.deploy; ssh
+    single: avira.deploy; kick
+    single: avira.deploy; quit
 
 The help for each command is shown below, but the names of the commands are
 prefixed with 'do'. (Not in github readme).
-    
+
+.. automethod:: deploy.CloudstackDeployment.do_status(all=False)    
+
 .. automethod:: deploy.CloudstackDeployment.do_deploy(name, userdata=None, cloudinit_config=CLOUDINIT_PUPPET)
-
-.. automethod:: deploy.CloudstackDeployment.do_destroy(machine_id)
-
-.. automethod:: deploy.CloudstackDeployment.do_kick(machine_id)
-
-.. automethod:: deploy.CloudstackDeployment.do_list(type="templates or serviceoffering or diskofferings or ip or networking or portforwards")
-
-.. automethod:: deploy.CloudstackDeployment.do_quit()
-
-.. automethod:: deploy.CloudstackDeployment.do_release(type)
-
-.. automethod:: deploy.CloudstackDeployment.do_request(type)
-
-.. automethod:: deploy.CloudstackDeployment.do_ssh(machine_id)
-
-.. automethod:: deploy.CloudstackDeployment.do_stop(machine_id)
 
 .. automethod:: deploy.CloudstackDeployment.do_start(machine_id)
 
-.. automethod:: deploy.CloudstackDeployment.do_status(all=False)
+.. automethod:: deploy.CloudstackDeployment.do_stop(machine_id)
 
 .. automethod:: deploy.CloudstackDeployment.do_reboot(machine_id)
+
+.. automethod:: deploy.CloudstackDeployment.do_destroy(machine_id)
+
+.. automethod:: deploy.CloudstackDeployment.do_list(type="templates or serviceoffering or diskofferings or ip or networking or portforwards")
+
+.. automethod:: deploy.CloudstackDeployment.do_request(type)
+
+.. automethod:: deploy.CloudstackDeployment.do_release(type)
+
+.. automethod:: deploy.CloudstackDeployment.do_portfw(machine_id, ip_id, public_port, private_port)
+
+.. automethod:: deploy.CloudstackDeployment.do_ssh(machine_id)
+
+.. automethod:: deploy.CloudstackDeployment.do_kick(machine_id)
+
+.. automethod:: deploy.CloudstackDeployment.do_quit()
