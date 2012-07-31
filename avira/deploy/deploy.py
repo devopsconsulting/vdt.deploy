@@ -3,7 +3,7 @@ import sys
 import os
 import cmd
 import subprocess
-from CloudStack.Client import Client
+from cloudstack.client import Client
 from config import APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, TEMPLATEID, \
                    SERVICEID, CLOUDINIT_PUPPET, CLOUDINIT_BASE, \
                    CERT_REQ, PUPPET_BINARY, PUPPETMASTER, PUPPETMASTER_VERIFIED

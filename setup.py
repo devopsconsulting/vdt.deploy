@@ -11,7 +11,7 @@ configured as an lvs load balancer.
 from setuptools import setup
 from setuptools import find_packages
 
-version = '0.1.10'
+version = '0.1.11'
 
 setup(name='avira.deploy',
       version=version,
@@ -35,6 +35,7 @@ setup(name='avira.deploy',
         'python-daemon',
         'argh>=0.8.1',
         'pathtools',
+        'cloudstack',
         # -*- Extra requirements: -*-
       ],
       entry_points={'console_scripts':
