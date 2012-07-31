@@ -176,7 +176,7 @@ class CloudstackDeployment(cmd.Cmd):
             print "running cleanup job on %s." % hostname
             try:
                 print subprocess.check_output(['mco', 'rpc', 'cleanup', 'cleanup', '-F', 'hostname=%s' % hostname])
-            except subprocess.CalledProcessError as e
+            except subprocess.CalledProcessError as e:
                 print "An error occurred while running cleanup: %s" % e.output
             
             response = self.client.destroyVirtualMachine({'id': machine_id})
