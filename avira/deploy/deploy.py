@@ -159,16 +159,26 @@ class CloudstackDeployment(cmd.Cmd):
             return
         response = self.client.listVirtualMachines({'domainid': DOMAINID})
         machine = [x for x in response if str(x['id']) == line]
+
         if not machine:
             print "No machine found with the id %s" % line
         else:
             machine_id = str(machine[0]['id'])
+            hostname = str(machine[0]['name'])
+            
             # not a failsafe method of checking, but for now
             # no other solution
             fqdn = subprocess.check_output(['facter', "fqdn"])
             if machine_id in fqdn:
                 print "You are not allowed to destroy the puppetmaster"    
                 return
+            
+            print "running cleanup job on %s." % hostname
+            try:
+                print subprocess.check_output(['mco', 'rpc', 'cleanup', 'cleanup', '-F', 'hostname=%s' % hostname])
+            except subprocess.CalledProcessError as e
+                print "An error occurred while running cleanup: %s" % e.output
+            
             response = self.client.destroyVirtualMachine({'id': machine_id})
             print "Destroying machine with id %s" % machine_id
 
