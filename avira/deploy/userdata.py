@@ -1,5 +1,6 @@
-from base64 import encodestring
 from StringIO import StringIO
+from base64 import encodestring
+
 
 class UserData(dict):
     """

@@ -1,6 +1,7 @@
 #PEP8 --ignore=E501
-import os
 import ConfigParser
+import os
+
 
 configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
 if not os.path.isfile(configfile):

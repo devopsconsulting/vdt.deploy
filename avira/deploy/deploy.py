@@ -6,13 +6,15 @@ import sys
 from cloudstack.client import Client
 
 from avira.deploy import api, pretty
+from avira.deploy.clean import run_machine_cleanup, wrap, \
+    remove_machine_port_forwards, node_clean
 from avira.deploy.config import APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, \
-    TEMPLATEID, SERVICEID, CLOUDINIT_PUPPET, CLOUDINIT_BASE, PUPPET_BINARY,  \
-    PUPPETMASTER, PUPPETMASTER_VERIFIED
+    TEMPLATEID, SERVICEID, CLOUDINIT_PUPPET, CLOUDINIT_BASE, PUPPETMASTER, \
+    PUPPETMASTER_VERIFIED
 from avira.deploy.userdata import UserData
 from avira.deploy.utils import find_by_key, add_pending_certificate, \
     find_machine, wrap, sort_by_key, is_puppetmaster
-from avira.deploy.clean import *
+
 
 class CloudstackDeployment(api.CmdApi):
     """Cloudstack Deployment CMD Tool"""

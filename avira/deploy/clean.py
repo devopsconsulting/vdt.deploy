@@ -1,5 +1,5 @@
-import subprocess
 import itertools
+import subprocess
 
 from avira.deploy.config import PUPPET_BINARY
 from avira.deploy.utils import wrap

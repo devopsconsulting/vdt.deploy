@@ -1,6 +1,7 @@
 import cmd
 import traceback
 
+
 def parse_line(line):
     segments = line.split()
     args = []
