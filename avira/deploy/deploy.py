@@ -51,19 +51,23 @@ class CloudstackDeployment(api.CmdApi):
 
         Usage::
 
-            deploy> deploy <name> <userdata>
-                    optional: <network ids> <base>
+            deploy> deploy <displayname> <userdata>
+                    optional: <networkids> <base>
 
         To specify the puppet role in the userdata, which will install and
         configure the machine according to the specified role use::
 
             deploy> deploy loadbalancer1 role=lvs
 
+        To specify additional user data, specify additional keywords::
+
+            deploy> deploy loadbalancer1 role=lvs environment=test etc=more
+
         This will install the machine as a Linux virtual server.
 
         You can also specify additional networks using the following::
 
-            deploy> deploy loadbalancer1 role=lvs networks=312,313
+            deploy> deploy loadbalancer1 role=lvs networkids=312,313
 
         if you don't want pierrot-agent (puppet agent) automatically installed,
         you can specify 'base' as a optional parameter. This is needed for the
@@ -115,7 +119,7 @@ class CloudstackDeployment(api.CmdApi):
 
         Usage::
 
-            deploy> destroy <machine id>
+            deploy> destroy <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -153,7 +157,7 @@ class CloudstackDeployment(api.CmdApi):
 
         Usage::
 
-            deploy> start <machine id>
+            deploy> start <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -173,7 +177,7 @@ class CloudstackDeployment(api.CmdApi):
 
         Usage::
 
-            deploy> stop <machine id>
+            deploy> stop <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -193,7 +197,7 @@ class CloudstackDeployment(api.CmdApi):
 
         Usage::
 
-            deploy> reboot <machine id>
+            deploy> reboot <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -278,7 +282,7 @@ class CloudstackDeployment(api.CmdApi):
 
         Usage::
 
-            deploy> release ip <id>
+            deploy> release ip <release_id>
         """
         if request_type == "ip":
             response = self.client.disassociateIpAddress({
@@ -321,7 +325,7 @@ class CloudstackDeployment(api.CmdApi):
 
         Usage::
 
-            deploy> ssh <machine id>
+            deploy> ssh <machine_id>
 
         This adds a port forward under the machine id to port 22 on the machine
         eg:
@@ -390,7 +394,7 @@ class CloudstackDeployment(api.CmdApi):
         except subprocess.CalledProcessError as e:
             print e.output
 
-    def do_quit(self, line):
+    def do_quit(self, _):
         """
         Quit the deployment tool.
 
