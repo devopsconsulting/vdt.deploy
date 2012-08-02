@@ -10,7 +10,7 @@ env.hosts = ["%(PUPPETMASTER_IPADDRESS)s:%(PUPPETMASTER_SSH_PORT)s" % locals()]
 env.user = 'root'
 
 __all__ = ('status', 'deploy', 'destroy', 'start', 'stop', 'reboot', 'list',
-           'request', 'release', 'kick', 'ssh')
+           'request', 'release', 'kick', 'ssh', 'portfw')
 
 
 @wraps(CloudstackDeployment.do_status)
