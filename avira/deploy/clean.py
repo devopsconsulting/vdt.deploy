@@ -7,12 +7,14 @@ from avira.deploy.utils import wrap
 
 def run_machine_cleanup(machine):
     try:
-        print subprocess.check_output(['mco', 'rpc', '-v',
-            'cleanup', 'cleanup', '-F', 'hostname=%s' % \
-                machine.name])
+        print subprocess.check_output([
+            'mco', 'rpc', '-v', 'cleanup', 'cleanup', '-F', 'hostname=%s' %
+            machine.name
+        ])
     except subprocess.CalledProcessError as e:
         print "An error occurred while running cleanup: %s" % \
             e.output
+
 
 def remove_machine_port_forwards(machine, client):
     response = wrap(client.listPortForwardingRules())
@@ -27,17 +29,19 @@ def remove_machine_port_forwards(machine, client):
             args = {'id': portforward.id}
             client.deletePortForwardingRule(args)
 
+
 def clean_fqdn(fqdn, *extra_flags, **extra_kw_flags):
     command = [PUPPET_BINARY, "node", "clean"]
-    
+
     flags = ["--%s" % flag for flag in extra_flags]
     command += flags
-    
-    kw_flags = [("--%s" % keys, value) for key, value in extra_kw_flags.items()]
+
+    kw_flags = [("--%s" % keys, val) for key, val in extra_kw_flags.items()]
     command += itertools.chain.from_iterable(kw_flags)
-    
+
     command.append(fqdn)
     return subprocess.check_output(command)
+
 
 def node_clean(machine):
     puppetcerts = \

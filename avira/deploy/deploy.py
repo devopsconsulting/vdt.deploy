@@ -24,7 +24,7 @@ class CloudstackDeployment(api.CmdApi):
         self.debug = True
         self.client = Client(APIURL, APIKEY, SECRETKEY)
         cmd.Cmd.__init__(self)
-         
+
     def do_status(self, all=False):
         """
         Shows running instances, specify 'all' to show all instances
@@ -40,7 +40,7 @@ class CloudstackDeployment(api.CmdApi):
         if not all:
             ACTIVE = ['Running', 'Stopping', 'Starting']
             machines = [x for x in machines if x['state'] in ACTIVE]
-        
+
         pretty.machine_print(machines)
 
     def do_deploy(self, displayname, base=False, networkids="", **userdata):
@@ -79,11 +79,11 @@ class CloudstackDeployment(api.CmdApi):
         vms = self.client.listVirtualMachines({
             'domainid': DOMAINID
         })
-        
+
         KILLED = ['Destroyed', 'Expunging']
         existing_displaynames = \
             [x['displayname'] for x in vms if x['state'] not in KILLED]
-        
+
         if displayname not in existing_displaynames:
             cloudinit_url = CLOUDINIT_BASE if base else CLOUDINIT_PUPPET
 
@@ -98,7 +98,7 @@ class CloudstackDeployment(api.CmdApi):
             }
 
             response = self.client.deployVirtualMachine(args)
-        
+
             # we add the machine id to the cert req file, so the puppet daemon
             # can sign the certificate
             if not base:
@@ -108,7 +108,7 @@ class CloudstackDeployment(api.CmdApi):
 
         else:
             print "A machine with the name %s already exists" % displayname
-            
+
     def do_destroy(self, machine_id):
         """
         Destroy a machine.
@@ -117,22 +117,24 @@ class CloudstackDeployment(api.CmdApi):
 
             deploy> destroy <machine id>
         """
+
         machines = self.client.listVirtualMachines({
             'domainid': DOMAINID
         })
-        
+
         machine = find_machine(machine_id, machines)
 
         if machine is None:
             print "No machine found with the id %s" % machine_id
         else:
 
-            if not is_puppetmaster(machine.id,
-                "You are not allowed to destroy the puppetmaster"):
+            if not is_puppetmaster(
+                    machine.id,
+                    "You are not allowed to destroy the puppetmaster"):
 
                 print "running cleanup job on %s." % machine.name
                 run_machine_cleanup(machine)
-                
+
                 print "Destroying machine with id %s" % machine.id
                 self.client.destroyVirtualMachine({
                     'id': machine.id
@@ -140,7 +142,7 @@ class CloudstackDeployment(api.CmdApi):
 
                 # first we are also going to remove the portforwards
                 remove_machine_port_forwards(machine, self.client)
-                
+
                 # now we cleanup the puppet database and certificates
                 print "running puppet node clean"
                 node_clean(machine)
@@ -158,11 +160,11 @@ class CloudstackDeployment(api.CmdApi):
             'domainid': DOMAINID
         })
         machine = find_machine(machine_id, machines)
-        
+
         if machine is not None:
             print "starting machine with id %s" % machine.id
             self.client.startVirtualMachine({'id': machine.id})
-        else:            
+        else:
             print "machine with id %s is not found" % machine_id
 
     def do_stop(self, machine_id):
@@ -178,13 +180,12 @@ class CloudstackDeployment(api.CmdApi):
             'domainid': DOMAINID
         })
         machine = find_machine(machine_id, machines)
-        
+
         if machine is not None:
             print "stoping machine with id %s" % machine.id
             self.client.stopVirtualMachine({'id': machine.id})
         else:
             print "machine with id %s is not found" % machine_id
-        
 
     def do_reboot(self, machine_id):
         """
@@ -217,7 +218,7 @@ class CloudstackDeployment(api.CmdApi):
         """
 
         if resource_type == "templates":
-            zone_map = {x['id']: x['name'] for x in self.client.listZones({}) }
+            zone_map = {x['id']: x['name'] for x in self.client.listZones({})}
             templates = self.client.listTemplates({
                 "templatefilter": "executable"
             })
@@ -231,7 +232,7 @@ class CloudstackDeployment(api.CmdApi):
         elif resource_type == "diskofferings":
             diskofferings = self.client.listDiskOfferings()
             pretty.diskofferings_print(diskofferings)
-        
+
         elif resource_type == "ip":
             ipaddresses = self.client.listPublicIpAddresses()
             pretty.public_ipaddresses_print(ipaddresses)
@@ -342,9 +343,9 @@ class CloudstackDeployment(api.CmdApi):
         if machine is None:
             print "no machine found with id %s" % machine_id
             return
-        
+
         portforwards = wrap(self.client.listPortForwardingRules())
-        
+
         def select_ssh_pfwds(pf):
             return pf.virtualmachineid == machine.id and pf.privateport == '22'
         existing_ssh_pfwds = filter(select_ssh_pfwds, portforwards)
@@ -382,7 +383,9 @@ class CloudstackDeployment(api.CmdApi):
         })
         machine = find_machine(machine_id, machines)
         try:
-            print subprocess.check_output(['mco', "puppetd", "runonce", "-F", "hostname=%(name)s" % machine],
+            print subprocess.check_output(
+                ['mco', "puppetd", "runonce",
+                 "-F", "hostname=%(name)s" % machine],
                 stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             print e.output
@@ -402,7 +405,7 @@ def main():
     if not PUPPETMASTER_VERIFIED == '1':
         print "\nPlease edit your configfile : \n"
         print "Set puppetmaster_verified to 1 if you are sure you run this " \
-               "deployment tool on the puppetmaster."
+              "deployment tool on the puppetmaster."
         sys.exit(0)
     elif not PUPPETMASTER:
         print "Please specify the fqdn of the puppetmaster in the config"

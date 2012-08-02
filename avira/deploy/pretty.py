@@ -1,3 +1,6 @@
+#PEP8 --ignore=E501,E122
+
+
 def machine_print(machines):
     for machine in machines:
         print "%(displayname)30s %(name)15s %(id)5s  %(state)s" % machine
@@ -28,9 +31,10 @@ def networks_print(networks):
     for network in networks:
         print "%(id)5s   %(name)15s" % network
 
+PORTFWD_LINE = \
+"%(id)5s   %(ipaddress)15s   %(publicport)4s to %(privateport)4s  on machine %(virtualmachineid)5s-%(virtualmachinedisplayname)s"
+
 
 def portforwardings_print(portforwardings):
     for portforwarding in portforwardings:
-        print "%(id)5s   %(ipaddress)15s   %(publicport)4s to %(privateport)4s" \
-              " on machine %(virtualmachineid)5s-%(virtualmachinedisplayname)s" \
-                % portforwarding
+        print PORTFWD_LINE % portforwarding
