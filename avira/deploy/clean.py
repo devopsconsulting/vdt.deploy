@@ -7,22 +7,18 @@ from avira.deploy.utils import wrap
 
 
 def run_machine_cleanup(machine):
-    try:
-        # run cleanup but kill the process after CLEANUP_TIMEOUT has passed
-        cleanup_cmd = 'mco rpc -v cleanup cleanup -F hostname=%s' % \
-            machine.name
-        cleanup_ps = subprocess.Popen(cleanup_cmd)
+    
+    # run cleanup but kill the process after CLEANUP_TIMEOUT has passed
+    cleanup_cmd = 'mco rpc -v cleanup cleanup -F hostname=%s' % machine.name
+    cleanup_ps = subprocess.Popen(cleanup_cmd.split())
 
-        signal.signal(signal.SIGALRM, lambda _, __: cleanup_ps.terminate())
-        signal.alarm(CLEANUP_TIMEOUT)
+    signal.signal(signal.SIGALRM, lambda _, __: cleanup_ps.terminate())
+    signal.alarm(CLEANUP_TIMEOUT)
 
-        cleanup_ps.wait()
+    cleanup_ps.wait()
 
-        signal.signal(signal.SIGALRM, signal.SIG_IGN)
-
-    except subprocess.CalledProcessError as e:
-        print "An error occurred while running cleanup: %s" % \
-            e.output
+    # remove the signal handler now.
+    signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
 
 def remove_machine_port_forwards(machine, client):
