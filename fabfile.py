@@ -79,8 +79,8 @@ def ssh(machine_id):
 
 
 @wraps(CloudstackDeployment.do_kick)
-def kick(machine_id=None, role=None):
-    if role:
+def kick(machine_id=None, puppetrole=None):
+    if puppetrole:
         run('/usr/bin/avira-deploy kick role=%(role)s' % locals())
     else:
         run('/usr/bin/avira-deploy kick %(machine_id)s' % locals())
