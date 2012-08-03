@@ -1,16 +1,25 @@
 import itertools
+import signal
 import subprocess
 
-from avira.deploy.config import PUPPET_BINARY
+from avira.deploy.config import PUPPET_BINARY, CLEANUP_TIMEOUT
 from avira.deploy.utils import wrap
 
 
 def run_machine_cleanup(machine):
     try:
-        print subprocess.check_output([
-            'mco', 'rpc', '-v', 'cleanup', 'cleanup', '-F', 'hostname=%s' %
+        # run cleanup but kill the process after CLEANUP_TIMEOUT has passed
+        cleanup_cmd = 'mco rpc -v cleanup cleanup -F hostname=%s' % \
             machine.name
-        ])
+        cleanup_ps = subprocess.Popen(cleanup_cmd)
+
+        signal.signal(signal.SIGALRM, lambda _, __: cleanup_ps.terminate())
+        signal.alarm(CLEANUP_TIMEOUT)
+
+        cleanup_ps.wait()
+
+        signal.signal(signal.SIGALRM, signal.SIG_IGN)
+
     except subprocess.CalledProcessError as e:
         print "An error occurred while running cleanup: %s" % \
             e.output

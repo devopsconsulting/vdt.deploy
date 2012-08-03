@@ -1,7 +1,6 @@
+import collections
 import operator
 import subprocess
-import itertools
-import collections
 
 from avira.deploy.config import CERT_REQ
 
