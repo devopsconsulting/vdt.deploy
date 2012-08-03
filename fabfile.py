@@ -10,7 +10,7 @@ env.hosts = ["%(PUPPETMASTER_IPADDRESS)s:%(PUPPETMASTER_SSH_PORT)s" % locals()]
 env.user = 'root'
 
 __all__ = ('status', 'deploy', 'destroy', 'start', 'stop', 'reboot', 'list',
-           'request', 'release', 'kick', 'ssh', 'portfw')
+           'request', 'release', 'kick', 'ssh', 'portfw', 'clean')
 
 
 @wraps(CloudstackDeployment.do_status)
@@ -27,6 +27,11 @@ def deploy(name, cloudinit_config='', **kwargs):
 @wraps(CloudstackDeployment.do_destroy)
 def destroy(machine_id):
     run('/usr/bin/avira-deploy destroy %(machine_id)s' % locals())
+
+
+@wraps(CloudstackDeployment.do_clean)
+def clean():
+    run('/usr/bin/avira-deploy clean')
 
 
 @wraps(CloudstackDeployment.do_start)
@@ -74,5 +79,8 @@ def ssh(machine_id):
 
 
 @wraps(CloudstackDeployment.do_kick)
-def kick(machine_id):
-    run('/usr/bin/avira-deploy kick %(machine_id)s' % locals())
+def kick(machine_id=None, role=None):
+    if role:
+        run('/usr/bin/avira-deploy kick role=%(role)s' % locals())
+    else:
+        run('/usr/bin/avira-deploy kick %(machine_id)s' % locals())

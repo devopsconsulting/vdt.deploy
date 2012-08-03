@@ -1,13 +1,13 @@
 import itertools
 import signal
 import subprocess
+import os.path
 
 from avira.deploy.config import PUPPET_BINARY, CLEANUP_TIMEOUT
 from avira.deploy.utils import wrap
 
 
 def run_machine_cleanup(machine):
-    
     # run cleanup but kill the process after CLEANUP_TIMEOUT has passed
     cleanup_cmd = 'mco rpc -v cleanup cleanup -F hostname=%s' % machine.name
     cleanup_ps = subprocess.Popen(cleanup_cmd.split())
@@ -58,3 +58,12 @@ def node_clean(machine):
         if machine.name.lower() in cert_name:
             print clean_fqdn(cert_name, 'unexport')
             print clean_fqdn(cert_name)
+
+
+def clean_foreman():
+    "clean_foreman will only remove expunged hosts"
+
+    clean_cmd = "rake hosts:scan_out_of_sync"
+    if os.path.exists("/usr/share/foreman/Rakefile"):
+        ps = subprocess.Popen(clean_cmd.split(), cwd='/usr/share/foreman/')
+        ps.communicate('yes')

@@ -7,7 +7,7 @@ from cloudstack.client import Client
 
 from avira.deploy import api, pretty
 from avira.deploy.clean import run_machine_cleanup, wrap, \
-    remove_machine_port_forwards, node_clean
+    remove_machine_port_forwards, node_clean, clean_foreman
 from avira.deploy.config import APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, \
     TEMPLATEID, SERVICEID, CLOUDINIT_PUPPET, CLOUDINIT_BASE, PUPPETMASTER, \
     PUPPETMASTER_VERIFIED
@@ -150,6 +150,15 @@ class CloudstackDeployment(api.CmdApi):
                 # now we cleanup the puppet database and certificates
                 print "running puppet node clean"
                 node_clean(machine)
+
+                # now clean all offline nodes from foreman
+                clean_foreman()
+
+    def do_clean(self, _):
+        """
+        Clean expunged hosts from foreman
+        """
+        clean_foreman()
 
     def do_start(self, machine_id):
         """
@@ -373,24 +382,35 @@ class CloudstackDeployment(api.CmdApi):
                 print "machine %s is now reachable (via %s:%s)" % (
                     machine_id, ip.ipaddress, machine_id)
 
-    def do_kick(self, machine_id):
+    def do_kick(self, machine_id=None, role=None):
         """
-        Trigger a puppet run on a server. This command only works when used
-        on the puppetmaster.
+        Trigger a puppet run on a server.
+
+        This command only works when used on the puppetmaster.
+        The command will either kick a single server or all server with a
+        certian role.
 
         Usage::
 
             deploy> kick <machine_id>
+
+        or::
+
+            deploy> kick role=<role>
+
         """
-        machines = self.client.listVirtualMachines({
-            'domainid': DOMAINID
-        })
-        machine = find_machine(machine_id, machines)
+        KICK_CMD = ['mco', "puppetd", "runonce", "-F"]
+        if role is not None:
+            KICK_CMD.append("role=%s" % role)
+        else:
+            machines = self.client.listVirtualMachines({
+                'domainid': DOMAINID
+            })
+            machine = find_machine(machine_id, machines)
+            KICK_CMD.append('hostname=%(name)s' % machine)
+
         try:
-            print subprocess.check_output(
-                ['mco', "puppetd", "runonce",
-                 "-F", "hostname=%(name)s" % machine],
-                stderr=subprocess.STDOUT)
+            print subprocess.check_output(KICK_CMD, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             print e.output
 
