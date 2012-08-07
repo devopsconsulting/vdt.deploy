@@ -6,6 +6,9 @@ import os.path
 from avira.deploy.config import PUPPET_BINARY, CLEANUP_TIMEOUT
 from avira.deploy.utils import wrap
 
+__all__ = ('run_machine_cleanup', 'remove_machine_port_forwards', 'clean_fqdn',
+           'node_clean', 'clean_foreman')
+
 
 def run_machine_cleanup(machine):
     # run cleanup but kill the process after CLEANUP_TIMEOUT has passed
