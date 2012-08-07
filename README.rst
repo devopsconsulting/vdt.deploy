@@ -64,6 +64,9 @@ You've got to enter your cloudstack apikey and secretkey. Options are::
                             puppetmaster.
     puppetmaster_verified:  Defaults to zero and should be set to 1 if you are sure
                             you run the deployment tool on the puppetmaster
+    cleanup_timeout:        If a host requires cleanup to run before destroying,
+                            only wait cleanup_timeout seconds before continuing
+                            the destruction process.
 
 .. index:: Usage, avira.deploy; usage
 
