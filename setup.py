@@ -13,23 +13,24 @@ from setuptools import find_packages
 
 version = '0.1.11'
 
-setup(name='avira.deploy',
-      version=version,
-      description="Avira Deployment Tool",
-      long_description=__doc__,
-      classifiers=[],
-      # Get strings from
-      #http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      keywords='',
-      author='Martijn Jacobs',
-      author_email='martijn@fourdigits.nl',
-      url='https://github.dtc.avira.com/VDT/avira.deploy',
-      license='Avira VDT 2012',
-      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-      namespace_packages=['avira'],
-      include_package_data=True,
-      zip_safe=False,
-      install_requires=[
+setup(
+    name='avira.deploy',
+    version=version,
+    description="Avira Deployment Tool",
+    long_description=__doc__,
+    classifiers=[],
+    # Get strings from
+    #http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    keywords='',
+    author='Martijn Jacobs',
+    author_email='martijn@fourdigits.nl',
+    url='https://github.dtc.avira.com/VDT/avira.deploy',
+    license='Avira VDT 2012',
+    packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+    namespace_packages=['avira'],
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=[
         'distribute',
         'watchdog',
         'python-daemon',
@@ -37,9 +38,8 @@ setup(name='avira.deploy',
         'pathtools',
         'cloudstack',
         # -*- Extra requirements: -*-
-      ],
-      entry_points={'console_scripts':
-          ['avira-deploy=avira.deploy.deploy:main',
-           'avira-puppetbot=avira.deploy.puppetbot:main']},
-      )
-
+    ],
+    entry_points={'console_scripts': [
+        'avira-deploy=avira.deploy.deploy:main',
+        'avira-puppetbot=avira.deploy.puppetbot:main']},
+)

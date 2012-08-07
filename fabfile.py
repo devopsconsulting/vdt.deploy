@@ -1,16 +1,16 @@
-from deploy import CloudstackDeployment
+from avira.deploy.deploy import CloudstackDeployment
 from functools import wraps as wraps
 import subprocess
 from config import PUPPETMASTER_SSH_PORT
 
 from fabric.api import *
 
-PUPPETMASTER_IPADDRESS = subprocess.check_output(['python', 'deploy.py', 'list', 'ip']).split()[1]
+PUPPETMASTER_IPADDRESS = subprocess.check_output(['python', 'avira/deploy/deploy.py', 'list', 'ip']).split()[1]
 env.hosts = ["%(PUPPETMASTER_IPADDRESS)s:%(PUPPETMASTER_SSH_PORT)s" % locals()]
 env.user = 'root'
 
 __all__ = ('status', 'deploy', 'destroy', 'start', 'stop', 'reboot', 'list',
-           'request', 'release', 'kick', 'ssh')
+           'request', 'release', 'kick', 'ssh', 'portfw', 'clean')
 
 
 @wraps(CloudstackDeployment.do_status)
@@ -27,6 +27,11 @@ def deploy(name, cloudinit_config='', **kwargs):
 @wraps(CloudstackDeployment.do_destroy)
 def destroy(machine_id):
     run('/usr/bin/avira-deploy destroy %(machine_id)s' % locals())
+
+
+@wraps(CloudstackDeployment.do_clean)
+def clean():
+    run('/usr/bin/avira-deploy clean')
 
 
 @wraps(CloudstackDeployment.do_start)
@@ -74,5 +79,8 @@ def ssh(machine_id):
 
 
 @wraps(CloudstackDeployment.do_kick)
-def kick(machine_id):
-    run('/usr/bin/avira-deploy kick %(machine_id)s' % locals())
+def kick(machine_id=None, puppetrole=None):
+    if puppetrole:
+        run('/usr/bin/avira-deploy kick role=%(role)s' % locals())
+    else:
+        run('/usr/bin/avira-deploy kick %(machine_id)s' % locals())

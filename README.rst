@@ -135,28 +135,28 @@ So status will show you the running instances.
 The help for each command is shown below, but the names of the commands are
 prefixed with 'do'. (Not in github readme).
 
-.. automethod:: deploy.CloudstackDeployment.do_status(all=False)    
+.. automethod:: deploy.CloudstackDeployment.do_status
 
-.. automethod:: deploy.CloudstackDeployment.do_deploy(name, userdata=None, cloudinit_config=CLOUDINIT_PUPPET)
+.. automethod:: deploy.CloudstackDeployment.do_deploy
 
-.. automethod:: deploy.CloudstackDeployment.do_start(machine_id)
+.. automethod:: deploy.CloudstackDeployment.do_start
 
-.. automethod:: deploy.CloudstackDeployment.do_stop(machine_id)
+.. automethod:: deploy.CloudstackDeployment.do_stop
 
-.. automethod:: deploy.CloudstackDeployment.do_reboot(machine_id)
+.. automethod:: deploy.CloudstackDeployment.do_reboot
 
-.. automethod:: deploy.CloudstackDeployment.do_destroy(machine_id)
+.. automethod:: deploy.CloudstackDeployment.do_destroy
 
-.. automethod:: deploy.CloudstackDeployment.do_list(type="templates or serviceoffering or diskofferings or ip or networking or portforwards")
+.. automethod:: deploy.CloudstackDeployment.do_list
 
-.. automethod:: deploy.CloudstackDeployment.do_request(type)
+.. automethod:: deploy.CloudstackDeployment.do_request
 
-.. automethod:: deploy.CloudstackDeployment.do_release(type)
+.. automethod:: deploy.CloudstackDeployment.do_release
 
-.. automethod:: deploy.CloudstackDeployment.do_portfw(machine_id, ip_id, public_port, private_port)
+.. automethod:: deploy.CloudstackDeployment.do_portfw
 
-.. automethod:: deploy.CloudstackDeployment.do_ssh(machine_id)
+.. automethod:: deploy.CloudstackDeployment.do_ssh
 
-.. automethod:: deploy.CloudstackDeployment.do_kick(machine_id)
+.. automethod:: deploy.CloudstackDeployment.do_kick
 
-.. automethod:: deploy.CloudstackDeployment.do_quit()
+.. automethod:: deploy.CloudstackDeployment.do_quit
