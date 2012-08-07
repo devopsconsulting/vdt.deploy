@@ -135,28 +135,28 @@ So status will show you the running instances.
 The help for each command is shown below, but the names of the commands are
 prefixed with 'do'. (Not in github readme).
 
-.. automethod:: deploy.CloudstackDeployment.do_status
+.. automethod:: avira.deploy.CloudstackDeployment.do_status
 
-.. automethod:: deploy.CloudstackDeployment.do_deploy
+.. automethod:: avira.deploy.CloudstackDeployment.do_deploy
 
-.. automethod:: deploy.CloudstackDeployment.do_start
+.. automethod:: avira.deploy.CloudstackDeployment.do_start
 
-.. automethod:: deploy.CloudstackDeployment.do_stop
+.. automethod:: avira.deploy.CloudstackDeployment.do_stop
 
-.. automethod:: deploy.CloudstackDeployment.do_reboot
+.. automethod:: avira.deploy.CloudstackDeployment.do_reboot
 
-.. automethod:: deploy.CloudstackDeployment.do_destroy
+.. automethod:: avira.deploy.CloudstackDeployment.do_destroy
 
-.. automethod:: deploy.CloudstackDeployment.do_list
+.. automethod:: avira.deploy.CloudstackDeployment.do_list
 
-.. automethod:: deploy.CloudstackDeployment.do_request
+.. automethod:: avira.deploy.CloudstackDeployment.do_request
 
-.. automethod:: deploy.CloudstackDeployment.do_release
+.. automethod:: avira.deploy.CloudstackDeployment.do_release
 
-.. automethod:: deploy.CloudstackDeployment.do_portfw
+.. automethod:: avira.deploy.CloudstackDeployment.do_portfw
 
-.. automethod:: deploy.CloudstackDeployment.do_ssh
+.. automethod:: avira.deploy.CloudstackDeployment.do_ssh
 
-.. automethod:: deploy.CloudstackDeployment.do_kick
+.. automethod:: avira.deploy.CloudstackDeployment.do_kick
 
-.. automethod:: deploy.CloudstackDeployment.do_quit
+.. automethod:: avira.deploy.CloudstackDeployment.do_quit
