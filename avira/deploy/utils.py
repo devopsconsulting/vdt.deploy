@@ -4,6 +4,9 @@ import subprocess
 
 from avira.deploy.config import CERT_REQ
 
+__all__ = ('wrap', 'sort_by_key', 'find_by_key', 'find_machine',
+           'is_puppetmaster', 'add_pending_certificate')
+
 
 class StringCaster(dict):
     """
