@@ -6,7 +6,7 @@ import sys
 from cloudstack.client import Client
 
 from avira.deploy import api, pretty
-from avira.deploy.clean import run_machine_cleanup, wrap, \
+from avira.deploy.clean import run_machine_cleanup, \
     remove_machine_port_forwards, node_clean, clean_foreman
 from avira.deploy.config import APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, \
     TEMPLATEID, SERVICEID, CLOUDINIT_PUPPET, CLOUDINIT_BASE, PUPPETMASTER, \
@@ -218,7 +218,7 @@ class CloudstackDeployment(api.CmdApi):
             print "rebooting machine with id %s" % machine.id
             self.client.rebootVirtualMachine({'id': machine.id})
         else:
-            print "machine with id %s is not found" % line
+            print "machine with id %s is not found" % machine_id
 
     def do_list(self, resource_type):
         """
