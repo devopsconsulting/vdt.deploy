@@ -154,7 +154,7 @@ class CloudstackDeployment(api.CmdApi):
                 # now clean all offline nodes from foreman
                 clean_foreman()
 
-    def do_clean(self, _):
+    def do_clean(self, _=None):
         """
         Clean expunged hosts from foreman
         """
@@ -414,7 +414,7 @@ class CloudstackDeployment(api.CmdApi):
         except subprocess.CalledProcessError as e:
             print e.output
 
-    def do_quit(self, _):
+    def do_quit(self, _=None):
         """
         Quit the deployment tool.
 
