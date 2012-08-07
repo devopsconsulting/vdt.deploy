@@ -43,7 +43,7 @@ Initially avira.deploy will create this file for you but not configured yet:
     cloudinit_base = http://joe.avira-cloud.net/autodeploy/vdt-base.cloudinit
     puppetmaster = 
     puppetmaster_verified = 0
-
+    cleanup_timeout = 20
 
 You've got to enter your cloudstack apikey and secretkey. Options are::
 
