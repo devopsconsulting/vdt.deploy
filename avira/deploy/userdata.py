@@ -13,8 +13,9 @@ class UserData(dict):
     'I2luY2x1ZGUgaHR0cDovL2V4YW1wbGUuY29tLwojZW52aXJvbm1lbnQ9bm90aGluZwojcm9sZT1z\nZXJ2ZXIK\n'
     """
 
-    def __init__(self, cloud_init_url, **kwargs):
+    def __init__(self, cloud_init_url, puppetmaster, **kwargs):
         self.cloud_init_url = cloud_init_url
+        self['puppetmaster'] = puppetmaster
         self.update(kwargs)
 
     def base64(self):

@@ -97,7 +97,9 @@ class CloudstackDeployment(api.CmdApi):
                 'zoneid': ZONEID,
                 'domainid': DOMAINID,
                 'displayname': displayname,
-                'userdata': UserData(cloudinit_url, **userdata).base64(),
+                'userdata': UserData(cloudinit_url,
+                                     PUPPETMASTER,
+                                     **userdata).base64(),
                 'networkids': networkids,
             }
 
