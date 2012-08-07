@@ -21,7 +21,7 @@ class CloudstackDeployment(api.CmdApi):
     prompt = "deploy> "
 
     def __init__(self):
-        self.debug = True
+        self.debug = False
         self.client = Client(APIURL, APIKEY, SECRETKEY)
         cmd.Cmd.__init__(self)
 
