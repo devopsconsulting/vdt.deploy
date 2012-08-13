@@ -1,6 +1,7 @@
 import itertools
 import subprocess
 import os.path
+import shlex
 
 from avira.deploy.config import PUPPET_BINARY, CLEANUP_TIMEOUT
 from avira.deploy.utils import wrap, check_call_with_timeout
@@ -48,7 +49,7 @@ def node_clean(machine):
         subprocess.check_output([PUPPET_BINARY, 'cert', '--list', '--all'])
     puppetcerts = puppetcerts.split("\n")
     puppetcert_names = \
-        [x.split()[1] for x in puppetcerts if x and machine.name.lower() in x]
+        [shlex.split(x)[1] for x in puppetcerts if x and machine.name.lower() in x]
     for cert_name in puppetcert_names:
         if machine.name.lower() in cert_name:
             print clean_fqdn(cert_name, 'unexport')
