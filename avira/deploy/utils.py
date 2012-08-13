@@ -1,6 +1,7 @@
 import collections
 import operator
 import subprocess
+import signal
 
 from avira.deploy.config import CERT_REQ
 
@@ -84,3 +85,17 @@ def add_pending_certificate(machine_id):
         if machine_id not in pending_certificates.read():
             pending_certificates.write(machine_id)
             pending_certificates.write("\n")
+
+
+def check_call_with_timeout(args, timeout_seconds=30, **kwargs):
+    process = subprocess.Popen(args, **kwargs)
+
+    old_signal = signal.signal(signal.SIGALRM,
+                               lambda _, __: process.terminate())
+    signal.alarm(timeout_seconds)
+
+    process.wait()
+
+    # cancel the alarm and reset the signal handler.
+    signal.alarm(0)
+    signal.signal(signal.SIGALRM, old_signal)

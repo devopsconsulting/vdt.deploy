@@ -1,10 +1,9 @@
 import itertools
-import signal
 import subprocess
 import os.path
 
 from avira.deploy.config import PUPPET_BINARY, CLEANUP_TIMEOUT
-from avira.deploy.utils import wrap
+from avira.deploy.utils import wrap, check_call_with_timeout
 
 __all__ = ('run_machine_cleanup', 'remove_machine_port_forwards', 'clean_fqdn',
            'node_clean', 'clean_foreman')
@@ -13,15 +12,8 @@ __all__ = ('run_machine_cleanup', 'remove_machine_port_forwards', 'clean_fqdn',
 def run_machine_cleanup(machine):
     # run cleanup but kill the process after CLEANUP_TIMEOUT has passed
     cleanup_cmd = 'mco rpc -v cleanup cleanup -F hostname=%s' % machine.name
-    cleanup_ps = subprocess.Popen(cleanup_cmd.split())
-
-    signal.signal(signal.SIGALRM, lambda _, __: cleanup_ps.terminate())
-    signal.alarm(CLEANUP_TIMEOUT)
-
-    cleanup_ps.wait()
-
-    # remove the signal handler now.
-    signal.signal(signal.SIGALRM, signal.SIG_IGN)
+    check_call_with_timeout(cleanup_cmd.split(),
+                            timeout_seconds=CLEANUP_TIMEOUT)
 
 
 def remove_machine_port_forwards(machine, client):
@@ -44,7 +36,7 @@ def clean_fqdn(fqdn, *extra_flags, **extra_kw_flags):
     flags = ["--%s" % flag for flag in extra_flags]
     command += flags
 
-    kw_flags = [("--%s" % keys, val) for key, val in extra_kw_flags.items()]
+    kw_flags = [("--%s" % key, val) for key, val in extra_kw_flags.items()]
     command += itertools.chain.from_iterable(kw_flags)
 
     command.append(fqdn)
