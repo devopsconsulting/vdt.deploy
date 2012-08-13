@@ -134,6 +134,7 @@ So status will show you the running instances.
     single: avira.deploy; ssh
     single: avira.deploy; kick
     single: avira.deploy; quit
+	single: avira.deploy; mco
 
 The help for each command is shown below, but the names of the commands are
 prefixed with 'do'. (Not in github readme).
@@ -163,3 +164,5 @@ prefixed with 'do'. (Not in github readme).
 .. automethod:: avira.deploy.deploy.CloudstackDeployment.do_kick
 
 .. automethod:: avira.deploy.deploy.CloudstackDeployment.do_quit
+
+.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_mco

@@ -10,7 +10,7 @@ env.hosts = ["%(PUPPETMASTER_IPADDRESS)s:%(PUPPETMASTER_SSH_PORT)s" % locals()]
 env.user = 'root'
 
 __all__ = ('status', 'deploy', 'destroy', 'start', 'stop', 'reboot', 'list',
-           'request', 'release', 'kick', 'ssh', 'portfw', 'clean')
+           'request', 'release', 'kick', 'ssh', 'portfw', 'clean', 'mco')
 
 
 @wraps(CloudstackDeployment.do_status)
@@ -84,3 +84,10 @@ def kick(machine_id=None, puppetrole=None):
         run('/usr/bin/avira-deploy kick role=%(role)s' % locals())
     else:
         run('/usr/bin/avira-deploy kick %(machine_id)s' % locals())
+
+
+@wraps(CloudstackDeployment.do_mco)
+def mco(*args, **kwargs):
+    bar = " ".join(args)
+    foo = ['%s=%s' % (key, value) for (key, value) in kwargs.iteritems()]
+    run('/usr/bin/avira-deploy mco %s %s' % (bar, foo))
