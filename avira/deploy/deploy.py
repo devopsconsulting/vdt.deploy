@@ -13,7 +13,7 @@ from avira.deploy.config import APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, \
     PUPPETMASTER_VERIFIED
 from avira.deploy.userdata import UserData
 from avira.deploy.utils import find_by_key, add_pending_certificate, \
-    find_machine, wrap, sort_by_key, is_puppetmaster
+    find_machine, wrap, sort_by_key, is_puppetmaster, check_call_with_timeout
 
 
 class CloudstackDeployment(api.CmdApi):
@@ -425,6 +425,19 @@ class CloudstackDeployment(api.CmdApi):
             deploy> quit
         """
         sys.exit(0)
+
+    def do_mco(self, *args, **kwargs):
+        """
+        Run mcollective
+
+        Usage::
+
+            deploy> mco find all
+            deploy> mco puppetd status -F role=puppetmaster
+        """
+        command = ['mco'] + list(args) + ['%s=%s' % (key, value) for (key, value) in kwargs.iteritems()]
+        print command
+        check_call_with_timeout(command, 5)
 
 
 def main():
