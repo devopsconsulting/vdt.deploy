@@ -24,6 +24,13 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.APIKEY = "apikey"
         avira.deploy.tool.SECRETKEY = "secret"
         avira.deploy.tool.DOMAINID = "1"
+        avira.deploy.tool.SERVICEID = "1"
+        avira.deploy.tool.TEMPLATEID = "1"
+        avira.deploy.tool.ZONEID = "1"
+        avira.deploy.tool.DOMAINID = "1"
+        avira.deploy.tool.PUPPETMASTER = "localhost"
+        avira.deploy.tool.CLOUDINIT_PUPPET = \
+                "http://localhost/autodeploy/vdt-puppet-agent.cloudinit"
 
     def tearDown(self):
         self.mox.UnsetStubs()
@@ -68,4 +75,17 @@ class DeployToolTest(TestCase):
         self.client.do_deploy("testmachine1", userdata={'role': 'test'})
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_deploy_duplicate)
+        self.mox.VerifyAll()
+
+    def test_do_deploy(self):
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mock_client.deployVirtualMachine({'domainid': '1'}).\
+                        AndReturn("1113")
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_deploy("testmachine3", userdata={'role': 'test'})
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_deploy_output)
         self.mox.VerifyAll()

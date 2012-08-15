@@ -5,3 +5,4 @@ do_status_output_running = "                  testmachine1    i-42-1111-VM  1111
 do_status_output_all = "                  testmachine1    i-42-1111-VM  1111  Running\n                  testmachine2    i-42-1112-VM  1112  Stopped\n"
 do_deploy_no_userdata = "Specify the machine userdata, (at least it's role)\n"
 do_deploy_duplicate = "A machine with the name testmachine1 already exists\n"
+do_deploy_output = "testmachine2 started, machine id 1113"
