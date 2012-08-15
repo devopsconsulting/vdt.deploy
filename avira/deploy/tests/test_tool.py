@@ -28,14 +28,28 @@ class DeployToolTest(TestCase):
     def tearDown(self):
         self.mox.UnsetStubs()
         sys.stdout = self.saved_stdout
+        self.out = None
 
     def test_do_status(self):
-        # we should have no VM's add the moment
+        # we have two vm's, one is running one is stopped.
+        # we should only display the running one as we normally filter
+        # on running machines
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
-                                AndReturn(testdata.listVirtualMachines_output)
+                        AndReturn(testdata.listVirtualMachines_output)
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_status()
         output = self.out.getvalue()
-        self.assertEqual(output, testdata.do_status_output)
+        self.assertEqual(output, testdata.do_status_output_running)
+        self.mox.VerifyAll()
+
+    def test_do_status_all(self):
+        # now we should have two vm's, as we specify 'all'
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_status(all=True)
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_status_output_all)
         self.mox.VerifyAll()
