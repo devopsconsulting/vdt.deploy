@@ -59,3 +59,13 @@ class DeployToolTest(TestCase):
         self.client.do_deploy("test")
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_deploy_no_userdata)
+
+    def test_do_deploy_duplicate_machine(self):
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_deploy("testmachine1", userdata={'role': 'test'})
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_deploy_duplicate)
+        self.mox.VerifyAll()
