@@ -53,3 +53,9 @@ class DeployToolTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_status_output_all)
         self.mox.VerifyAll()
+
+    def test_do_deploy_no_userdata(self):
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_deploy("test")
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_deploy_no_userdata)
