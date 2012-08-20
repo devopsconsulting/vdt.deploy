@@ -2,7 +2,6 @@ import collections
 import operator
 import subprocess
 import signal
-import StringIO
 
 from avira.deploy.config import CERT_REQ
 
@@ -69,15 +68,13 @@ def find_machine(machine_id, machines):
     return machine
 
 
-def is_puppetmaster(machine_id, error):
+def is_puppetmaster(machine_id):
     # not a failsafe method of checking, but for now
     # no other solution
     fqdn = subprocess.check_output(['facter', "fqdn"])
 
     if machine_id in fqdn:
-        print error
-        return
-
+        return True
     return False
 
 
@@ -102,6 +99,7 @@ def check_call_with_timeout(args, timeout_seconds=30, **kwargs):
     signal.alarm(0)
     signal.signal(signal.SIGALRM, old_signal)
     return stdout
+
 
 def check_output_with_timeout(args, timeout_seconds=30, **kwargs):
     return check_call_with_timeout(args, timeout_seconds, stdout=subprocess.PIPE)
