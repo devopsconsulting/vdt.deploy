@@ -2,11 +2,13 @@ import collections
 import operator
 import subprocess
 import signal
+import StringIO
 
 from avira.deploy.config import CERT_REQ
 
 __all__ = ('wrap', 'sort_by_key', 'find_by_key', 'find_machine',
-           'is_puppetmaster', 'add_pending_certificate')
+           'is_puppetmaster', 'add_pending_certificate',
+           'check_call_with_timeout', 'check_output_with_timeout',)
 
 
 class StringCaster(dict):
@@ -94,8 +96,12 @@ def check_call_with_timeout(args, timeout_seconds=30, **kwargs):
                                lambda _, __: process.terminate())
     signal.alarm(timeout_seconds)
 
-    process.wait()
+    (stdout, _) = process.communicate()
 
     # cancel the alarm and reset the signal handler.
     signal.alarm(0)
     signal.signal(signal.SIGALRM, old_signal)
+    return stdout
+
+def check_output_with_timeout(args, timeout_seconds=30, **kwargs):
+    return check_call_with_timeout(args, timeout_seconds, stdout=subprocess.PIPE)
