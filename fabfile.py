@@ -3,10 +3,10 @@ import functools
 
 from fabric.api import *
 
-from avira.deploy.deploy import CloudstackDeployment
+from avira.deploy.tool import CloudstackDeployment
 from avira.deploy.config import PUPPETMASTER_SSH_PORT
 
-PUPPETMASTER_IPADDRESS = subprocess.check_output(['python', 'avira/deploy/deploy.py', 'list', 'ip']).split()[1]
+PUPPETMASTER_IPADDRESS = subprocess.check_output(['python', 'avira/deploy/tool.py', 'list', 'ip']).split()[1]
 env.hosts = ["%(PUPPETMASTER_IPADDRESS)s:%(PUPPETMASTER_SSH_PORT)s" % locals()]
 env.user = 'root'
 
