@@ -190,3 +190,14 @@ class DeployToolTest(TestCase):
                         "destroying machine with id 1112" in output)
         self.assertTrue(output, "running puppet node clean" in output)
         self.mox.VerifyAll()
+
+    def test_do_clean(self):
+        self.mox.StubOutWithMock(avira.deploy.tool, "clean_foreman")
+        avira.deploy.tool.clean_foreman().\
+                                    AndReturn(testdata.clean_foreman_output())
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_clean()
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.clean_foreman_output_data + '\n')
+        self.mox.VerifyAll()

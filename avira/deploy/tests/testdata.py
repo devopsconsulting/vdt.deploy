@@ -50,12 +50,14 @@ notice: Revoked certificate with serial 30
 notice: i-42-1112-vm.cs2acloud.internal storeconfigs removed
 ["i-42-1112-vm.cs2acloud.internal"]"""
 
-
-def clean_foreman_output():
-    print """
+clean_foreman_output_data = """
 /usr/share/foreman/vendor/ruby/1.8/gems/ruby_parser-2.3.1/lib/ruby_parser_extras.rb:10: warning: already initialized constant ENC_NONE
 /usr/share/foreman/vendor/ruby/1.8/gems/ruby_parser-2.3.1/lib/ruby_parser_extras.rb:11: warning: already initialized constant ENC_EUC
 /usr/share/foreman/vendor/ruby/1.8/gems/ruby_parser-2.3.1/lib/ruby_parser_extras.rb:12: warning: already initialized constant ENC_SJIS
 /usr/share/foreman/vendor/ruby/1.8/gems/ruby_parser-2.3.1/lib/ruby_parser_extras.rb:13: warning: already initialized constant ENC_UTF8
 
 All out of sync hosts exists in DNS"""
+
+
+def clean_foreman_output():
+    print clean_foreman_output_data
