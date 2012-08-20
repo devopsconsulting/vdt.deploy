@@ -68,3 +68,6 @@ do_list_templates_output = "    1                    Cloud Ubuntu OneIric v3   T
 
 list_serviceofferings_output = [{u'name': u'Extra Medium', u'created': u'2012-08-09T07:35:29+0000', u'storagetype': u'shared', u'limitcpuuse': False, u'cpuspeed': 3466, u'offerha': False, u'cpunumber': 6, u'memory': 16384, u'displaytext': u'6x 3.47GHZ, 16 GB Mem', u'issystem': False, u'id': 1, u'defaultuse': False}]
 do_list_serviceofferings_output = "    1    6x 3.47GHZ, 16 GB Mem\n"
+
+list_diskofferings_output = [{u'iscustomized': False, u'name': u'Medium 50GB', u'created': u'2011-09-20T11:51:30+0000', u'disksize': 50, u'displaytext': u'Medium 50GB', u'id': 1}]
+do_list_diskofferings_output ="    1                      Medium 50GB    50 GB\n"

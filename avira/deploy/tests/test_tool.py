@@ -320,3 +320,13 @@ class DeployToolTest(TestCase):
         self.assertEqual(output, testdata.do_list_serviceofferings_output)
         self.mox.VerifyAll()
 
+    def test_list_diskofferings(self):
+        self.mock_client.listDiskOfferings().\
+                        AndReturn(testdata.list_diskofferings_output)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_list("diskofferings")
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_list_diskofferings_output)
+        self.mox.VerifyAll()
+
