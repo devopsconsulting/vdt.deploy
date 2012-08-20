@@ -298,6 +298,12 @@ class DeployToolTest(TestCase):
         self.assertEqual(output, "rebooting machine with id 1111\n")
         self.mox.VerifyAll()
 
+    def test_list_unknown(self):
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_list("unknown directive")
+        output = self.out.getvalue()
+        self.assertEqual(output, "Not implemented\n")
+
     def test_list_templates(self):
         self.mock_client.listZones({}).AndReturn(testdata.list_zones_output)
         self.mock_client.listTemplates({
