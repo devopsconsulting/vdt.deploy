@@ -310,3 +310,13 @@ class DeployToolTest(TestCase):
         self.assertEqual(output, testdata.do_list_templates_output)
         self.mox.VerifyAll()
 
+    def test_list_serviceofferings(self):
+        self.mock_client.listServiceOfferings().\
+                        AndReturn(testdata.list_serviceofferings_output)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_list("serviceofferings")
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_list_serviceofferings_output)
+        self.mox.VerifyAll()
+

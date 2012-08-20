@@ -65,3 +65,6 @@ def clean_foreman_output():
 list_zones_output = [{u'name': u'Testzone', u'zonetoken': u'11111111-d585-36a5-a7c3-5af1de99a069', u'securitygroupsenabled': False, u'allocationstate': u'Enabled', u'dhcpprovider': u'VirtualRouter', u'networktype': u'Advanced', u'id': 1}]
 list_templates_output = [{u'domain': u'Testdomain', u'domainid': 1, u'zoneid': 1, u'displaytext': u'Cloud Ubuntu OneIric v3 (Z2-DTC1)', u'ostypeid': 1, u'passwordenabled': True, u'id': 1, u'size': 107374182400, u'isready': True, u'templatetype': u'USER', u'zonename': u'Testzone', u'status': u'Download Complete', u'ostypename': u'Ubuntu (64-bit)', u'format': u'QCOW2', u'isfeatured': False, u'isextractable': False, u'crossZones': False, u'account': u'Testaccount', u'name': u'Cloud Ubuntu OneIric v3', u'created': u'2012-01-25T09:39:00+0000', u'hypervisor': u'KVM', u'ispublic': True}]
 do_list_templates_output = "    1                    Cloud Ubuntu OneIric v3   Testzone\n"
+
+list_serviceofferings_output = [{u'name': u'Extra Medium', u'created': u'2012-08-09T07:35:29+0000', u'storagetype': u'shared', u'limitcpuuse': False, u'cpuspeed': 3466, u'offerha': False, u'cpunumber': 6, u'memory': 16384, u'displaytext': u'6x 3.47GHZ, 16 GB Mem', u'issystem': False, u'id': 1, u'defaultuse': False}]
+do_list_serviceofferings_output = "    1    6x 3.47GHZ, 16 GB Mem\n"
