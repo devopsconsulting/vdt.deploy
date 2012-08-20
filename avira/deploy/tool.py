@@ -195,7 +195,7 @@ class CloudstackDeployment(api.CmdApi):
         machine = find_machine(machine_id, machines)
 
         if machine is not None:
-            print "stoping machine with id %s" % machine.id
+            print "stopping machine with id %s" % machine.id
             self.client.stopVirtualMachine({'id': machine.id})
         else:
             print "machine with id %s is not found" % machine_id

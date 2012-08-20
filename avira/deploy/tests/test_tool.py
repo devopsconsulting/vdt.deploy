@@ -233,3 +233,35 @@ class DeployToolTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output, "starting machine with id 1112\n")
         self.mox.VerifyAll()
+
+    def test_do_stop_not_found(self):
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
+        avira.deploy.tool.find_machine('1114',
+                                       testdata.listVirtualMachines_output).\
+                                       AndReturn(None)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_stop('1114')
+        output = self.out.getvalue()
+        self.assertEqual(output, "machine with id 1114 is not found\n")
+        self.mox.VerifyAll()
+
+    def test_do_stop(self):
+        machine = StringCaster({'id': '1111'})
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mock_client.stopVirtualMachine(machine).\
+                        AndReturn({u'jobid': 1})
+
+        self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
+        avira.deploy.tool.find_machine('1111',
+                                       testdata.listVirtualMachines_output).\
+                                       AndReturn(machine)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_stop('1111')
+        output = self.out.getvalue()
+        self.assertEqual(output, "stopping machine with id 1111\n")
+        self.mox.VerifyAll()
