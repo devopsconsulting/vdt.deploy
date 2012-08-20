@@ -297,3 +297,16 @@ class DeployToolTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output, "rebooting machine with id 1111\n")
         self.mox.VerifyAll()
+
+    def test_list_templates(self):
+        self.mock_client.listZones({}).AndReturn(testdata.list_zones_output)
+        self.mock_client.listTemplates({
+                            "templatefilter": "executable"
+                        }).AndReturn(testdata.list_templates_output)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_list("templates")
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_list_templates_output)
+        self.mox.VerifyAll()
+
