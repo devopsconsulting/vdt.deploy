@@ -133,7 +133,6 @@ class CloudstackDeployment(api.CmdApi):
         if machine is None:
             print "No machine found with the id %s" % machine_id
         else:
-
             if not is_puppetmaster(
                     machine.id,
                     "You are not allowed to destroy the puppetmaster"):
