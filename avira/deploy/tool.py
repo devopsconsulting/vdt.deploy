@@ -133,27 +133,26 @@ class CloudstackDeployment(api.CmdApi):
         if machine is None:
             print "No machine found with the id %s" % machine_id
         else:
-            if not is_puppetmaster(
-                    machine.id,
-                    "You are not allowed to destroy the puppetmaster"):
+            if is_puppetmaster(machine.id):
+                print "You are not allowed to destroy the puppetmaster"
+                return
+            print "running cleanup job on %s." % machine.name
+            run_machine_cleanup(machine)
 
-                print "running cleanup job on %s." % machine.name
-                run_machine_cleanup(machine)
+            print "Destroying machine with id %s" % machine.id
+            self.client.destroyVirtualMachine({
+                'id': machine.id
+            })
 
-                print "Destroying machine with id %s" % machine.id
-                self.client.destroyVirtualMachine({
-                    'id': machine.id
-                })
+            # first we are also going to remove the portforwards
+            remove_machine_port_forwards(machine, self.client)
 
-                # first we are also going to remove the portforwards
-                remove_machine_port_forwards(machine, self.client)
+            # now we cleanup the puppet database and certificates
+            print "running puppet node clean"
+            node_clean(machine)
 
-                # now we cleanup the puppet database and certificates
-                print "running puppet node clean"
-                node_clean(machine)
-
-                # now clean all offline nodes from foreman
-                clean_foreman()
+            # now clean all offline nodes from foreman
+            clean_foreman()
 
     def do_clean(self, _=None):
         """
