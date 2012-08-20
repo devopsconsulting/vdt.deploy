@@ -100,10 +100,25 @@ class DeployToolTest(TestCase):
         self.mox.StubOutWithMock(avira.deploy.tool, "add_pending_certificate")
         avira.deploy.tool.add_pending_certificate(1113).\
                                                     AndReturn(None)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
-
         self.client.do_deploy("testmachine3", userdata={'role': 'test'})
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_deploy_output)
+        self.mox.VerifyAll()
+
+    def test_do_destroy_no_exists(self):
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
+        avira.deploy.tool.find_machine(1114,
+                                       testdata.listVirtualMachines_output).\
+                                       AndReturn(None)
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_destroy(1114)
+        output = self.out.getvalue()
+        self.assertEqual(output, "No machine found with the id 1114\n")
         self.mox.VerifyAll()
