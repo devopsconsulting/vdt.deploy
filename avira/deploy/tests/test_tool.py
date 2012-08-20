@@ -5,6 +5,7 @@ import avira.deploy.tool
 import testdata
 from unittest import TestCase
 from StringIO import StringIO
+from base64 import encodestring
 
 
 class DeployToolTest(TestCase):
@@ -31,6 +32,9 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.PUPPETMASTER = "localhost"
         avira.deploy.tool.CLOUDINIT_PUPPET = \
                 "http://localhost/autodeploy/vdt-puppet-agent.cloudinit"
+        self.sample_userdata = "#include %s\n#puppetmaster=%s\n" % \
+                                        (avira.deploy.tool.CLOUDINIT_PUPPET,
+                                         avira.deploy.tool.PUPPETMASTER)
 
     def tearDown(self):
         self.mox.UnsetStubs()
@@ -80,11 +84,25 @@ class DeployToolTest(TestCase):
     def test_do_deploy(self):
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
-        self.mock_client.deployVirtualMachine({'domainid': '1'}).\
-                        AndReturn("1113")
 
+        userdata = self.sample_userdata + "#userdata={'role': 'test'}\n"
+        userdata = encodestring(userdata)
+        result = {u'id': 1113, u'jobid': 1}
+        self.mock_client.deployVirtualMachine({'domainid': '1',
+                                               'userdata': userdata,
+                                               'networkids': '',
+                                               'domainid': '1',
+                                               'displayname': 'testmachine3',
+                                               'zoneid': '1',
+                                               'templateid': '1',
+                                               'serviceofferingid': '1'}
+                                               ).AndReturn(result)
+        self.mox.StubOutWithMock(avira.deploy.tool, "add_pending_certificate")
+        avira.deploy.tool.add_pending_certificate(1113).\
+                                                    AndReturn(None)
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
+
         self.client.do_deploy("testmachine3", userdata={'role': 'test'})
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_deploy_output)
