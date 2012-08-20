@@ -6,6 +6,7 @@ import testdata
 from unittest import TestCase
 from StringIO import StringIO
 from base64 import encodestring
+from avira.deploy.utils import StringCaster
 
 
 class DeployToolTest(TestCase):
@@ -121,4 +122,71 @@ class DeployToolTest(TestCase):
         self.client.do_destroy(1114)
         output = self.out.getvalue()
         self.assertEqual(output, "No machine found with the id 1114\n")
+        self.mox.VerifyAll()
+
+    def test_do_destroy_puppetmaster(self):
+        machine = StringCaster({'id': 1111})
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
+        avira.deploy.tool.find_machine(machine.id,
+                                       testdata.listVirtualMachines_output).\
+                                       AndReturn(machine)
+        self.mox.StubOutWithMock(avira.deploy.tool, "is_puppetmaster")
+        avira.deploy.tool.is_puppetmaster(machine.id).AndReturn(True)
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_destroy(machine.id)
+        output = self.out.getvalue()
+        self.assertEqual(output,
+                         "You are not allowed to destroy the puppetmaster\n")
+        self.mox.VerifyAll()
+
+    def test_do_destroy(self):
+        machine = StringCaster({'id': 1112, 'name': 'testmachine2'})
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
+        avira.deploy.tool.find_machine(machine.id,
+                                       testdata.listVirtualMachines_output).\
+                                       AndReturn(machine)
+        self.mox.StubOutWithMock(avira.deploy.tool, "is_puppetmaster")
+        avira.deploy.tool.is_puppetmaster(machine.id).AndReturn(False)
+        self.mox.StubOutWithMock(avira.deploy.tool, "run_machine_cleanup")
+        avira.deploy.tool.run_machine_cleanup(machine).\
+                            AndReturn(testdata.run_machine_cleanup_output())
+
+        self.mock_client.destroyVirtualMachine({'id': machine.id}).\
+                        AndReturn("Destroying machine with id %s" % machine.id)
+        self.mox.StubOutWithMock(avira.deploy.tool,
+                                 "remove_machine_port_forwards")
+
+        avira.deploy.tool.remove_machine_port_forwards(machine,
+                    self.mock_client).\
+                    AndReturn(testdata.remove_machine_port_forwards_output())
+        self.mox.StubOutWithMock(avira.deploy.tool, "node_clean")
+        avira.deploy.tool.node_clean(machine).\
+                                        AndReturn(testdata.node_clean_output())
+        self.mox.StubOutWithMock(avira.deploy.tool, "clean_foreman")
+        avira.deploy.tool.clean_foreman().\
+                                    AndReturn(testdata.clean_foreman_output())
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_destroy(machine.id)
+        output = self.out.getvalue()
+        self.assertTrue(output,
+            "Determining the amount of hosts matching filter" in output)
+        self.assertTrue(output,
+            "Removing portforward 10.120.137.186:1112 -> 22" in output)
+        self.assertTrue(output,
+            "notice: Revoked certificate with serial 30" in output)
+        self.assertTrue(output,
+            "All out of sync hosts exists in DNS" in output)
+        self.assertTrue(output,
+                        "running cleanup job on testmachine2" in output)
+        self.assertTrue(output,
+                        "destroying machine with id 1112" in output)
+        self.assertTrue(output, "running puppet node clean" in output)
         self.mox.VerifyAll()
