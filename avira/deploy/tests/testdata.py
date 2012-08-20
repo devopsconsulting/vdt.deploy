@@ -6,3 +6,56 @@ do_status_output_all = "                  testmachine1    i-42-1111-VM  1111  Ru
 do_deploy_no_userdata = "Specify the machine userdata, (at least it's role)\n"
 do_deploy_duplicate = "A machine with the name testmachine1 already exists\n"
 do_deploy_output = "testmachine3 started, machine id 1113\n"
+
+
+def run_machine_cleanup_output():
+    print """
+Determining the amount of hosts matching filter for 2 seconds .... 1
+
+ * [ ==========================================================> ] 1 / 1
+
+
+i-42-1112-VM                            : OK
+    {:status=>0,     :err=>"",     :out=>"no cleaner found for testmachine2, doing nothing."}
+
+
+
+---- cleanup#cleanup call stats ----
+           Nodes: 1 / 1
+     Pass / Fail: 1 / 0
+      Start Time: Mon Aug 20 14:37:53 +0200 2012
+  Discovery Time: 2003.62ms
+      Agent Time: 120.09ms
+      Total Time: 2123.70ms"""
+
+
+def remove_machine_port_forwards_output():
+    print """
+Removing portforward 10.120.137.186:1112 -> 22
+Removing portforward 10.120.137.196:1112 -> 22
+"""
+
+
+def node_clean_output():
+    print """
+notice: Revoked certificate with serial 30
+notice: Removing file Puppet::SSL::Certificate i-42-1112-vm.cs2acloud.internal at '/var/lib/puppet/ssl/ca/signed/i-42-1112-vm.cs2acloud.internal.pem'
+notice: Removing file Puppet::SSL::Certificate i-42-1112-vm.cs2acloud.internal at '/var/lib/puppet/ssl/certs/i-42-1112-vm.cs2acloud.internal.pem'
+notice: Force i-42-1112-vm.cs2acloud.internal's exported resources to absent
+warning: Please wait until all other hosts have checked out their configuration before finishing the cleanup with:
+warning: $ puppet node clean i-42-1112-vm.cs2acloud.internal
+["i-42-1112-vm.cs2acloud.internal"]
+
+notice: Revoked certificate with serial 30
+notice: i-42-1112-vm.cs2acloud.internal storeconfigs removed
+["i-42-1112-vm.cs2acloud.internal"]"""
+
+
+def clean_foreman_output():
+    print """
+/usr/share/foreman/vendor/ruby/1.8/gems/ruby_parser-2.3.1/lib/ruby_parser_extras.rb:10: warning: already initialized constant ENC_NONE
+/usr/share/foreman/vendor/ruby/1.8/gems/ruby_parser-2.3.1/lib/ruby_parser_extras.rb:11: warning: already initialized constant ENC_EUC
+/usr/share/foreman/vendor/ruby/1.8/gems/ruby_parser-2.3.1/lib/ruby_parser_extras.rb:12: warning: already initialized constant ENC_SJIS
+/usr/share/foreman/vendor/ruby/1.8/gems/ruby_parser-2.3.1/lib/ruby_parser_extras.rb:13: warning: already initialized constant ENC_UTF8
+
+All out of sync hosts exists in DNS"""
