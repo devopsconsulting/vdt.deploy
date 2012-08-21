@@ -353,7 +353,7 @@ class CloudstackDeployment(api.CmdApi):
         })
         machine = find_machine(machine_id, machines)
         if machine is None:
-            print "no machine found with id %s" % machine_id
+            print "machine with id %s is not found" % machine_id
             return
 
         portforwards = wrap(self.client.listPortForwardingRules())

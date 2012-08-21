@@ -271,14 +271,14 @@ class DeployToolTest(TestCase):
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
         self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
-        avira.deploy.tool.find_machine('1111',
+        avira.deploy.tool.find_machine('1113',
                                        testdata.listVirtualMachines_output).\
                                        AndReturn(None)
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
-        self.client.do_stop('1111')
+        self.client.do_stop('1113')
         output = self.out.getvalue()
-        self.assertEqual(output, "machine with id 1111 is not found\n")
+        self.assertEqual(output, "machine with id 1113 is not found\n")
         self.mox.VerifyAll()
 
     def test_do_reboot(self):
@@ -415,4 +415,18 @@ class DeployToolTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output,
                         "added portforward for machine 1111 (1111 -> 1111)\n")
+        self.mox.VerifyAll()
+
+    def test_ssh_not_found(self):
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
+        avira.deploy.tool.find_machine('1114',
+                                       testdata.listVirtualMachines_output).\
+                                       AndReturn(None)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_ssh('1114')
+        output = self.out.getvalue()
+        self.assertEqual(output, "machine with id 1114 is not found\n")
         self.mox.VerifyAll()
