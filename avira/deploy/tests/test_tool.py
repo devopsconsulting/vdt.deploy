@@ -356,3 +356,14 @@ class DeployToolTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_list_networks_output)
         self.mox.VerifyAll()
+
+    def test_list_portforwardings(self):
+        self.mock_client.listPortForwardingRules({'domain': \
+                                avira.deploy.tool.DOMAINID}).\
+                                AndReturn(testdata.list_portforwardings_output)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_list("portforwardings")
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_list_portforwardings_output)
+        self.mox.VerifyAll()
