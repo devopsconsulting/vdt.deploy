@@ -67,6 +67,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_deploy_no_userdata(self):
+        # test the output when we don't have any userdata
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_deploy("test")
         output = self.out.getvalue()
@@ -344,4 +345,14 @@ class DeployToolTest(TestCase):
         self.client.do_list("ip")
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_list_ip_output)
+        self.mox.VerifyAll()
+
+    def test_list_networks(self):
+        self.mock_client.listNetworks({'zoneid': avira.deploy.tool.ZONEID}).\
+                                    AndReturn(testdata.list_networks_output)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_list("networks")
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_list_networks_output)
         self.mox.VerifyAll()
