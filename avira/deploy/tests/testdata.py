@@ -80,3 +80,5 @@ do_list_networks_output = "    1       testnetwork\n"
 
 list_portforwardings_output = [{u'protocol': u'tcp', u'virtualmachineid': 1111, u'ipaddress': u'1.1.1.1', u'cidrlist': '', u'ipaddressid': 1, u'virtualmachinedisplayname': u'testserver1', u'privateendport': u'22', u'state': u'Active', u'publicendport': u'1111', u'privateport': u'22', u'virtualmachinename': u'i-42-1111-VM', u'publicport': u'1111', u'id': 1}]
 do_list_portforwardings_output = "    1           1.1.1.1    1111 to    22  on machine  1111-testserver1\n"
+
+ssh_exists = "machine 1111 already has a ssh portforward with ip 1.1.1.1\n"
