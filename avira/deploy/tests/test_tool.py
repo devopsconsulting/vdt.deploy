@@ -512,6 +512,22 @@ class DeployToolTest(TestCase):
         self.assertEqual(output, testdata.kick_output + '\n')
         self.mox.VerifyAll()
 
+    def test_kick_exception(self):
+        KICK_CMD = ['mco', "puppetd", "runonce", "-F", "role=test"]
+
+        self.mox.StubOutWithMock(avira.deploy.tool, "subprocess")
+        avira.deploy.tool.subprocess.check_output(KICK_CMD,
+                    stderr=subprocess.STDOUT).\
+                    AndRaise(subprocess.CalledProcessError("", ""))
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.assertRaises(subprocess.CalledProcessError,
+                          self.client.do_kick,
+                          role='test'
+                          )
+        self.mox.VerifyAll()
+
     def test_kick_machine_notfound(self):
         machine = StringCaster({'id': '1114', 'name': 'testmachine4'})
 
@@ -560,37 +576,54 @@ class DeployToolTest(TestCase):
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.assertEqual(self.client.do_quit(), None)
+        self.mox.VerifyAll()
+
+    def test_mco(self):
+        # just a test to make sure this method is called
+        self.mox.StubOutWithMock(avira.deploy.tool, "check_call_with_timeout")
+        avira.deploy.tool.check_call_with_timeout(['mco'], 5).\
+                                    AndReturn(testdata.mco_output())
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_mco()
+        output = self.out.getvalue()
+        self.assertEqual(output, "mco output\n['mco']\n")
+        self.mox.VerifyAll()
 
     def test_main_unverified_puppetmaster(self):
         self.mox.StubOutWithMock(avira.deploy.tool, "sys")
         avira.deploy.tool.sys.exit(0).AndReturn(None)
-
-        self.mox.ReplayAll()
         avira.deploy.tool.PUPPETMASTER_VERIFIED = "0"
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
         avira.deploy.tool.main()
         output = self.out.getvalue()
         self.assertEqual(output, testdata.unverified_puppetmaster)
+        self.mox.VerifyAll()
 
     def test_main_no_puppetmaster(self):
         self.mox.StubOutWithMock(avira.deploy.tool, "sys")
         avira.deploy.tool.sys.exit(0).AndReturn(None)
-
-        self.mox.ReplayAll()
         avira.deploy.tool.PUPPETMASTER = None
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
         avira.deploy.tool.main()
         output = self.out.getvalue()
         self.assertEqual(output, testdata.no_puppetmaster)
+        self.mox.VerifyAll()
 
     def test_main_status(self):
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
-        self.mox.StubOutWithMock(avira.deploy.tool, "sys")
-        avira.deploy.tool.sys.exit(0).AndReturn(None)
 
         self.mox.ReplayAll()
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
         avira.deploy.tool.main()
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_status_output_running)
+        self.mox.VerifyAll()
