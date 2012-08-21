@@ -449,15 +449,16 @@ def main():
     elif not PUPPETMASTER:
         print "Please specify the fqdn of the puppetmaster in the config"
         sys.exit(0)
-    deploy = CloudstackDeployment()
-    if len(sys.argv) > 1:
-        line = " ".join(sys.argv[1:])
-        deploy.onecmd(line)
     else:
-        try:
-            deploy.cmdloop()
-        except KeyboardInterrupt:
-            deploy.do_quit('now')
+        deploy = CloudstackDeployment()
+        if len(sys.argv) > 1:
+            line = " ".join(sys.argv[1:])
+            deploy.onecmd(line)
+        else:
+            try:
+                deploy.cmdloop()
+            except KeyboardInterrupt:
+                deploy.do_quit('now')
 
 
 if __name__ == '__main__':
