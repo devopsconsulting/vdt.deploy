@@ -283,7 +283,7 @@ class DeployToolTest(TestCase):
 
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
-        self.client.do_stop('1113')
+        self.client.do_reboot('1113')
         output = self.out.getvalue()
         self.assertEqual(output, "machine with id 1113 is not found\n")
         self.mox.VerifyAll()
