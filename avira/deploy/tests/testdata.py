@@ -70,4 +70,7 @@ list_serviceofferings_output = [{u'name': u'Extra Medium', u'created': u'2012-08
 do_list_serviceofferings_output = "    1    6x 3.47GHZ, 16 GB Mem\n"
 
 list_diskofferings_output = [{u'iscustomized': False, u'name': u'Medium 50GB', u'created': u'2011-09-20T11:51:30+0000', u'disksize': 50, u'displaytext': u'Medium 50GB', u'id': 1}]
-do_list_diskofferings_output ="    1                      Medium 50GB    50 GB\n"
+do_list_diskofferings_output = "    1                      Medium 50GB    50 GB\n"
+
+list_public_ip_output = {u'count': 2, u'publicipaddress': [{u'networkid': 1, u'account': u'account', u'domainid': 1, u'issourcenat': True, u'isstaticnat': False, u'domain': u'Test Domain', u'zoneid': 1, u'state': u'Allocated', u'associatednetworkid': 1, u'forvirtualnetwork': True, u'allocated': u'2012-03-09T13:14:26+0000', u'ipaddress': u'1.1.1.1', u'id': 1, u'zonename': u'Testzone'}]}
+do_list_ip_output = "    1           1.1.1.1\n"

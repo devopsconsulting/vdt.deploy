@@ -336,3 +336,12 @@ class DeployToolTest(TestCase):
         self.assertEqual(output, testdata.do_list_diskofferings_output)
         self.mox.VerifyAll()
 
+    def test_list_ip(self):
+        self.mock_client.listPublicIpAddresses().\
+                    AndReturn(testdata.list_public_ip_output)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_list("ip")
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_list_ip_output)
+        self.mox.VerifyAll()
