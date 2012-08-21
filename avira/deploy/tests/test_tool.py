@@ -498,14 +498,56 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_kick_role(self):
-        self.mox.StubOutWithMock(avira.deploy.tool, "subprocess")
         KICK_CMD = ['mco', "puppetd", "runonce", "-F", "role=test"]
+
+        self.mox.StubOutWithMock(avira.deploy.tool, "subprocess")
         avira.deploy.tool.subprocess.check_output(KICK_CMD,
                                             stderr=subprocess.STDOUT).\
                                             AndReturn(testdata.kick_output)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_kick(role='test')
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.kick_output + '\n')
+        self.mox.VerifyAll()
+
+    def test_kick_machine_notfound(self):
+        machine = StringCaster({'id': '1114', 'name': 'testmachine4'})
+
+        self.mox.StubOutWithMock(avira.deploy.tool, "subprocess")
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
+        avira.deploy.tool.find_machine(machine.id,
+                                       testdata.listVirtualMachines_output).\
+                                       AndReturn(None)
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_kick(machine_id=machine.id)
+        output = self.out.getvalue()
+        self.assertEqual(output, "machine with id 1114 is not found\n")
+        self.mox.VerifyAll()
+
+    def test_kick_machine(self):
+        machine = StringCaster({'id': '1111', 'name': 'testmachine1'})
+        KICK_CMD = ['mco', "puppetd", "runonce", "-F", "hostname=testmachine1"]
+
+        self.mox.StubOutWithMock(avira.deploy.tool, "subprocess")
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
+        avira.deploy.tool.find_machine(machine.id,
+                                       testdata.listVirtualMachines_output).\
+                                       AndReturn(machine)
+        avira.deploy.tool.subprocess.check_output(KICK_CMD,
+                                            stderr=subprocess.STDOUT).\
+                                            AndReturn(testdata.kick_output)
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_kick(machine_id=machine.id)
         output = self.out.getvalue()
         self.assertEqual(output, testdata.kick_output + '\n')
         self.mox.VerifyAll()
