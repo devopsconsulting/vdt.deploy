@@ -400,3 +400,19 @@ class DeployToolTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output, "releasing ip address, job id: 1\n")
         self.mox.VerifyAll()
+
+    def test_portfw(self):
+        self.mock_client.createPortForwardingRule({
+                        'ipaddressid': '1',
+                        'privateport': '1111',
+                        'publicport': '1111',
+                        'protocol': 'TCP',
+                        'virtualmachineid': '1111'
+                        }).AndReturn({u'id': 1, u'jobid': 1})
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_portfw("1111", "1", "1111", "1111")
+        output = self.out.getvalue()
+        self.assertEqual(output,
+                        "added portforward for machine 1111 (1111 -> 1111)\n")
+        self.mox.VerifyAll()
