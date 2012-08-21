@@ -82,3 +82,14 @@ list_portforwardings_output = [{u'protocol': u'tcp', u'virtualmachineid': 1111, 
 do_list_portforwardings_output = "    1           1.1.1.1    1111 to    22  on machine  1111-testserver1\n"
 
 ssh_exists = "machine 1111 already has a ssh portforward with ip 1.1.1.1\n"
+
+kick_output = """
+
+1 / 1
+
+
+
+
+Finished processing 1 / 1 hosts in 78.63 ms
+
+"""

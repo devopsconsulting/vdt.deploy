@@ -3,6 +3,7 @@ import cloudstack
 import mox
 import avira.deploy.tool
 import testdata
+import subprocess
 from unittest import TestCase
 from StringIO import StringIO
 from base64 import encodestring
@@ -494,4 +495,17 @@ class DeployToolTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output,
                         "machine 1112 is now reachable (via 1.1.1.1:1112)\n")
+        self.mox.VerifyAll()
+
+    def test_kick_role(self):
+        self.mox.StubOutWithMock(avira.deploy.tool, "subprocess")
+        KICK_CMD = ['mco', "puppetd", "runonce", "-F", "role=test"]
+        avira.deploy.tool.subprocess.check_output(KICK_CMD,
+                                            stderr=subprocess.STDOUT).\
+                                            AndReturn(testdata.kick_output)
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_kick(role='test')
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.kick_output + '\n')
         self.mox.VerifyAll()
