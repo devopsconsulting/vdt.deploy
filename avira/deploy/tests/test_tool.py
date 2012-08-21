@@ -560,3 +560,13 @@ class DeployToolTest(TestCase):
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.assertEqual(self.client.do_quit(), None)
+
+    def test_main_unverified_puppetmaster(self):
+        self.mox.StubOutWithMock(avira.deploy.tool, "sys")
+        avira.deploy.tool.sys.exit(0).AndReturn(None)
+        self.mox.ReplayAll()
+        avira.deploy.tool.PUPPETMASTER_VERIFIED = "0"
+        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+        avira.deploy.tool.main()
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.unverified_puppetmaster)
