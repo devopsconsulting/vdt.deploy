@@ -564,9 +564,33 @@ class DeployToolTest(TestCase):
     def test_main_unverified_puppetmaster(self):
         self.mox.StubOutWithMock(avira.deploy.tool, "sys")
         avira.deploy.tool.sys.exit(0).AndReturn(None)
+
         self.mox.ReplayAll()
         avira.deploy.tool.PUPPETMASTER_VERIFIED = "0"
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
         avira.deploy.tool.main()
         output = self.out.getvalue()
         self.assertEqual(output, testdata.unverified_puppetmaster)
+
+    def test_main_no_puppetmaster(self):
+        self.mox.StubOutWithMock(avira.deploy.tool, "sys")
+        avira.deploy.tool.sys.exit(0).AndReturn(None)
+
+        self.mox.ReplayAll()
+        avira.deploy.tool.PUPPETMASTER = None
+        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+        avira.deploy.tool.main()
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.no_puppetmaster)
+
+    def test_main_status(self):
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mox.StubOutWithMock(avira.deploy.tool, "sys")
+        avira.deploy.tool.sys.exit(0).AndReturn(None)
+
+        self.mox.ReplayAll()
+        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+        avira.deploy.tool.main()
+        output = self.out.getvalue()
+        self.assertEqual(output, testdata.do_status_output_running)
