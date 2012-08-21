@@ -18,11 +18,13 @@ class DeployToolTest(TestCase):
         sys.stdout = self.out
 
         self.mox = mox.Mox()
+        # Mock the Cloudstack client library
         self.mock_client = self.mox.CreateMock(cloudstack.client.Client)
         self.mox.StubOutWithMock(avira.deploy.tool, "Client")
         avira.deploy.tool.Client("apiurl",
                                  "apikey",
                                  "secret").AndReturn(self.mock_client)
+        # set some expected values
         avira.deploy.tool.APIURL = "apiurl"
         avira.deploy.tool.APIKEY = "apikey"
         avira.deploy.tool.SECRETKEY = "secret"
@@ -34,6 +36,7 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.PUPPETMASTER = "localhost"
         avira.deploy.tool.CLOUDINIT_PUPPET = \
                 "http://localhost/autodeploy/vdt-puppet-agent.cloudinit"
+        # and set some default userdata
         self.sample_userdata = "#include %s\n#puppetmaster=%s\n" % \
                                         (avira.deploy.tool.CLOUDINIT_PUPPET,
                                          avira.deploy.tool.PUPPETMASTER)
@@ -75,6 +78,7 @@ class DeployToolTest(TestCase):
         self.assertEqual(output, testdata.do_deploy_no_userdata)
 
     def test_do_deploy_duplicate_machine(self):
+        # test when a machine already exists
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
         self.mox.ReplayAll()
@@ -85,6 +89,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_deploy(self):
+        # test a new deployment
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
 
@@ -112,6 +117,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_destroy_no_exists(self):
+        # test when we destroy a machine which does not exists
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
         self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
@@ -127,6 +133,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_destroy_puppetmaster(self):
+        # test that we cannot detsroy the puppetmaster
         machine = StringCaster({'id': '1112', 'name': 'testmachine2'})
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
@@ -146,6 +153,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_destroy(self):
+        # destroy a machine
         machine = StringCaster({'id': '1112', 'name': 'testmachine2'})
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
@@ -194,6 +202,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_clean(self):
+        # Clean a machine from foreman and puppet
         self.mox.StubOutWithMock(avira.deploy.tool, "clean_foreman")
         avira.deploy.tool.clean_foreman().\
                                     AndReturn(testdata.clean_foreman_output())
@@ -206,6 +215,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_start_not_found(self):
+        # start a machine that does not exist
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
         self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
@@ -221,6 +231,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_start(self):
+        # start a machine
         machine = StringCaster({'id': '1112'})
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
@@ -240,6 +251,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_stop_not_found(self):
+        # stop a machine which does not exist
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
         self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
@@ -255,6 +267,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_stop(self):
+        # stop a machine
         machine = StringCaster({'id': '1111'})
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
@@ -274,6 +287,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_reboot_not_found(self):
+        # reboot a machine which does not exist
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
         self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
@@ -289,6 +303,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_do_reboot(self):
+        # reboot a machine
         machine = StringCaster({'id': '1111'})
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
@@ -308,12 +323,14 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_list_unknown(self):
+        # test that we show a correct message when a list command is not there
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_list("unknown directive")
         output = self.out.getvalue()
         self.assertEqual(output, "Not implemented\n")
 
     def test_list_templates(self):
+        # list available templates
         self.mock_client.listZones({}).AndReturn(testdata.list_zones_output)
         self.mock_client.listTemplates({
                             "templatefilter": "executable"
@@ -327,6 +344,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_list_serviceofferings(self):
+        # list available serviceofferings
         self.mock_client.listServiceOfferings().\
                         AndReturn(testdata.list_serviceofferings_output)
 
@@ -338,6 +356,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_list_diskofferings(self):
+        # list available diskofferings
         self.mock_client.listDiskOfferings().\
                         AndReturn(testdata.list_diskofferings_output)
 
@@ -349,6 +368,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_list_ip(self):
+        # list current ip's
         self.mock_client.listPublicIpAddresses().\
                     AndReturn(testdata.list_public_ip_output)
 
@@ -360,6 +380,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_list_networks(self):
+        # list available networks
         self.mock_client.listNetworks({'zoneid': avira.deploy.tool.ZONEID}).\
                                     AndReturn(testdata.list_networks_output)
 
@@ -371,6 +392,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_list_portforwardings(self):
+        # list current portforwardings
         domainid = avira.deploy.tool.DOMAINID
         self.mock_client.listPortForwardingRules({'domain': domainid}).\
                                 AndReturn(testdata.list_portforwardings_output)
@@ -383,12 +405,14 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_request_unknown(self):
+        # test the request command with an unkown directive
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_request("unknown directive")
         output = self.out.getvalue()
         self.assertEqual(output, "Not implemented\n")
 
     def test_request_ip(self):
+        # test to request an ip
         zoneid = avira.deploy.tool.ZONEID
         self.mock_client.associateIpAddress({'zoneid': zoneid}).\
                                     AndReturn({u'id': 1, u'jobid': 1})
@@ -401,12 +425,14 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_release_unknown(self):
+        # test the release command with an unkown directive
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_release("unknown directive", "unkown value")
         output = self.out.getvalue()
         self.assertEqual(output, "Not implemented\n")
 
     def test_release_ip(self):
+        # test the release ip command
         self.mock_client.disassociateIpAddress({'id': '1'}).\
                                     AndReturn({u'jobid': 1})
 
@@ -418,6 +444,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_portfw(self):
+        # test to add a portforward
         self.mock_client.createPortForwardingRule({
                         'ipaddressid': '1',
                         'privateport': '1111',
@@ -435,6 +462,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_ssh_not_found(self):
+        # create an ssh portforwarding for a machine which does not exist
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
         self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
@@ -450,6 +478,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_ssh_exists(self):
+        # test that we cannot create an ssh portforward which is already there
         machine = StringCaster({'id': '1111'})
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
@@ -470,6 +499,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_ssh(self):
+        # add an ssh portforward
         machine = StringCaster({'id': '1112'})
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
@@ -498,6 +528,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_kick_role(self):
+        # test the kick command for machines with a specific role
         KICK_CMD = ['mco', "puppetd", "runonce", "-F", "role=test"]
 
         self.mox.StubOutWithMock(avira.deploy.tool, "subprocess")
@@ -513,6 +544,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_kick_exception(self):
+        # test that we catch the exception
         KICK_CMD = ['mco', "puppetd", "runonce", "-F", "role=test"]
 
         self.mox.StubOutWithMock(avira.deploy.tool, "subprocess")
@@ -529,6 +561,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_kick_machine_notfound(self):
+        # test that we cannot kick a machine which is not there
         machine = StringCaster({'id': '1114', 'name': 'testmachine4'})
 
         self.mox.StubOutWithMock(avira.deploy.tool, "subprocess")
@@ -547,6 +580,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_kick_machine(self):
+        # kick a machine by it's id
         machine = StringCaster({'id': '1111', 'name': 'testmachine1'})
         KICK_CMD = ['mco', "puppetd", "runonce", "-F", "hostname=testmachine1"]
 
@@ -579,7 +613,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_mco(self):
-        # just a test to make sure this method is called
+        # test the mco command
         self.mox.StubOutWithMock(avira.deploy.tool, "check_call_with_timeout")
         avira.deploy.tool.check_call_with_timeout(['mco'], 5).\
                                     AndReturn(testdata.mco_output())
@@ -592,6 +626,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_main_unverified_puppetmaster(self):
+        # test that we cannot start the tool without a verified puppetmaster
         self.mox.StubOutWithMock(avira.deploy.tool, "sys")
         avira.deploy.tool.sys.exit(0).AndReturn(None)
         avira.deploy.tool.PUPPETMASTER_VERIFIED = "0"
@@ -605,6 +640,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_main_no_puppetmaster(self):
+        # test that we cannot start the tool without the puppetmaster specified
         self.mox.StubOutWithMock(avira.deploy.tool, "sys")
         avira.deploy.tool.sys.exit(0).AndReturn(None)
         avira.deploy.tool.PUPPETMASTER = None
@@ -618,6 +654,7 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_main_status(self):
+        # test that we can use the command line tool, we test the status cmd
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
 
