@@ -196,6 +196,7 @@ class DeployToolTest(TestCase):
         self.mox.StubOutWithMock(avira.deploy.tool, "clean_foreman")
         avira.deploy.tool.clean_foreman().\
                                     AndReturn(testdata.clean_foreman_output())
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_clean()
@@ -210,6 +211,7 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.find_machine('1114',
                                        testdata.listVirtualMachines_output).\
                                        AndReturn(None)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_start('1114')
@@ -228,6 +230,7 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.find_machine('1112',
                                        testdata.listVirtualMachines_output).\
                                        AndReturn(machine)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_start('1112')
@@ -242,6 +245,7 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.find_machine('1114',
                                        testdata.listVirtualMachines_output).\
                                        AndReturn(None)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_stop('1114')
@@ -260,6 +264,7 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.find_machine('1111',
                                        testdata.listVirtualMachines_output).\
                                        AndReturn(machine)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_stop('1111')
@@ -274,6 +279,7 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.find_machine('1113',
                                        testdata.listVirtualMachines_output).\
                                        AndReturn(None)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_stop('1113')
@@ -292,6 +298,7 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.find_machine('1111',
                                        testdata.listVirtualMachines_output).\
                                        AndReturn(machine)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_reboot('1111')
@@ -310,6 +317,7 @@ class DeployToolTest(TestCase):
         self.mock_client.listTemplates({
                             "templatefilter": "executable"
                         }).AndReturn(testdata.list_templates_output)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_list("templates")
@@ -320,6 +328,7 @@ class DeployToolTest(TestCase):
     def test_list_serviceofferings(self):
         self.mock_client.listServiceOfferings().\
                         AndReturn(testdata.list_serviceofferings_output)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_list("serviceofferings")
@@ -330,6 +339,7 @@ class DeployToolTest(TestCase):
     def test_list_diskofferings(self):
         self.mock_client.listDiskOfferings().\
                         AndReturn(testdata.list_diskofferings_output)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_list("diskofferings")
@@ -340,6 +350,7 @@ class DeployToolTest(TestCase):
     def test_list_ip(self):
         self.mock_client.listPublicIpAddresses().\
                     AndReturn(testdata.list_public_ip_output)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_list("ip")
@@ -350,6 +361,7 @@ class DeployToolTest(TestCase):
     def test_list_networks(self):
         self.mock_client.listNetworks({'zoneid': avira.deploy.tool.ZONEID}).\
                                     AndReturn(testdata.list_networks_output)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_list("networks")
@@ -361,6 +373,7 @@ class DeployToolTest(TestCase):
         domainid = avira.deploy.tool.DOMAINID
         self.mock_client.listPortForwardingRules({'domain': domainid}).\
                                 AndReturn(testdata.list_portforwardings_output)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_list("portforwardings")
@@ -378,6 +391,7 @@ class DeployToolTest(TestCase):
         zoneid = avira.deploy.tool.ZONEID
         self.mock_client.associateIpAddress({'zoneid': zoneid}).\
                                     AndReturn({u'id': 1, u'jobid': 1})
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_request("ip")
@@ -394,6 +408,7 @@ class DeployToolTest(TestCase):
     def test_release_ip(self):
         self.mock_client.disassociateIpAddress({'id': '1'}).\
                                     AndReturn({u'jobid': 1})
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_release("ip", "1")
@@ -409,6 +424,7 @@ class DeployToolTest(TestCase):
                         'protocol': 'TCP',
                         'virtualmachineid': '1111'
                         }).AndReturn({u'id': 1, u'jobid': 1})
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_portfw("1111", "1", "1111", "1111")
@@ -424,6 +440,7 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.find_machine('1114',
                                        testdata.listVirtualMachines_output).\
                                        AndReturn(None)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_ssh('1114')
@@ -438,14 +455,43 @@ class DeployToolTest(TestCase):
         self.mock_client.listPortForwardingRules().\
                                 AndReturn(testdata.list_portforwardings_output)
         self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
-        avira.deploy.tool.find_machine('1111',
+        avira.deploy.tool.find_machine(machine.id,
                                        testdata.listVirtualMachines_output).\
                                        AndReturn(machine)
         self.mock_client.listPublicIpAddresses().\
                     AndReturn(testdata.list_public_ip_output)
+
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_ssh('1111')
         output = self.out.getvalue()
         self.assertEqual(output, testdata.ssh_exists)
+        self.mox.VerifyAll()
+
+    def test_ssh(self):
+        machine = StringCaster({'id': '1112'})
+        self.mock_client.listVirtualMachines({'domainid': '1'}).\
+                        AndReturn(testdata.listVirtualMachines_output)
+        self.mock_client.listPortForwardingRules().\
+                                AndReturn(testdata.list_portforwardings_output)
+        self.mox.StubOutWithMock(avira.deploy.tool, "find_machine")
+        avira.deploy.tool.find_machine(machine.id,
+                                       testdata.listVirtualMachines_output).\
+                                       AndReturn(machine)
+        self.mock_client.listPublicIpAddresses().\
+                    AndReturn(testdata.list_public_ip_output)
+        self.mock_client.createPortForwardingRule({
+                        'ipaddressid': '1',
+                        'privateport': '22',
+                        'publicport': '1112',
+                        'protocol': 'TCP',
+                        'virtualmachineid': '1112'
+                        }).AndReturn({u'id': 1, u'jobid': 1})
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_ssh('1112')
+        output = self.out.getvalue()
+        self.assertEqual(output,
+                        "machine 1112 is now reachable (via 1.1.1.1:1112)\n")
         self.mox.VerifyAll()
