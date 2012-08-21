@@ -348,7 +348,6 @@ class CloudstackDeployment(api.CmdApi):
 
             ssh ipaddress -p 5034
         """
-        # Todo : check if portforward exists
         machines = self.client.listVirtualMachines({
             'domainid': DOMAINID
         })
