@@ -358,12 +358,45 @@ class DeployToolTest(TestCase):
         self.mox.VerifyAll()
 
     def test_list_portforwardings(self):
-        self.mock_client.listPortForwardingRules({'domain': \
-                                avira.deploy.tool.DOMAINID}).\
+        domainid = avira.deploy.tool.DOMAINID
+        self.mock_client.listPortForwardingRules({'domain': domainid}).\
                                 AndReturn(testdata.list_portforwardings_output)
         self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_list("portforwardings")
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_list_portforwardings_output)
+        self.mox.VerifyAll()
+
+    def test_request_unknown(self):
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_request("unknown directive")
+        output = self.out.getvalue()
+        self.assertEqual(output, "Not implemented\n")
+
+    def test_request_ip(self):
+        zoneid = avira.deploy.tool.ZONEID
+        self.mock_client.associateIpAddress({'zoneid': zoneid}).\
+                                    AndReturn({u'id': 1, u'jobid': 1})
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_request("ip")
+        output = self.out.getvalue()
+        self.assertEqual(output, "created ip address with id 1\n")
+        self.mox.VerifyAll()
+
+    def test_release_unknown(self):
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_release("unknown directive", "unkown value")
+        output = self.out.getvalue()
+        self.assertEqual(output, "Not implemented\n")
+
+    def test_release_ip(self):
+        self.mock_client.disassociateIpAddress({'id': '1'}).\
+                                    AndReturn({u'jobid': 1})
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.client.do_release("ip", "1")
+        output = self.out.getvalue()
+        self.assertEqual(output, "releasing ip address, job id: 1\n")
         self.mox.VerifyAll()
