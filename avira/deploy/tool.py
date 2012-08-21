@@ -406,6 +406,9 @@ class CloudstackDeployment(api.CmdApi):
                 'domainid': DOMAINID
             })
             machine = find_machine(machine_id, machines)
+            if machine is None:
+                print "machine with id %s is not found" % machine_id
+                return
             KICK_CMD.append('hostname=%(name)s' % machine)
 
         try:
