@@ -551,3 +551,12 @@ class DeployToolTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output, testdata.kick_output + '\n')
         self.mox.VerifyAll()
+
+    def test_quit(self):
+        # just a test to make sure this method is called
+        self.mox.StubOutWithMock(avira.deploy.tool, "sys")
+        avira.deploy.tool.sys.exit(0).AndReturn(None)
+
+        self.mox.ReplayAll()
+        self.client = avira.deploy.tool.CloudstackDeployment()
+        self.assertEqual(self.client.do_quit(), None)
