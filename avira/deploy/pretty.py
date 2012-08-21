@@ -32,7 +32,7 @@ def networks_print(networks):
         print "%(id)5s   %(name)15s" % network
 
 PORTFWD_LINE = \
-"%(id)5s   %(ipaddress)15s   %(publicport)4s to %(privateport)4s  on machine %(virtualmachineid)5s-%(virtualmachinedisplayname)s"
+"%(id)5s   %(ipaddress)15s   %(publicport)5s to %(privateport)5s  on machine %(virtualmachineid)5s-%(virtualmachinedisplayname)s"
 
 
 def portforwardings_print(portforwardings):
