@@ -653,8 +653,8 @@ class DeployToolTest(TestCase):
         self.assertEqual(output, testdata.no_puppetmaster)
         self.mox.VerifyAll()
 
-    def test_main_status(self):
-        # test that we can use the command line tool, we test the status cmd
+    def test_main_single_line(self):
+        # test the command line tool with arguments, we test the status cmd
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                         AndReturn(testdata.listVirtualMachines_output)
 
