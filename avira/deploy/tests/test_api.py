@@ -87,3 +87,19 @@ class CmdApiTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output,
                         "Method called with param myvalue and {'flag': '1'}\n")
+
+    def test_help_with_params(self):
+        cmd = self.cmd
+        cmd.cmdqueue = ["help randomparam=something",
+                        "exit"]
+        cmd.cmdloop()
+        output = self.out.getvalue()
+        self.assertTrue("Documented commands " in output)
+
+    def test_unknown_command(self):
+        cmd = self.cmd
+        cmd.cmdqueue = ["notexistingcommand",
+                        "exit"]
+        cmd.cmdloop()
+        output = self.out.getvalue()
+        self.assertEqual(output, "*** Unknown syntax: notexistingcommand\n")
