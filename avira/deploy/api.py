@@ -3,6 +3,21 @@ import traceback
 
 
 def parse_line(line):
+    """
+    Parses a line into args and kwargs, including equal signs
+
+    >>> result = parse_line("this is a line")
+    >>> result[0]
+    ['this', 'is', 'a', 'line']
+    >>> result = parse_line("something value=1 othervalue=2")
+    >>> result[0]
+    ['something']
+    >>> result[1]['value']
+    '1'
+    >>> result[1]['othervalue']
+    '2'
+    """
+
     segments = line.split()
     args = []
     kwargs = {}
