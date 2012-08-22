@@ -1,10 +1,10 @@
 from unittest import TestCase
-from avira.deploy.api import CmdApi
+import avira.deploy.api
 import sys
 from StringIO import StringIO
 
 
-class CmdApiTester(CmdApi):
+class CmdApiTester(avira.deploy.api.CmdApi):
     """
     Helper class to test the CmdApi class.
     """
@@ -23,6 +23,10 @@ class CmdApiTester(CmdApi):
 
     def do_exit(self):
         return True
+
+
+def print_exc_return_nothing():
+    return ""
 
 
 class CmdApiTest(TestCase):
@@ -66,6 +70,15 @@ class CmdApiTest(TestCase):
         output = self.out.getvalue()
         self.assertEqual(output,
                     "This message should be shown if arguments are not ok\n")
+
+    def test_args_params_incorrect_with_debug(self):
+        avira.deploy.api.traceback.print_exc = print_exc_return_nothing
+        self.cmd.debug = True
+        self.cmd.cmdqueue = ["test_args thisparam=notcorrect", "exit"]
+        self.cmd.cmdloop()
+        output = self.out.getvalue()
+        self.assertTrue("should be shown if arguments are not ok" in output)
+        self.assertTrue("do_test_args() got an unexpected keyword" in output)
 
     def test_args_and_flags(self):
         cmd = self.cmd
