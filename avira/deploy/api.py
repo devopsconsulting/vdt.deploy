@@ -55,6 +55,10 @@ class CmdApi(cmd.Cmd):
     shown.
     """
 
+    def __init__(self):
+        self.debug = False
+        cmd.Cmd.__init__(self)
+
     def onecmd(self, s):
         # do standard parsing of line
         name, line, all = self.parseline(s)
