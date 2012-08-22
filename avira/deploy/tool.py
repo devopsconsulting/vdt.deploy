@@ -1,5 +1,4 @@
 #! /usr/bin/python
-import cmd
 import subprocess
 import sys
 
@@ -21,9 +20,9 @@ class CloudstackDeployment(api.CmdApi):
     prompt = "deploy> "
 
     def __init__(self):
-        self.debug = False
+
         self.client = Client(APIURL, APIKEY, SECRETKEY)
-        cmd.Cmd.__init__(self)
+        api.CmdApi.__init__(self)
 
     def do_status(self, all=False):
         """
@@ -424,7 +423,7 @@ class CloudstackDeployment(api.CmdApi):
 
             deploy> quit
         """
-        sys.exit(0)
+        return True
 
     def do_mco(self, *args, **kwargs):
         """
@@ -445,10 +444,8 @@ def main():
         print "\nPlease edit your configfile : \n"
         print "Set puppetmaster_verified to 1 if you are sure you run this " \
               "deployment tool on the puppetmaster."
-        sys.exit(0)
     elif not PUPPETMASTER:
         print "Please specify the fqdn of the puppetmaster in the config"
-        sys.exit(0)
     else:
         deploy = CloudstackDeployment()
         if len(sys.argv) > 1:
