@@ -33,6 +33,18 @@ class StringCaster(dict):
 
 
 def wrap(obj):
+    """
+        Helper method to wrap certain object types
+        First wrap dictionary
+        >>> result = wrap({'a': 1, 'b': True})
+        >>> type(result) == StringCaster
+        True
+
+        And now we should have a generator object with wrapped objects
+        >>> result = wrap([{'a': 1, 'b': True}])
+        >>> type(result.next()) == StringCaster
+        True
+    """
     if isinstance(obj, collections.MutableMapping):
         return StringCaster(obj)
     elif isinstance(obj, collections.Iterable):
@@ -40,18 +52,24 @@ def wrap(obj):
 
 
 def sort_by_key(sortable, key_name):
+    """
+        Sort a list of dictionaries by key
+        >>> unsorted = [{'name': 'b'}, {'name' : 'a'}]
+        >>> sorted(unsorted)
+        [{'name': 'a'}, {'name': 'b'}]
+    """
     return sorted(sortable, key=operator.itemgetter(key_name))
 
 
 def find_by_key(iterable, **restrictions):
     """
-    Find first occurence of dict in list that matches the key=value restriction
+        Find first occurence of dict in list that matches the key=value restriction
 
-    >>> a = [{"hai": "noob", "lol": "nub"}, {"hai": "nub", "lol": "noob"}]
-    >>> find_by_key(a, hai="noob")
-    {'hai': 'noob', 'lol': 'nub'}
-    >>> find_by_key(a, lol="noob")
-    {'hai': 'nub', 'lol': 'noob'}
+        >>> a = [{"hai": "noob", "lol": "nub"}, {"hai": "nub", "lol": "noob"}]
+        >>> find_by_key(a, hai="noob")
+        {'hai': 'noob', 'lol': 'nub'}
+        >>> find_by_key(a, lol="noob")
+        {'hai': 'nub', 'lol': 'noob'}
     """
 
     if len(restrictions) == 1:
@@ -61,6 +79,12 @@ def find_by_key(iterable, **restrictions):
 
 
 def find_machine(machine_id, machines):
+    """
+        Find a machine in a list of dictionaries
+        >>> machines = [{'id' : 1111}, {'id': 1112}]
+        >>> find_machine('1112', machines)
+        {'id': 1112}
+    """
     machine = find_by_key(machines, id=machine_id)
     if machine:
         return wrap(machine)
