@@ -604,13 +604,8 @@ class DeployToolTest(TestCase):
 
     def test_quit(self):
         # just a test to make sure this method is called
-        self.mox.StubOutWithMock(avira.deploy.tool, "sys")
-        avira.deploy.tool.sys.exit(0).AndReturn(None)
-
-        self.mox.ReplayAll()
         self.client = avira.deploy.tool.CloudstackDeployment()
-        self.assertEqual(self.client.do_quit(), None)
-        self.mox.VerifyAll()
+        self.assertEqual(self.client.do_quit(), True)
 
     def test_mco(self):
         # test the mco command
@@ -627,8 +622,6 @@ class DeployToolTest(TestCase):
 
     def test_main_unverified_puppetmaster(self):
         # test that we cannot start the tool without a verified puppetmaster
-        self.mox.StubOutWithMock(avira.deploy.tool, "sys")
-        avira.deploy.tool.sys.exit(0).AndReturn(None)
         avira.deploy.tool.PUPPETMASTER_VERIFIED = "0"
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
 
@@ -641,8 +634,6 @@ class DeployToolTest(TestCase):
 
     def test_main_no_puppetmaster(self):
         # test that we cannot start the tool without the puppetmaster specified
-        self.mox.StubOutWithMock(avira.deploy.tool, "sys")
-        avira.deploy.tool.sys.exit(0).AndReturn(None)
         avira.deploy.tool.PUPPETMASTER = None
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
 
