@@ -8,9 +8,9 @@ class UserData(dict):
     """
     Represents a cloud-init user data object
 
-    >>> foo = UserData('http://example.com/', role='server', environment='nothing')
+    >>> foo = UserData('http://example.com/', 'test', role='server')
     >>> str(foo)
-    'I2luY2x1ZGUgaHR0cDovL2V4YW1wbGUuY29tLwojZW52aXJvbm1lbnQ9bm90aGluZwojcm9sZT1z\nZXJ2ZXIK\n'
+    'I2luY2x1ZGUgaHR0cDovL2V4YW1wbGUuY29tLwojcHVwcGV0bWFzdGVyPXRlc3QKI3JvbGU9c2Vy\\ndmVyCg==\\n'
     """
 
     def __init__(self, cloud_init_url, puppetmaster, **kwargs):

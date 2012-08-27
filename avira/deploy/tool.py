@@ -1,5 +1,4 @@
 #! /usr/bin/python
-import cmd
 import subprocess
 import sys
 
@@ -21,9 +20,8 @@ class CloudstackDeployment(api.CmdApi):
     prompt = "deploy> "
 
     def __init__(self):
-        self.debug = False
         self.client = Client(APIURL, APIKEY, SECRETKEY)
-        cmd.Cmd.__init__(self)
+        api.CmdApi.__init__(self)
 
     def do_status(self, all=False):
         """
@@ -133,28 +131,26 @@ class CloudstackDeployment(api.CmdApi):
         if machine is None:
             print "No machine found with the id %s" % machine_id
         else:
+            if is_puppetmaster(machine.id):
+                print "You are not allowed to destroy the puppetmaster"
+                return
+            print "running cleanup job on %s." % machine.name
+            run_machine_cleanup(machine)
 
-            if not is_puppetmaster(
-                    machine.id,
-                    "You are not allowed to destroy the puppetmaster"):
+            print "Destroying machine with id %s" % machine.id
+            self.client.destroyVirtualMachine({
+                'id': machine.id
+            })
 
-                print "running cleanup job on %s." % machine.name
-                run_machine_cleanup(machine)
+            # first we are also going to remove the portforwards
+            remove_machine_port_forwards(machine, self.client)
 
-                print "Destroying machine with id %s" % machine.id
-                self.client.destroyVirtualMachine({
-                    'id': machine.id
-                })
+            # now we cleanup the puppet database and certificates
+            print "running puppet node clean"
+            node_clean(machine)
 
-                # first we are also going to remove the portforwards
-                remove_machine_port_forwards(machine, self.client)
-
-                # now we cleanup the puppet database and certificates
-                print "running puppet node clean"
-                node_clean(machine)
-
-                # now clean all offline nodes from foreman
-                clean_foreman()
+            # now clean all offline nodes from foreman
+            clean_foreman()
 
     def do_clean(self, _=None):
         """
@@ -197,7 +193,7 @@ class CloudstackDeployment(api.CmdApi):
         machine = find_machine(machine_id, machines)
 
         if machine is not None:
-            print "stoping machine with id %s" % machine.id
+            print "stopping machine with id %s" % machine.id
             self.client.stopVirtualMachine({'id': machine.id})
         else:
             print "machine with id %s is not found" % machine_id
@@ -350,13 +346,12 @@ class CloudstackDeployment(api.CmdApi):
 
             ssh ipaddress -p 5034
         """
-        # Todo : check if portforward exists
         machines = self.client.listVirtualMachines({
             'domainid': DOMAINID
         })
         machine = find_machine(machine_id, machines)
         if machine is None:
-            print "no machine found with id %s" % machine_id
+            print "machine with id %s is not found" % machine_id
             return
 
         portforwards = wrap(self.client.listPortForwardingRules())
@@ -409,6 +404,9 @@ class CloudstackDeployment(api.CmdApi):
                 'domainid': DOMAINID
             })
             machine = find_machine(machine_id, machines)
+            if machine is None:
+                print "machine with id %s is not found" % machine_id
+                return
             KICK_CMD.append('hostname=%(name)s' % machine)
 
         try:
@@ -424,7 +422,7 @@ class CloudstackDeployment(api.CmdApi):
 
             deploy> quit
         """
-        sys.exit(0)
+        return True
 
     def do_mco(self, *args, **kwargs):
         """
@@ -445,19 +443,18 @@ def main():
         print "\nPlease edit your configfile : \n"
         print "Set puppetmaster_verified to 1 if you are sure you run this " \
               "deployment tool on the puppetmaster."
-        sys.exit(0)
     elif not PUPPETMASTER:
         print "Please specify the fqdn of the puppetmaster in the config"
-        sys.exit(0)
-    deploy = CloudstackDeployment()
-    if len(sys.argv) > 1:
-        line = " ".join(sys.argv[1:])
-        deploy.onecmd(line)
     else:
-        try:
-            deploy.cmdloop()
-        except KeyboardInterrupt:
-            deploy.do_quit('now')
+        deploy = CloudstackDeployment()
+        if len(sys.argv) > 1:
+            line = " ".join(sys.argv[1:])
+            deploy.onecmd(line)
+        else:
+            try:
+                deploy.cmdloop()
+            except KeyboardInterrupt:
+                deploy.do_quit('now')
 
 
 if __name__ == '__main__':

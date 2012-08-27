@@ -6,7 +6,8 @@ import signal
 from avira.deploy.config import CERT_REQ
 
 __all__ = ('wrap', 'sort_by_key', 'find_by_key', 'find_machine',
-           'is_puppetmaster', 'add_pending_certificate')
+           'is_puppetmaster', 'add_pending_certificate',
+           'check_call_with_timeout', 'check_output_with_timeout',)
 
 
 class StringCaster(dict):
@@ -32,6 +33,18 @@ class StringCaster(dict):
 
 
 def wrap(obj):
+    """
+        Helper method to wrap certain object types
+        First wrap dictionary
+        >>> result = wrap({'a': 1, 'b': True})
+        >>> type(result) == StringCaster
+        True
+
+        And now we should have a generator object with wrapped objects
+        >>> result = wrap([{'a': 1, 'b': True}])
+        >>> type(result.next()) == StringCaster
+        True
+    """
     if isinstance(obj, collections.MutableMapping):
         return StringCaster(obj)
     elif isinstance(obj, collections.Iterable):
@@ -39,18 +52,24 @@ def wrap(obj):
 
 
 def sort_by_key(sortable, key_name):
+    """
+        Sort a list of dictionaries by key
+        >>> unsorted = [{'name': 'b'}, {'name' : 'a'}]
+        >>> sorted(unsorted)
+        [{'name': 'a'}, {'name': 'b'}]
+    """
     return sorted(sortable, key=operator.itemgetter(key_name))
 
 
 def find_by_key(iterable, **restrictions):
     """
-    Find first occurence of dict in list that matches the key=value restriction
+        Find first occurence of dict in list that matches the key=value restriction
 
-    >>> a = [{"hai": "noob", "lol": "nub"}, {"hai": "nub", "lol": "noob"}]
-    >>> find_by_key(a, hai="noob")
-    {'hai': 'noob', 'lol': 'nub'}
-    >>> find_by_key(a, lol="noob")
-    {'hai': 'nub', 'lol': 'noob'}
+        >>> a = [{"hai": "noob", "lol": "nub"}, {"hai": "nub", "lol": "noob"}]
+        >>> find_by_key(a, hai="noob")
+        {'hai': 'noob', 'lol': 'nub'}
+        >>> find_by_key(a, lol="noob")
+        {'hai': 'nub', 'lol': 'noob'}
     """
 
     if len(restrictions) == 1:
@@ -60,6 +79,12 @@ def find_by_key(iterable, **restrictions):
 
 
 def find_machine(machine_id, machines):
+    """
+        Find a machine in a list of dictionaries
+        >>> machines = [{'id' : 1111}, {'id': 1112}]
+        >>> find_machine('1112', machines)
+        {'id': 1112}
+    """
     machine = find_by_key(machines, id=machine_id)
     if machine:
         return wrap(machine)
@@ -67,15 +92,13 @@ def find_machine(machine_id, machines):
     return machine
 
 
-def is_puppetmaster(machine_id, error):
+def is_puppetmaster(machine_id):
     # not a failsafe method of checking, but for now
     # no other solution
     fqdn = subprocess.check_output(['facter', "fqdn"])
 
     if machine_id in fqdn:
-        print error
-        return
-
+        return True
     return False
 
 
@@ -94,8 +117,13 @@ def check_call_with_timeout(args, timeout_seconds=30, **kwargs):
                                lambda _, __: process.terminate())
     signal.alarm(timeout_seconds)
 
-    process.wait()
+    (stdout, _) = process.communicate()
 
     # cancel the alarm and reset the signal handler.
     signal.alarm(0)
     signal.signal(signal.SIGALRM, old_signal)
+    return stdout
+
+
+def check_output_with_timeout(args, timeout_seconds=30, **kwargs):
+    return check_call_with_timeout(args, timeout_seconds, stdout=subprocess.PIPE)
