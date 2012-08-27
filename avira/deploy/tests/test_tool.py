@@ -1,22 +1,44 @@
+import os
 import sys
 import cloudstack
 import mox
-import avira.deploy.tool
 import testdata
 import subprocess
 from unittest import TestCase
 from StringIO import StringIO
 from base64 import encodestring
+import ConfigParser
+
+os.environ["HOME"] = "/tmp"
+
+import avira.deploy.tool
 from avira.deploy.utils import StringCaster
 
 
 class DeployToolTest(TestCase):
+    def setupConfig(self):
+        # first we have to generate a configfile in the /tmp directory
+        config = ConfigParser.RawConfigParser()
+        configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
+        if os.path.exists(configfile):
+            config.read(configfile)
+            config.set('deployment', 'puppetmaster', 'localhost')
+            config.set('deployment', 'puppetmaster_verified', '1')
+            with open(configfile, 'wb') as f:
+                config.write(f)
+                f.close()
+
+    def removeConfig(self):
+        configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
+        # remove the config
+        if os.path.exists(configfile):
+            os.remove(configfile)
 
     def setUp(self):
         self.saved_stdout = sys.stdout
         self.out = StringIO()
         sys.stdout = self.out
-
+        self.setupConfig()
         self.mox = mox.Mox()
         # Mock the Cloudstack client library
         self.mock_client = self.mox.CreateMock(cloudstack.client.Client)
@@ -34,6 +56,7 @@ class DeployToolTest(TestCase):
         avira.deploy.tool.ZONEID = "1"
         avira.deploy.tool.DOMAINID = "1"
         avira.deploy.tool.PUPPETMASTER = "localhost"
+        avira.deploy.tool.PUPPETMASTER_VERIFIED = "1"
         avira.deploy.tool.CLOUDINIT_PUPPET = \
                 "http://localhost/autodeploy/vdt-puppet-agent.cloudinit"
         # and set some default userdata
@@ -42,6 +65,7 @@ class DeployToolTest(TestCase):
                                          avira.deploy.tool.PUPPETMASTER)
 
     def tearDown(self):
+        self.removeConfig()
         self.mox.UnsetStubs()
         sys.stdout = self.saved_stdout
         self.out = None
