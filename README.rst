@@ -139,30 +139,30 @@ So status will show you the running instances.
 The help for each command is shown below, but the names of the commands are
 prefixed with 'do'. (Not in github readme).
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_status
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_status
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_deploy
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_deploy
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_start
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_start
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_stop
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_stop
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_reboot
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_reboot
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_destroy
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_destroy
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_list
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_list
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_request
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_request
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_release
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_release
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_portfw
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_portfw
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_ssh
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_ssh
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_kick
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_kick
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_quit
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_quit
 
-.. automethod:: avira.deploy.deploy.CloudstackDeployment.do_mco
+.. automethod:: avira.deploy.tool.CloudstackDeployment.do_mco
