@@ -1,13 +1,15 @@
-import subprocess
 import functools
 
 from fabric.api import *
 
 from avira.deploy.tool import CloudstackDeployment
-from avira.deploy.config import PUPPETMASTER_SSH_PORT
 from avira.deploy.utils import check_output_with_timeout
 
-PUPPETMASTER_IPADDRESS = check_output_with_timeout(['python', 'avira/deploy/tool.py', 'list', 'ip'], 5).split()[1]
+try:
+    PUPPETMASTER_IPADDRESS = check_output_with_timeout(['python', 'avira/deploy/tool.py', 'list', 'ip'], 5).split()[1]
+except:
+    PUPPETMASTER_IPADDRESS = "127.0.0.1"
+
 env.hosts = ["%(PUPPETMASTER_IPADDRESS)s:%(PUPPETMASTER_SSH_PORT)s" % locals()]
 env.user = 'root'
 
