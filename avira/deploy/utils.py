@@ -70,6 +70,12 @@ def find_by_key(iterable, **restrictions):
         {'hai': 'noob', 'lol': 'nub'}
         >>> find_by_key(a, lol="noob")
         {'hai': 'nub', 'lol': 'noob'}
+
+        We can only have one restriction
+        >>> find_by_key(a, lol="noob", somthing="another")
+        Traceback (most recent call last):
+        ...
+        Exception: find_by_key accepts only one restriction
     """
 
     if len(restrictions) == 1:
@@ -84,11 +90,13 @@ def find_machine(machine_id, machines):
         >>> machines = [{'id' : 1111}, {'id': 1112}]
         >>> find_machine('1112', machines)
         {'id': 1112}
+
+        Return nothing if it's not found
+        >>> find_machine(1113, machines)
     """
     machine = find_by_key(machines, id=machine_id)
     if machine:
         return wrap(machine)
-
     return machine
 
 
@@ -126,4 +134,5 @@ def check_call_with_timeout(args, timeout_seconds=30, **kwargs):
 
 
 def check_output_with_timeout(args, timeout_seconds=30, **kwargs):
-    return check_call_with_timeout(args, timeout_seconds, stdout=subprocess.PIPE)
+    return check_call_with_timeout(args, timeout_seconds,
+                                   stdout=subprocess.PIPE)
