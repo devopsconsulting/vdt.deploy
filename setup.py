@@ -39,6 +39,9 @@ setup(
         'cloudstack',
         # -*- Extra requirements: -*-
     ],
+    extra_requires={
+        'fabric': ['fabric'],
+    },
     entry_points={'console_scripts': [
         'avira-deploy=avira.deploy.tool:main',
         'avira-puppetbot=avira.deploy.puppetbot:main']},
