@@ -39,7 +39,7 @@ setup(
         'cloudstack',
         # -*- Extra requirements: -*-
     ],
-    extra_require={
+    extras_require={
         'fabric': ['fabric'],
     },
     entry_points={'console_scripts': [
