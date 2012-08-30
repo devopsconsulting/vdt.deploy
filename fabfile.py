@@ -3,6 +3,7 @@ import functools
 from fabric.api import *
 
 from avira.deploy.tool import CloudstackDeployment
+from avira.deploy.config import PUPPETMASTER_SSH_PORT
 from avira.deploy.utils import check_output_with_timeout
 
 try:
