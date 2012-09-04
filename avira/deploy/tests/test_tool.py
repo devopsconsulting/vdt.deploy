@@ -641,7 +641,7 @@ class DeployToolTest(TestCase):
         self.client = avira.deploy.tool.CloudstackDeployment()
         self.client.do_mco()
         output = self.out.getvalue()
-        self.assertEqual(output, "mco output\n['mco']\n")
+        self.assertEqual(output, "mco output\n")
         self.mox.VerifyAll()
 
     def test_main_unverified_puppetmaster(self):
