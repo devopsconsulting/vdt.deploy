@@ -434,7 +434,6 @@ class CloudstackDeployment(api.CmdApi):
             deploy> mco puppetd status -F role=puppetmaster
         """
         command = ['mco'] + list(args) + ['%s=%s' % (key, value) for (key, value) in kwargs.iteritems()]
-        print command
         check_call_with_timeout(command, 5)
 
 
