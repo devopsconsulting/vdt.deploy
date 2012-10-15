@@ -10,6 +10,7 @@ class DeployConfigTest(TestCase):
         # we set the home directory to /tmp for the test
         os.environ["HOME"] = "/tmp"
         import avira.deploy.config
+        avira.deploy.config.init("cloudstack")
         reload(avira.deploy.config)
 
     def tearDown(self):
@@ -21,4 +22,5 @@ class DeployConfigTest(TestCase):
         # import something from config, it should have read it from the
         # generated configfile
         from avira.deploy.config import PUPPETMASTER
+        print PUPPETMASTER
         self.assertEqual(PUPPETMASTER, "")

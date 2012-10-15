@@ -11,7 +11,7 @@ configured as an lvs load balancer.
 from setuptools import setup
 from setuptools import find_packages
 
-version = '1.0.4'
+version = '1.1'
 
 setup(
     name='avira.deploy',
@@ -44,5 +44,6 @@ setup(
     },
     entry_points={'console_scripts': [
         'avira-deploy=avira.deploy.tool:main',
+        'avira-deploy-init=avira.deploy.tool:init',
         'avira-puppetbot=avira.deploy.puppetbot:main']},
 )

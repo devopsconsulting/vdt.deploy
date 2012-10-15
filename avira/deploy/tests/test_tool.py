@@ -42,8 +42,9 @@ class DeployToolTest(TestCase):
         self.mox = mox.Mox()
         # Mock the Cloudstack client library
         self.mock_client = self.mox.CreateMock(cloudstack.client.Client)
-        self.mox.StubOutWithMock(avira.deploy.tool, "Client")
-        avira.deploy.tool.Client("apiurl",
+        self.mox.StubOutWithMock(avira.deploy.providers.provider_cloudstack,
+                                 "Client")
+        avira.deploy.providers.provider_cloudstack("apiurl",
                                  "apikey",
                                  "secret").AndReturn(self.mock_client)
         # set some expected values
