@@ -86,7 +86,7 @@ apt_sources:
         G7E5veVcAQDbsnNL61wgvgBJaQYXiQdDBrYPf8CVGboT8X/JtKn8fw==
         =y04a
         -----END PGP PUBLIC KEY BLOCK-----
- - source: deb http://apt.puppetlabs.com lucid main
+ - source: deb http://apt.puppetlabs.com precise main
    key: |
         -----BEGIN PGP PUBLIC KEY BLOCK-----
         Version: GnuPG v1.4.12 (Darwin)
@@ -193,6 +193,8 @@ apt_update: true
 apt_upgrade: false
 packages:
  - ntp
+ - puppet-common=2.7.19-1puppetlabs2
+ - puppet=2.7.19-1puppetlabs2
  - misc-pierrotagent
 
 ssh_authorized_keys:
