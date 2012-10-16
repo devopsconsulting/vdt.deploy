@@ -9,8 +9,9 @@ class DeployConfigTest(TestCase):
         # our home directory
         # we set the home directory to /tmp for the test
         os.environ["HOME"] = "/tmp"
+        configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
         import avira.deploy.config
-        avira.deploy.config.init("cloudstack")
+        avira.deploy.config.init("cloudstack", configfile)
         reload(avira.deploy.config)
 
     def tearDown(self):

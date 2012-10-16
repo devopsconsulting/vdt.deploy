@@ -1,17 +1,18 @@
 from cloudstack.client import Client
-
+import subprocess
 from avira.deploy import api, pretty
 from avira.deploy.clean import run_machine_cleanup, \
     remove_machine_port_forwards, node_clean, clean_foreman
 from avira.deploy.config import APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, \
     TEMPLATEID, SERVICEID, CLOUDINIT_PUPPET, CLOUDINIT_BASE, PUPPETMASTER
 from avira.deploy.userdata import UserData
-from avira.deploy.utils import find_by_key, add_pending_certificate, \
+from avira.deploy.utils import find_by_key, \
     find_machine, wrap, sort_by_key, is_puppetmaster, check_call_with_timeout
+from avira.deploy.certificate import add_pending_certificate
 
 
 class Provider(api.CmdApi):
-    """Cloudstack Deployment CMD Tool"""
+    """Cloudstack Deployment CMD Provider"""
     prompt = "deploy> "
 
     def __init__(self):
