@@ -1,19 +1,23 @@
 #! /usr/bin/python
 import sys
 import os
-from config import init
+import config
 
 
 def main():
     if len(sys.argv) == 3:
         if sys.argv[1] == "init":
-            init(sys.argv[2])
-            print "Please edit your config at %s/.aviradeployment.cfg" % \
-                                                        os.path.expanduser("~")
-    configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
-    if not os.path.isfile(configfile):
-        print "Please run avira-deploy init <cloudstack|vagrant> first\n"
-        exit(0)
+            exec("from providers.config_%s import template" % sys.argv[2])
+            with open(config.configfile, "w") as f:
+                f.write(config.main_template)
+                f.write(template)
+                f.close()
+            print "Please edit your config at %s" % config.configfile
+            sys.exit(0)
+
+    if not os.path.isfile(config.configfile):
+        print "Please run avira-deploy init <provider> first\n"
+        sys.exit(0)
 
     from config import PUPPETMASTER_VERIFIED, PUPPETMASTER, PROVIDER
     if not PUPPETMASTER_VERIFIED == '1':
