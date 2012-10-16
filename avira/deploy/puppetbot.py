@@ -10,7 +10,6 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from config import PUPPET_CERT_DIRECTORY, PUPPET_BINARY, CERT_REQ
 
-
 class PuppetCertificateHandler(FileSystemEventHandler):
     def _certificate_requests(self):
         if os.path.exists(CERT_REQ):
@@ -37,9 +36,8 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                 msg = "Puppet Cert Watchdog: Certificate request for %s" % \
                                                                     certname
                 syslog.syslog(syslog.LOG_ALERT, msg)
-                m = re.search("^i\-[^\-]+\-(\d+)", certname)
-                if m:
-                    machine_id = m.group(1)
+                machine_id = certname.split(".")[0]
+                if machine_id:
                     ids = self._certificate_requests()
                     if machine_id in ids:
                         msg = "Signing certificate for machine %s" % machine_id
@@ -59,8 +57,8 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                                                        "clean",
                                                        certname])
                         syslog.syslog(syslog.LOG_ALERT, res)
-                # clean up
-                self._clean_certificate(machine_id)
+                    # clean up
+                    self._clean_certificate(machine_id)
             except Exception, e:
                 syslog.syslog(syslog.LOG_ALERT, "Error: %s" % e)
 

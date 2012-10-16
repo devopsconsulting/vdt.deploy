@@ -3,8 +3,6 @@ import operator
 import subprocess
 import signal
 
-from avira.deploy.config import CERT_REQ
-
 __all__ = ('wrap', 'sort_by_key', 'find_by_key', 'find_machine',
            'is_puppetmaster', 'add_pending_certificate',
            'check_call_with_timeout', 'check_output_with_timeout',)
@@ -108,14 +106,6 @@ def is_puppetmaster(machine_id):
     if machine_id in fqdn:
         return True
     return False
-
-
-def add_pending_certificate(machine_id):
-    machine_id = str(machine_id)
-    with open(CERT_REQ, 'r+') as pending_certificates:
-        if machine_id not in pending_certificates.read():
-            pending_certificates.write(machine_id)
-            pending_certificates.write("\n")
 
 
 def check_call_with_timeout(args, timeout_seconds=30, **kwargs):
