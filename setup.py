@@ -44,6 +44,5 @@ setup(
     },
     entry_points={'console_scripts': [
         'avira-deploy=avira.deploy.tool:main',
-        'avira-deploy-init=avira.deploy.tool:init',
         'avira-puppetbot=avira.deploy.puppetbot:main']},
 )
