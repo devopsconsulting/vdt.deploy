@@ -16,7 +16,6 @@ def main():
         exit(0)
 
     from config import PUPPETMASTER_VERIFIED, PUPPETMASTER, PROVIDER
-
     if not PUPPETMASTER_VERIFIED == '1':
         print "Set puppetmaster_verified to 1 if you are sure you run this " \
               "deployment tool on the puppetmaster."

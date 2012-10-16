@@ -4,7 +4,9 @@ import os
 
 
 def init(provider=None, configfile=""):
-    if configfile:
+    if not configfile:
+        return
+    if not os.path.exists(configfile):
         config = ConfigParser.RawConfigParser()
         config.add_section('main')
         config.set('main', 'provider', provider)

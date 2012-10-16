@@ -28,18 +28,19 @@ class DeployUtilsTest(TestCase):
         self.mox.VerifyAll()
 
     def test_pending_certificate(self):
-        avira.deploy.certificate.CERT_REQ = "/tmp/certificates.txt"
-        f = open(avira.deploy.certificate.CERT_REQ, "wb")
+        from avira.deploy import config
+        config.CERT_REQ = "/tmp/certificates.txt"
+        f = open(config.CERT_REQ, "wb")
         f.write("1234\n5678\n")
         f.close()
         # this one is already added, so it should not be added again
         avira.deploy.certificate.add_pending_certificate("1234")
-        f = open(avira.deploy.certificate.CERT_REQ, "r")
+        f = open(config.CERT_REQ, "r")
         data = f.readlines()
         self.assertEqual(data, ['1234\n', '5678\n'])
         f.close()
         # this one should be added to it
         avira.deploy.certificate.add_pending_certificate("1111")
-        f = open(avira.deploy.certificate.CERT_REQ, "r")
+        f = open(config.CERT_REQ, "r")
         data = f.readlines()
         self.assertEqual(data, ['1234\n', '5678\n', '1111\n'])

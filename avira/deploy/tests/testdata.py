@@ -94,7 +94,7 @@ Finished processing 1 / 1 hosts in 78.63 ms
 
 """
 
-unverified_puppetmaster = "\nPlease edit your configfile : \n\nSet puppetmaster_verified to 1 if you are sure you run this deployment tool on the puppetmaster.\n"
+unverified_puppetmaster = "Set puppetmaster_verified to 1 if you are sure you run this deployment tool on the puppetmaster.\n"
 no_puppetmaster = "Please specify the fqdn of the puppetmaster in the config\n"
 
 
