@@ -1,38 +1,13 @@
-import os
 import sys
 import cloudstack
 import mox
 import testdata
 import unittest
 from StringIO import StringIO
-import ConfigParser
-
-os.environ["HOME"] = "/tmp"
-configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
-import avira.deploy.config
-
-
-def setupConfig():
-    avira.deploy.config.init("cloudstack", configfile)
-    config = ConfigParser.RawConfigParser()
-    config.read(configfile)
-    config.set('main', 'provider', 'cloudstack')
-    config.set('main', 'puppetmaster', 'localhost')
-    config.set('main', 'puppetmaster_verified', '1')
-    with open(configfile, 'wb') as f:
-        config.write(f)
-        f.close()
-
-
-def removeConfig():
-    configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
-    # remove the config
-    if os.path.exists(configfile):
-        os.remove(configfile)
-
-setupConfig()
+#import avira.deploy.providers.provider_cloudstack
+from mockconfig import MockConfig
 import avira.deploy.tool
-import avira.deploy.providers.provider_cloudstack
+import avira.deploy.config
 
 
 class ProviderCloudstackTest(unittest.TestCase):
@@ -41,57 +16,31 @@ class ProviderCloudstackTest(unittest.TestCase):
         self.saved_stdout = sys.stdout
         self.out = StringIO()
         sys.stdout = self.out
-        setupConfig()
         self.mox = mox.Mox()
-       # set some expected values
-        avira.deploy.providers.provider_cloudstack.APIURL = "apiurl"
-        avira.deploy.providers.provider_cloudstack.APIKEY = "apikey"
-        avira.deploy.providers.provider_cloudstack.SECRETKEY = "secret"
-        avira.deploy.providers.provider_cloudstack.DOMAINID = "1"
-        avira.deploy.providers.provider_cloudstack.SERVICEID = "1"
-        avira.deploy.providers.provider_cloudstack.TEMPLATEID = "1"
-        avira.deploy.providers.provider_cloudstack.ZONEID = "1"
-        avira.deploy.providers.provider_cloudstack.DOMAINID = "1"
-        avira.deploy.providers.provider_cloudstack.PUPPETMASTER = "localhost"
-        avira.deploy.providers.provider_cloudstack.PUPPETMASTER_VERIFIED = "1"
-        avira.deploy.providers.provider_cloudstack.CLOUDINIT_PUPPET = \
-                "http://localhost/autodeploy/vdt-puppet-agent.cloudinit"
-        # and set some default userdata
-        self.sample_userdata = "#include %s\n#puppetmaster=%s\n" % \
-                 (avira.deploy.providers.provider_cloudstack.CLOUDINIT_PUPPET,
-                  avira.deploy.providers.provider_cloudstack.PUPPETMASTER)
 
     def tearDown(self):
-        removeConfig()
         self.mox.UnsetStubs()
         sys.stdout = self.saved_stdout
         self.out = None
 
-    @unittest.skip("Needs refactoring of config")
     def test_main_unverified_puppetmaster(self):
         # test that we cannot start the tool without a verified puppetmaster
-        avira.deploy.config.PUPPETMASTER_VERIFIED = "0"
-        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+        MockConfig.PUPPETMASTER_VERIFIED = "0"
+        avira.deploy.tool.cfg = MockConfig
 
-        self.mox.ReplayAll()
-        self.client = avira.deploy.providers.provider_cloudstack.Provider()
+        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
         avira.deploy.tool.main()
         output = self.out.getvalue()
         self.assertEqual(output, testdata.unverified_puppetmaster)
-        self.mox.VerifyAll()
 
-    @unittest.skip("Needs refactoring of config")
     def test_main_no_puppetmaster(self):
        # test that we cannot start the tool without the puppetmaster specified
-        avira.deploy.config.PUPPETMASTER = ""
+        MockConfig.PUPPETMASTER = ""
+        avira.deploy.tool.cfg = MockConfig
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
-
-        self.mox.ReplayAll()
-        self.client = avira.deploy.providers.provider_cloudstack.Provider()
         avira.deploy.tool.main()
         output = self.out.getvalue()
         self.assertEqual(output, testdata.no_puppetmaster)
-        self.mox.VerifyAll()
 
     @unittest.skip("Needs refactoring of config")
     def test_main_single_line(self):
@@ -112,4 +61,3 @@ class ProviderCloudstackTest(unittest.TestCase):
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_status_output_running)
         self.mox.VerifyAll()
-
