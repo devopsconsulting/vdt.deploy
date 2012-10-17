@@ -3,7 +3,7 @@
 
 def machine_print(machines):
     for machine in machines:
-        print "%(displayname)30s %(name)15s %(id)5s  %(state)s" % machine
+        print "%(displayname)30s %(id)40s %(state)10s" % machine
 
 
 def serviceofferings_print(serviceofferings):
