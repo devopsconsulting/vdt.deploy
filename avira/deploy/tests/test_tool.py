@@ -15,6 +15,8 @@ class ProviderCloudstackTest(unittest.TestCase):
     def setUp(self):
         reload(mockconfig)
         self.mockconfig = mockconfig.MockConfig
+        avira.deploy.tool.cfg = self.mockconfig
+        avira.deploy.providers.provider_cloudstack.cfg = self.mockconfig
         self.saved_stdout = sys.stdout
         self.out = StringIO()
         sys.stdout = self.out
@@ -57,8 +59,6 @@ class ProviderCloudstackTest(unittest.TestCase):
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                          AndReturn(testdata.listVirtualMachines_output)
         self.mox.ReplayAll()
-        avira.deploy.tool.cfg = self.mockconfig
-        avira.deploy.providers.provider_cloudstack.cfg = self.mockconfig
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
         avira.deploy.tool.main()
         output = self.out.getvalue()
