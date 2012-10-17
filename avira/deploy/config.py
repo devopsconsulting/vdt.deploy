@@ -29,3 +29,6 @@ class Config(object):
             for section in config.sections():
                 for item in config.items(section):
                     setattr(self, item[0].upper(), item[1])
+
+
+cfg = Config()

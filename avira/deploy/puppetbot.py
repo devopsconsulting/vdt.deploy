@@ -7,8 +7,7 @@ import subprocess
 from daemon import runner
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from config import Config
-cfg = Config()
+from config import cfg
 
 
 class PuppetCertificateHandler(FileSystemEventHandler):
