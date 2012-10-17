@@ -1,99 +1,73 @@
-import os
 import sys
+import os
 import cloudstack
 import mox
 import testdata
 import unittest
 from StringIO import StringIO
-import ConfigParser
-
-os.environ["HOME"] = "/tmp"
-configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
+import avira.deploy.providers.provider_cloudstack
+import mockconfig
+import avira.deploy.tool
 import avira.deploy.config
 
 
-def setupConfig():
-    avira.deploy.config.init("cloudstack", configfile)
-    config = ConfigParser.RawConfigParser()
-    config.read(configfile)
-    config.set('main', 'provider', 'cloudstack')
-    config.set('main', 'puppetmaster', 'localhost')
-    config.set('main', 'puppetmaster_verified', '1')
-    with open(configfile, 'wb') as f:
-        config.write(f)
-        f.close()
-
-
-def removeConfig():
-    configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
-    # remove the config
-    if os.path.exists(configfile):
-        os.remove(configfile)
-
-setupConfig()
-import avira.deploy.tool
-import avira.deploy.providers.provider_cloudstack
-
-
-class ProviderCloudstackTest(unittest.TestCase):
+class ToolTest(unittest.TestCase):
 
     def setUp(self):
+        reload(mockconfig)
+        self.mockconfig = mockconfig.MockConfig
+        avira.deploy.tool.cfg = self.mockconfig
+        avira.deploy.providers.provider_cloudstack.cfg = self.mockconfig
+        self.mox = mox.Mox()
+        os.environ["HOME"] = "/tmp"
+        configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
+        avira.deploy.tool.configfile = configfile
+        avira.deploy.config.configfile = configfile
+        # first create a cloudstack configfile
+        avira.deploy.tool.sys.argv = ["avira-deploy",
+                                      "init",
+                                      "cloudstack"]
+        # this generates a system exit, we catch it now
+        try:
+            avira.deploy.tool.main()
+        except:
+            pass
         self.saved_stdout = sys.stdout
         self.out = StringIO()
         sys.stdout = self.out
-        setupConfig()
-        self.mox = mox.Mox()
-       # set some expected values
-        avira.deploy.providers.provider_cloudstack.APIURL = "apiurl"
-        avira.deploy.providers.provider_cloudstack.APIKEY = "apikey"
-        avira.deploy.providers.provider_cloudstack.SECRETKEY = "secret"
-        avira.deploy.providers.provider_cloudstack.DOMAINID = "1"
-        avira.deploy.providers.provider_cloudstack.SERVICEID = "1"
-        avira.deploy.providers.provider_cloudstack.TEMPLATEID = "1"
-        avira.deploy.providers.provider_cloudstack.ZONEID = "1"
-        avira.deploy.providers.provider_cloudstack.DOMAINID = "1"
-        avira.deploy.providers.provider_cloudstack.PUPPETMASTER = "localhost"
-        avira.deploy.providers.provider_cloudstack.PUPPETMASTER_VERIFIED = "1"
-        avira.deploy.providers.provider_cloudstack.CLOUDINIT_PUPPET = \
-                "http://localhost/autodeploy/vdt-puppet-agent.cloudinit"
-        # and set some default userdata
-        self.sample_userdata = "#include %s\n#puppetmaster=%s\n" % \
-                 (avira.deploy.providers.provider_cloudstack.CLOUDINIT_PUPPET,
-                  avira.deploy.providers.provider_cloudstack.PUPPETMASTER)
 
     def tearDown(self):
-        removeConfig()
         self.mox.UnsetStubs()
         sys.stdout = self.saved_stdout
         self.out = None
+        if os.path.exists("/tmp/.aviradeployment.cfg"):
+            os.remove("/tmp/.aviradeployment.cfg")
 
-    @unittest.skip("Needs refactoring of config")
     def test_main_unverified_puppetmaster(self):
         # test that we cannot start the tool without a verified puppetmaster
-        avira.deploy.config.PUPPETMASTER_VERIFIED = "0"
-        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+        self.mockconfig.PUPPETMASTER_VERIFIED = "0"
+        avira.deploy.tool.cfg = self.mockconfig
 
-        self.mox.ReplayAll()
-        self.client = avira.deploy.providers.provider_cloudstack.Provider()
-        avira.deploy.tool.main()
+        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+        try:
+            avira.deploy.tool.main()
+        except SystemExit:
+            pass
         output = self.out.getvalue()
         self.assertEqual(output, testdata.unverified_puppetmaster)
-        self.mox.VerifyAll()
 
-    @unittest.skip("Needs refactoring of config")
     def test_main_no_puppetmaster(self):
        # test that we cannot start the tool without the puppetmaster specified
-        avira.deploy.config.PUPPETMASTER = ""
+        self.mockconfig.PUPPETMASTER = ""
+        avira.deploy.tool.cfg = self.mockconfig
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
-
-        self.mox.ReplayAll()
-        self.client = avira.deploy.providers.provider_cloudstack.Provider()
-        avira.deploy.tool.main()
+        try:
+            avira.deploy.tool.main()
+        except SystemExit:
+            pass
         output = self.out.getvalue()
         self.assertEqual(output, testdata.no_puppetmaster)
-        self.mox.VerifyAll()
 
-    @unittest.skip("Needs refactoring of config")
     def test_main_single_line(self):
         # Mock the Cloudstack client library
         self.mock_client = self.mox.CreateMock(cloudstack.client.Client)
@@ -108,8 +82,21 @@ class ProviderCloudstackTest(unittest.TestCase):
                          AndReturn(testdata.listVirtualMachines_output)
         self.mox.ReplayAll()
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
-        avira.deploy.tool.main()
+        try:
+            avira.deploy.tool.main()
+        except SystemExit:
+            pass
         output = self.out.getvalue()
         self.assertEqual(output, testdata.do_status_output_running)
         self.mox.VerifyAll()
+
+    def test_generate_config(self):
+        # this is generated in the setup of this test
+        self.assertEqual(os.path.isfile("/tmp/.aviradeployment.cfg"), True)
+        # import something from config, it should have read it from the
+        # generated configfile
+        from avira.deploy.config import Config
+        cfg = Config()
+        print cfg.PUPPETMASTER
+        self.assertEqual(cfg.PUPPETMASTER, "")
 

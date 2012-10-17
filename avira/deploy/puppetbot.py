@@ -2,18 +2,18 @@
 # for machines which are deployed with the deployment tool.
 import time
 import os
-import re
 import syslog
 import subprocess
 from daemon import runner
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from config import PUPPET_CERT_DIRECTORY, PUPPET_BINARY, CERT_REQ
+from config import cfg
+
 
 class PuppetCertificateHandler(FileSystemEventHandler):
     def _certificate_requests(self):
-        if os.path.exists(CERT_REQ):
-            f = open(CERT_REQ)
+        if os.path.exists(cfg.CERT_REQ):
+            f = open(cfg.CERT_REQ)
             ids = [x for x in f.read().split('\n') if not x == '']
             f.close()
             return ids
@@ -24,7 +24,7 @@ class PuppetCertificateHandler(FileSystemEventHandler):
         if machine_id in ids:
             ids.remove(machine_id)
         data = "\n".join(ids)
-        f = open(CERT_REQ, "w")
+        f = open(cfg.CERT_REQ, "w")
         f.write(data)
         f.close()
 
@@ -42,7 +42,7 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                     if machine_id in ids:
                         msg = "Signing certificate for machine %s" % machine_id
                         syslog.syslog(syslog.LOG_ALERT, msg)
-                        res = subprocess.check_output([PUPPET_BINARY,
+                        res = subprocess.check_output([cfg.PUPPET_BINARY,
                                                        "cert",
                                                        "--sign",
                                                        certname])
@@ -52,7 +52,7 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                         syslog.syslog(syslog.LOG_ALERT, msg)
                         msg = "Cleaning up certificate %s" % certname
                         syslog.syslog(syslog.LOG_ALERT, msg)
-                        res = subprocess.check_output([PUPPET_BINARY,
+                        res = subprocess.check_output([cfg.PUPPET_BINARY,
                                                        "node",
                                                        "clean",
                                                        certname])
@@ -75,7 +75,7 @@ class App():
         event_handler = PuppetCertificateHandler()
         observer = Observer()
         observer.schedule(event_handler,
-                          path=PUPPET_CERT_DIRECTORY,
+                          path=cfg.PUPPET_CERT_DIRECTORY,
                           recursive=True)
         observer.start()
         try:

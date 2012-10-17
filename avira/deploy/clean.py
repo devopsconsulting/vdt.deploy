@@ -3,7 +3,7 @@ import subprocess
 import os.path
 import shlex
 
-import config
+from config import cfg
 from avira.deploy.utils import wrap, check_call_with_timeout
 
 __all__ = ('run_machine_cleanup', 'remove_machine_port_forwards', 'clean_fqdn',
@@ -14,7 +14,7 @@ def run_machine_cleanup(machine):
     # run cleanup but kill the process after CLEANUP_TIMEOUT has passed
     cleanup_cmd = 'mco rpc -v cleanup cleanup -F hostname=%s' % machine.name
     check_call_with_timeout(cleanup_cmd.split(),
-                            timeout_seconds=config.CLEANUP_TIMEOUT)
+                            timeout_seconds=cfg.CLEANUP_TIMEOUT)
 
 
 def remove_machine_port_forwards(machine, client):
@@ -32,7 +32,7 @@ def remove_machine_port_forwards(machine, client):
 
 
 def clean_fqdn(fqdn, *extra_flags, **extra_kw_flags):
-    command = [config.PUPPET_BINARY, "node", "clean"]
+    command = [cfg.PUPPET_BINARY, "node", "clean"]
 
     flags = ["--%s" % flag for flag in extra_flags]
     command += flags
@@ -46,7 +46,7 @@ def clean_fqdn(fqdn, *extra_flags, **extra_kw_flags):
 
 def node_clean(machine):
     puppetcerts = \
-        subprocess.check_output([config.PUPPET_BINARY, 'cert', '--list', '--all'])
+        subprocess.check_output([cfg.PUPPET_BINARY, 'cert', '--list', '--all'])
     puppetcerts = puppetcerts.split("\n")
     puppetcert_names = \
         [shlex.split(x)[1] for x in puppetcerts if x and machine.name.lower() in x]
