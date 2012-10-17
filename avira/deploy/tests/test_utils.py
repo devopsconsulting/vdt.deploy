@@ -3,12 +3,17 @@ from unittest import TestCase
 import mox
 import avira.deploy.utils
 import avira.deploy.certificate
+import mockconfig
 
 
 class DeployUtilsTest(TestCase):
 
     def setUp(self):
         self.mox = mox.Mox()
+        reload(mockconfig)
+        self.mockconfig = mockconfig.MockConfig
+        self.mockconfig.CERT_REQ = "/tmp/certificates.txt"
+        avira.deploy.certificate.cfg = self.mockconfig
 
     def tearDown(self):
         self.mox.UnsetStubs()
@@ -28,19 +33,17 @@ class DeployUtilsTest(TestCase):
         self.mox.VerifyAll()
 
     def test_pending_certificate(self):
-        from avira.deploy import config
-        config.CERT_REQ = "/tmp/certificates.txt"
-        f = open(config.CERT_REQ, "wb")
+        f = open(self.mockconfig.CERT_REQ, "wb")
         f.write("1234\n5678\n")
         f.close()
         # this one is already added, so it should not be added again
         avira.deploy.certificate.add_pending_certificate("1234")
-        f = open(config.CERT_REQ, "r")
+        f = open(self.mockconfig.CERT_REQ, "r")
         data = f.readlines()
         self.assertEqual(data, ['1234\n', '5678\n'])
         f.close()
         # this one should be added to it
         avira.deploy.certificate.add_pending_certificate("1111")
-        f = open(config.CERT_REQ, "r")
+        f = open(self.mockconfig.CERT_REQ, "r")
         data = f.readlines()
         self.assertEqual(data, ['1234\n', '5678\n', '1111\n'])
