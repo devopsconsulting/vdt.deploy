@@ -3,12 +3,11 @@ import subprocess
 from avira.deploy import api, pretty
 from avira.deploy.clean import run_machine_cleanup, \
     remove_machine_port_forwards, node_clean, clean_foreman
-from avira.deploy.config import APIURL, APIKEY, SECRETKEY, DOMAINID, ZONEID, \
-    TEMPLATEID, SERVICEID, CLOUDINIT_PUPPET, CLOUDINIT_BASE, PUPPETMASTER
 from avira.deploy.userdata import UserData
 from avira.deploy.utils import find_by_key, \
     find_machine, wrap, sort_by_key, is_puppetmaster, check_call_with_timeout
 from avira.deploy.certificate import add_pending_certificate
+from avira.deploy.config import cfg
 
 
 class Provider(api.CmdApi):
@@ -16,7 +15,7 @@ class Provider(api.CmdApi):
     prompt = "deploy> "
 
     def __init__(self):
-        self.client = Client(APIURL, APIKEY, SECRETKEY)
+        self.client = Client(cfg.APIURL, cfg.APIKEY, cfg.SECRETKEY)
         api.CmdApi.__init__(self)
 
     def do_status(self, all=False):
@@ -28,7 +27,7 @@ class Provider(api.CmdApi):
             deploy> status [all]
         """
         machines = self.client.listVirtualMachines({
-            'domainid': DOMAINID
+            'domainid': cfg.DOMAINID
         })
         machines = sort_by_key(machines, 'displayname')
         if not all:
@@ -75,7 +74,7 @@ class Provider(api.CmdApi):
             return
 
         vms = self.client.listVirtualMachines({
-            'domainid': DOMAINID
+            'domainid': cfg.DOMAINID
         })
 
         KILLED = ['Destroyed', 'Expunging']
@@ -83,16 +82,16 @@ class Provider(api.CmdApi):
             [x['displayname'] for x in vms if x['state'] not in KILLED]
 
         if displayname not in existing_displaynames:
-            cloudinit_url = CLOUDINIT_BASE if base else CLOUDINIT_PUPPET
+            cloudinit_url = cfg.CLOUDINIT_BASE if base else cfg.CLOUDINIT_PUPPET
 
             args = {
-                'serviceofferingid': SERVICEID,
-                'templateid': TEMPLATEID,
-                'zoneid': ZONEID,
-                'domainid': DOMAINID,
+                'serviceofferingid': cfg.SERVICEID,
+                'templateid': cfg.TEMPLATEID,
+                'zoneid': cfg.ZONEID,
+                'domainid': cfg.DOMAINID,
                 'displayname': displayname,
                 'userdata': UserData(cloudinit_url,
-                                     PUPPETMASTER,
+                                     cfg.PUPPETMASTER,
                                      **userdata).base64(),
                 'networkids': networkids,
             }
@@ -119,7 +118,7 @@ class Provider(api.CmdApi):
         """
 
         machines = self.client.listVirtualMachines({
-            'domainid': DOMAINID
+            'domainid': cfg.DOMAINID
         })
 
         machine = find_machine(machine_id, machines)
@@ -164,7 +163,7 @@ class Provider(api.CmdApi):
         """
 
         machines = self.client.listVirtualMachines({
-            'domainid': DOMAINID
+            'domainid': cfg.DOMAINID
         })
         machine = find_machine(machine_id, machines)
 
@@ -184,7 +183,7 @@ class Provider(api.CmdApi):
         """
 
         machines = self.client.listVirtualMachines({
-            'domainid': DOMAINID
+            'domainid': cfg.DOMAINID
         })
         machine = find_machine(machine_id, machines)
 
@@ -204,7 +203,7 @@ class Provider(api.CmdApi):
         """
 
         machines = self.client.listVirtualMachines({
-            'domainid': DOMAINID
+            'domainid': cfg.DOMAINID
         })
         machine = find_machine(machine_id, machines)
 
@@ -246,14 +245,14 @@ class Provider(api.CmdApi):
 
         elif resource_type == "networks":
             networks = self.client.listNetworks({
-                'zoneid': ZONEID
+                'zoneid': cfg.ZONEID
             })
             networks = sort_by_key(networks, 'id')
             pretty.networks_print(networks)
 
         elif resource_type == "portforwardings":
             portforwardings = self.client.listPortForwardingRules({
-                'domain': DOMAINID
+                'domain': cfg.DOMAINID
             })
             portforwardings = sort_by_key(portforwardings, 'privateport')
             portforwardings.reverse()
@@ -272,7 +271,7 @@ class Provider(api.CmdApi):
         """
         if request_type == "ip":
             response = self.client.associateIpAddress({
-                'zoneid': ZONEID
+                'zoneid': cfg.ZONEID
             })
             print "created ip address with id %(id)s" % response
 
@@ -343,7 +342,7 @@ class Provider(api.CmdApi):
             ssh ipaddress -p 5034
         """
         machines = self.client.listVirtualMachines({
-            'domainid': DOMAINID
+            'domainid': cfg.DOMAINID
         })
         machine = find_machine(machine_id, machines)
         if machine is None:
@@ -397,7 +396,7 @@ class Provider(api.CmdApi):
             KICK_CMD.append("role=%s" % role)
         else:
             machines = self.client.listVirtualMachines({
-                'domainid': DOMAINID
+                'domainid': cfg.DOMAINID
             })
             machine = find_machine(machine_id, machines)
             if machine is None:

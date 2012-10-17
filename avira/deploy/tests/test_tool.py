@@ -4,8 +4,8 @@ import mox
 import testdata
 import unittest
 from StringIO import StringIO
-#import avira.deploy.providers.provider_cloudstack
-from mockconfig import MockConfig
+import avira.deploy.providers.provider_cloudstack
+import mockconfig
 import avira.deploy.tool
 import avira.deploy.config
 
@@ -13,6 +13,8 @@ import avira.deploy.config
 class ProviderCloudstackTest(unittest.TestCase):
 
     def setUp(self):
+        reload(mockconfig)
+        self.mockconfig = mockconfig.MockConfig
         self.saved_stdout = sys.stdout
         self.out = StringIO()
         sys.stdout = self.out
@@ -25,8 +27,8 @@ class ProviderCloudstackTest(unittest.TestCase):
 
     def test_main_unverified_puppetmaster(self):
         # test that we cannot start the tool without a verified puppetmaster
-        MockConfig.PUPPETMASTER_VERIFIED = "0"
-        avira.deploy.tool.cfg = MockConfig
+        self.mockconfig.PUPPETMASTER_VERIFIED = "0"
+        avira.deploy.tool.cfg = self.mockconfig
 
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
         avira.deploy.tool.main()
@@ -35,14 +37,13 @@ class ProviderCloudstackTest(unittest.TestCase):
 
     def test_main_no_puppetmaster(self):
        # test that we cannot start the tool without the puppetmaster specified
-        MockConfig.PUPPETMASTER = ""
-        avira.deploy.tool.cfg = MockConfig
+        self.mockconfig.PUPPETMASTER = ""
+        avira.deploy.tool.cfg = self.mockconfig
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
         avira.deploy.tool.main()
         output = self.out.getvalue()
         self.assertEqual(output, testdata.no_puppetmaster)
 
-    @unittest.skip("Needs refactoring of config")
     def test_main_single_line(self):
         # Mock the Cloudstack client library
         self.mock_client = self.mox.CreateMock(cloudstack.client.Client)
@@ -56,6 +57,8 @@ class ProviderCloudstackTest(unittest.TestCase):
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                          AndReturn(testdata.listVirtualMachines_output)
         self.mox.ReplayAll()
+        avira.deploy.tool.cfg = self.mockconfig
+        avira.deploy.providers.provider_cloudstack.cfg = self.mockconfig
         avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
         avira.deploy.tool.main()
         output = self.out.getvalue()

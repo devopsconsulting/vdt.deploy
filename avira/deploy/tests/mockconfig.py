@@ -1,5 +1,5 @@
 class MockConfig:
-    PROVIDER = "Cloudstack"
+    PROVIDER = "cloudstack"
     PUPPETMASTER = "localhost"
     PUPPETMASTER_VERIFIED = "1"
     CLEANUP_TIMEOUT = 20
