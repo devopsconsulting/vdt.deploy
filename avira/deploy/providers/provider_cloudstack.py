@@ -147,12 +147,6 @@ class Provider(api.CmdApi):
             # now clean all offline nodes from foreman
             clean_foreman()
 
-    def do_clean(self, _=None):
-        """
-        Clean expunged hosts from foreman
-        """
-        clean_foreman()
-
     def do_start(self, machine_id):
         """
         Start a stopped machine.
