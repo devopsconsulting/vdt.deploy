@@ -12,7 +12,7 @@ from avira.deploy.config import cfg
 
 class Provider(api.CmdApi):
     """Cloudstack Deployment CMD Provider"""
-    prompt = "deploy> "
+    prompt = "cloudstack> "
 
     def __init__(self):
         self.client = Client(cfg.APIURL, cfg.APIKEY, cfg.SECRETKEY)
@@ -24,7 +24,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> status [all]
+            cloudstack> status [all]
         """
         machines = self.client.listVirtualMachines({
             'domainid': cfg.DOMAINID
@@ -44,29 +44,29 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> deploy <displayname> <userdata>
+            cloudstack> deploy <displayname> <userdata>
                     optional: <networkids> <base>
 
         To specify the puppet role in the userdata, which will install and
         configure the machine according to the specified role use::
 
-            deploy> deploy loadbalancer1 role=lvs
+            cloudstack> deploy loadbalancer1 role=lvs
 
         To specify additional user data, specify additional keywords::
 
-            deploy> deploy loadbalancer1 role=lvs environment=test etc=more
+            cloudstack> deploy loadbalancer1 role=lvs environment=test etc=more
 
         This will install the machine as a Linux virtual server.
 
         You can also specify additional networks using the following::
 
-            deploy> deploy loadbalancer1 role=lvs networkids=312,313
+            cloudstack> deploy loadbalancer1 role=lvs networkids=312,313
 
         if you don't want pierrot-agent (puppet agent) automatically installed,
         you can specify 'base' as a optional parameter. This is needed for the
         puppetmaster which needs manual installation::
 
-            deploy> deploy puppetmaster role=puppetmaster base
+            cloudstack> deploy puppetmaster role=puppetmaster base
 
         """
         if not userdata:
@@ -114,7 +114,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> destroy <machine_id>
+            cloudstack> destroy <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -159,7 +159,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> start <machine_id>
+            cloudstack> start <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -179,7 +179,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> stop <machine_id>
+            cloudstack> stop <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -199,7 +199,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> reboot <machine_id>
+            cloudstack> reboot <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -219,7 +219,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> list <templates|serviceofferings|
+            cloudstack> list <templates|serviceofferings|
                           diskofferings|ip|networks|portforwardings>
         """
 
@@ -267,7 +267,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> request ip
+            cloudstack> request ip
         """
         if request_type == "ip":
             response = self.client.associateIpAddress({
@@ -284,7 +284,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> release ip <release_id>
+            cloudstack> release ip <release_id>
         """
         if request_type == "ip":
             response = self.client.disassociateIpAddress({
@@ -300,15 +300,15 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> portfw <machine id> <ip id> <public port> <private port>
+            cloudstack> portfw <machine id> <ip id> <public port> <private port>
 
         You can get the machine id by using the following command::
 
-            deploy> status
+            cloudstack> status
 
         You can get the listed ip's by using the following command::
 
-            deploy> list ip
+            cloudstack> list ip
         """
 
         self.client.createPortForwardingRule({
@@ -327,14 +327,14 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> ssh <machine_id>
+            cloudstack> ssh <machine_id>
 
         This adds a port forward under the machine id to port 22 on the machine
         eg:
 
         machine id is 5034, after running::
 
-            deploy> ssh 5034
+            cloudstack> ssh 5034
 
         I can now access the machine though ssh on all my registered ip
         addresses as follows::
@@ -384,11 +384,11 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> kick <machine_id>
+            cloudstack> kick <machine_id>
 
         or::
 
-            deploy> kick role=<role>
+            cloudstack> kick role=<role>
 
         """
         KICK_CMD = ['mco', "puppetd", "runonce", "-F"]
@@ -415,7 +415,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> quit
+            cloudstack> quit
         """
         return True
 
@@ -425,8 +425,8 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> mco find all
-            deploy> mco puppetd status -F role=puppetmaster
+            cloudstack> mco find all
+            cloudstack> mco puppetd status -F role=puppetmaster
         """
         command = ['mco'] + list(args) + ['%s=%s' % (key, value) for (key, value) in kwargs.iteritems()]
         check_call_with_timeout(command, 5)
