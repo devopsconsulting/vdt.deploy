@@ -13,7 +13,7 @@ def main():
                 f.write(template)
                 f.close()
             print "Please edit your config at %s" % configfile
-            sys.exit(0)
+            exit(0)
 
     if not os.path.isfile(configfile):
         print "Please run avira-deploy init <provider> first\n"

@@ -7,46 +7,23 @@ import subprocess
 from unittest import TestCase
 from StringIO import StringIO
 from base64 import encodestring
-import ConfigParser
-
-os.environ["HOME"] = "/tmp"
-configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
-import avira.deploy.config
-
-
-def setupConfig():
-    avira.deploy.config.init("cloudstack", configfile)
-    reload(avira.deploy.config)
-
-    config = ConfigParser.RawConfigParser()
-    config.read(configfile)
-    config.set('main', 'provider', 'cloudstack')
-    config.set('main', 'puppetmaster', 'localhost')
-    config.set('main', 'puppetmaster_verified', '1')
-    with open(configfile, 'wb') as f:
-        config.write(f)
-        f.close()
-
-
-def removeConfig():
-    configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
-    # remove the config
-    if os.path.exists(configfile):
-        os.remove(configfile)
-
-setupConfig()
-from avira.deploy.utils import StringCaster
 import avira.deploy.providers.provider_cloudstack
 import avira.deploy.tool
+import mockconfig
+from avira.deploy.utils import StringCaster
 
 
 class ProviderCloudstackTest(TestCase):
 
     def setUp(self):
+        reload(mockconfig)
+        self.mockconfig = mockconfig.MockConfig
+        avira.deploy.tool.cfg = self.mockconfig
+        avira.deploy.providers.provider_cloudstack.cfg = self.mockconfig
+
         self.saved_stdout = sys.stdout
         self.out = StringIO()
         sys.stdout = self.out
-        setupConfig()
         self.mox = mox.Mox()
         # Mock the Cloudstack client library
         self.mock_client = self.mox.CreateMock(cloudstack.client.Client)
@@ -55,26 +32,12 @@ class ProviderCloudstackTest(TestCase):
         avira.deploy.providers.provider_cloudstack.Client("apiurl",
                                  "apikey",
                                  "secret").AndReturn(self.mock_client)
-        # set some expected values
-        avira.deploy.providers.provider_cloudstack.APIURL = "apiurl"
-        avira.deploy.providers.provider_cloudstack.APIKEY = "apikey"
-        avira.deploy.providers.provider_cloudstack.SECRETKEY = "secret"
-        avira.deploy.providers.provider_cloudstack.DOMAINID = "1"
-        avira.deploy.providers.provider_cloudstack.SERVICEID = "1"
-        avira.deploy.providers.provider_cloudstack.TEMPLATEID = "1"
-        avira.deploy.providers.provider_cloudstack.ZONEID = "1"
-        avira.deploy.providers.provider_cloudstack.DOMAINID = "1"
-        avira.deploy.providers.provider_cloudstack.PUPPETMASTER = "localhost"
-        avira.deploy.providers.provider_cloudstack.PUPPETMASTER_VERIFIED = "1"
-        avira.deploy.providers.provider_cloudstack.CLOUDINIT_PUPPET = \
-                "http://localhost/autodeploy/vdt-puppet-agent.cloudinit"
-        # and set some default userdata
+       # and set some default userdata
         self.sample_userdata = "#include %s\n#puppetmaster=%s\n" % \
-                 (avira.deploy.providers.provider_cloudstack.CLOUDINIT_PUPPET,
-                  avira.deploy.providers.provider_cloudstack.PUPPETMASTER)
+                 (self.mockconfig.CLOUDINIT_PUPPET,
+                  self.mockconfig.PUPPETMASTER)
 
     def tearDown(self):
-        removeConfig()
         self.mox.UnsetStubs()
         sys.stdout = self.saved_stdout
         self.out = None
@@ -416,7 +379,7 @@ class ProviderCloudstackTest(TestCase):
 
     def test_list_networks(self):
         # list available networks
-        self.mock_client.listNetworks({'zoneid': avira.deploy.providers.provider_cloudstack.ZONEID}).\
+        self.mock_client.listNetworks({'zoneid': self.mockconfig.ZONEID}).\
                                     AndReturn(testdata.list_networks_output)
 
         self.mox.ReplayAll()
@@ -428,7 +391,7 @@ class ProviderCloudstackTest(TestCase):
 
     def test_list_portforwardings(self):
         # list current portforwardings
-        domainid = avira.deploy.providers.provider_cloudstack.DOMAINID
+        domainid = self.mockconfig.DOMAINID
         self.mock_client.listPortForwardingRules({'domain': domainid}).\
                                 AndReturn(testdata.list_portforwardings_output)
 
@@ -448,7 +411,7 @@ class ProviderCloudstackTest(TestCase):
 
     def test_request_ip(self):
         # test to request an ip
-        zoneid = avira.deploy.providers.provider_cloudstack.ZONEID
+        zoneid = self.mockconfig.ZONEID
         self.mock_client.associateIpAddress({'zoneid': zoneid}).\
                                     AndReturn({u'id': 1, u'jobid': 1})
 
