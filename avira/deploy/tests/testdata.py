@@ -1,8 +1,6 @@
 #PEP8 --ignore=E501
 listVirtualMachines_output = [{u'domain': u'Virtual Deployment Team', u'domainid': 1, u'haenable': False, u'templatename': u'VDT Base 0.5', u'securitygroup': [], u'zoneid': 1, u'cpunumber': 2, u'passwordenabled': False, u'id': 1111, u'cpuused': u'0.09%', u'state': u'Running', u'guestosid': 100, u'networkkbswrite': 285241, u'memory': 5120, u'serviceofferingid': 17, u'zonename': u'Z2-DTC1', u'displayname': u'testmachine1', u'nic': [{u'networkid': 307, u'macaddress': u'02:00:4c:c2:00:cb', u'type': u'Virtual', u'gateway': u'172.31.8.1', u'traffictype': u'Guest', u'netmask': u'255.255.255.0', u'ipaddress': u'172.31.8.164', u'id': 8346, u'isdefault': True}], u'cpuspeed': 3468, u'templateid': 392, u'account': u'vdt.admin', u'name': u'i-42-1111-VM', u'networkkbsread': 372302, u'created': u'2012-07-25T07:39:53+0000', u'hypervisor': u'KVM', u'rootdevicetype': u'NetworkFilesystem', u'rootdeviceid': 0, u'serviceofferingname': u'Small', u'templatedisplaytext': u'VDT Base 0.5'},
                               {u'domain': u'Virtual Deployment Team', u'domainid': 1, u'haenable': False, u'templatename': u'VDT Base 0.5', u'securitygroup': [], u'zoneid': 1, u'cpunumber': 2, u'passwordenabled': False, u'id': 1112, u'cpuused': u'0.09%', u'state': u'Stopped', u'guestosid': 100, u'networkkbswrite': 285241, u'memory': 5120, u'serviceofferingid': 17, u'zonename': u'Z2-DTC1', u'displayname': u'testmachine2', u'nic': [{u'networkid': 307, u'macaddress': u'02:00:4c:c2:00:ce', u'type': u'Virtual', u'gateway': u'172.31.8.1', u'traffictype': u'Guest', u'netmask': u'255.255.255.0', u'ipaddress': u'172.31.8.165', u'id': 8346, u'isdefault': True}], u'cpuspeed': 3468, u'templateid': 392, u'account': u'vdt.admin', u'name': u'i-42-1112-VM', u'networkkbsread': 372302, u'created': u'2012-07-25T07:39:53+0000', u'hypervisor': u'KVM', u'rootdevicetype': u'NetworkFilesystem', u'rootdeviceid': 0, u'serviceofferingname': u'Small', u'templatedisplaytext': u'VDT Base 0.5'}]
-do_status_output_running = "                  testmachine1    i-42-1111-VM  1111  Running\n"
-do_status_output_all = "                  testmachine1    i-42-1111-VM  1111  Running\n                  testmachine2    i-42-1112-VM  1112  Stopped\n"
 do_deploy_no_userdata = "Specify the machine userdata, (at least it's role)\n"
 do_deploy_duplicate = "A machine with the name testmachine1 already exists\n"
 do_deploy_output = "testmachine3 started, machine id 1113\n"
@@ -76,12 +74,10 @@ list_public_ip_output = {u'count': 2, u'publicipaddress': [{u'networkid': 1, u'a
 do_list_ip_output = "    1           1.1.1.1\n"
 
 list_networks_output = [{u'related': 1, u'zoneid': 1, u'displaytext': u'Test network', u'id': 1, u'networkdomain': u'network domain', u'service': [{u'capability': [{u'name': u'SupportedProtocols', u'value': u'tcp, udp'}, {u'name': u'SupportedLbAlgorithms', u'value': u'roundrobin,leastconn,source'}], u'name': u'Lb'}, {u'capability': [{u'name': u'AllowDnsSuffixModification', u'value': u'true'}], u'name': u'Dns'}, {u'name': u'Dhcp'}, {u'name': u'UserData'}], u'securitygroupenabled': False, u'gateway': u'1.1.1.1', u'state': u'Setup', u'isdefault': False, u'type': u'Direct', u'broadcasturi': u'vlan://1111', u'networkofferingavailability': u'Optional', u'networkofferingid': 1, u'vlan': u'1', u'networkofferingdisplaytext': u'Direct', u'traffictype': u'Guest', u'netmask': u'255.255.255.0', u'broadcastdomaintype': u'Vlan', u'isshared': True, u'endip': u'1.1.1.2', u'name': u'testnetwork', u'startip': u'1.1.1.1', u'dns2': u'3.3.3.3', u'dns1': u'2.2.2.2', u'networkofferingname': u'DefaultDirectNetworkOffering', u'issystem': False}]
-do_list_networks_output = "    1       testnetwork\n"
 
-list_portforwardings_output = [{u'protocol': u'tcp', u'virtualmachineid': 1111, u'ipaddress': u'1.1.1.1', u'cidrlist': '', u'ipaddressid': 1, u'virtualmachinedisplayname': u'testserver1', u'privateendport': u'22', u'state': u'Active', u'publicendport': u'1111', u'privateport': u'22', u'virtualmachinename': u'i-42-1111-VM', u'publicport': u'1111', u'id': 1}]
-do_list_portforwardings_output = "    1           1.1.1.1    1111 to    22  on machine  1111-testserver1\n"
+list_portforwardings_output = [{u'protocol': u'tcp', u'virtualmachineid': 1111, u'ipaddress': u'1.1.1.1', u'cidrlist': '', u'ipaddressid': 1, u'virtualmachinedisplayname': u'testserver1', u'privateendport': u'22', u'state': u'Active', u'publicendport': u'1111', u'privateport': u'22', u'virtualmachinename': u'i-42-1111-VM', u'publicport': u'22001', u'id': 1}]
 
-ssh_exists = "machine 1111 already has a ssh portforward with ip 1.1.1.1\n"
+ssh_exists = "machine 1111 already has a ssh portforward with ip 1.1.1.1 to port 22001\n"
 
 kick_output = """
 

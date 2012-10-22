@@ -87,7 +87,7 @@ class ToolTest(unittest.TestCase):
         except SystemExit:
             pass
         output = self.out.getvalue()
-        self.assertEqual(output, testdata.do_status_output_running)
+        self.assertTrue("Running" in output)
         self.mox.VerifyAll()
 
     def test_generate_config(self):
@@ -99,4 +99,3 @@ class ToolTest(unittest.TestCase):
         cfg = Config()
         print cfg.PUPPETMASTER
         self.assertEqual(cfg.PUPPETMASTER, "")
-

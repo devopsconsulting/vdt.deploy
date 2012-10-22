@@ -354,7 +354,7 @@ class Provider(api.CmdApi):
         portforwards = wrap(self.client.listPortForwardingRules())
 
         def select_ssh_pfwds(pf):
-            return pf.virtualmachineid == machine.id and pf.publicport==ssh_public_port 
+            return pf.virtualmachineid == machine.id and pf.publicport == ssh_public_port
         existing_ssh_pfwds = filter(select_ssh_pfwds, portforwards)
 
         # add the port forward to each public ip, if it doesn't exist yet.
