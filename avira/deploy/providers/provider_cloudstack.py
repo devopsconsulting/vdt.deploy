@@ -214,7 +214,8 @@ class Provider(api.CmdApi):
         Usage::
 
             cloudstack> list <templates|serviceofferings|
-                          diskofferings|ip|networks|portforwardings>
+                          diskofferings|ip|networks|portforwardings|
+                          firewall>
         """
 
         if resource_type == "templates":
