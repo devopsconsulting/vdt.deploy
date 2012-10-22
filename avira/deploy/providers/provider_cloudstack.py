@@ -1,5 +1,5 @@
-from cloudstack.client import Client
 import subprocess
+from cloudstack.client import Client
 from avira.deploy import api, pretty
 from avira.deploy.clean import run_machine_cleanup, \
     remove_machine_port_forwards, node_clean, clean_foreman
@@ -12,7 +12,7 @@ from avira.deploy.config import cfg
 
 class Provider(api.CmdApi):
     """Cloudstack Deployment CMD Provider"""
-    prompt = "deploy> "
+    prompt = "cloudstack> "
 
     def __init__(self):
         self.client = Client(cfg.APIURL, cfg.APIKEY, cfg.SECRETKEY)
@@ -24,7 +24,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> status [all]
+            cloudstack> status [all]
         """
         machines = self.client.listVirtualMachines({
             'domainid': cfg.DOMAINID
@@ -44,29 +44,29 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> deploy <displayname> <userdata>
+            cloudstack> deploy <displayname> <userdata>
                     optional: <networkids> <base>
 
         To specify the puppet role in the userdata, which will install and
         configure the machine according to the specified role use::
 
-            deploy> deploy loadbalancer1 role=lvs
+            cloudstack> deploy loadbalancer1 role=lvs
 
         To specify additional user data, specify additional keywords::
 
-            deploy> deploy loadbalancer1 role=lvs environment=test etc=more
+            cloudstack> deploy loadbalancer1 role=lvs environment=test etc=more
 
         This will install the machine as a Linux virtual server.
 
         You can also specify additional networks using the following::
 
-            deploy> deploy loadbalancer1 role=lvs networkids=312,313
+            cloudstack> deploy loadbalancer1 role=lvs networkids=312,313
 
         if you don't want pierrot-agent (puppet agent) automatically installed,
         you can specify 'base' as a optional parameter. This is needed for the
         puppetmaster which needs manual installation::
 
-            deploy> deploy puppetmaster role=puppetmaster base
+            cloudstack> deploy puppetmaster role=puppetmaster base
 
         """
         if not userdata:
@@ -114,7 +114,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> destroy <machine_id>
+            cloudstack> destroy <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -129,8 +129,10 @@ class Provider(api.CmdApi):
             if is_puppetmaster(machine.id):
                 print "You are not allowed to destroy the puppetmaster"
                 return
-            print "running cleanup job on %s." % machine.name
-            run_machine_cleanup(machine)
+            # for unknown reasons this is not working expected...
+            # commented out for now
+            #print "running cleanup job on %s." % machine.name
+            #run_machine_cleanup(machine)
 
             print "Destroying machine with id %s" % machine.id
             self.client.destroyVirtualMachine({
@@ -147,19 +149,13 @@ class Provider(api.CmdApi):
             # now clean all offline nodes from foreman
             clean_foreman()
 
-    def do_clean(self, _=None):
-        """
-        Clean expunged hosts from foreman
-        """
-        clean_foreman()
-
     def do_start(self, machine_id):
         """
         Start a stopped machine.
 
         Usage::
 
-            deploy> start <machine_id>
+            cloudstack> start <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -179,7 +175,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> stop <machine_id>
+            cloudstack> stop <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -199,7 +195,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> reboot <machine_id>
+            cloudstack> reboot <machine_id>
         """
 
         machines = self.client.listVirtualMachines({
@@ -219,7 +215,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> list <templates|serviceofferings|
+            cloudstack> list <templates|serviceofferings|
                           diskofferings|ip|networks|portforwardings>
         """
 
@@ -257,7 +253,13 @@ class Provider(api.CmdApi):
             portforwardings = sort_by_key(portforwardings, 'privateport')
             portforwardings.reverse()
             pretty.portforwardings_print(portforwardings)
-
+        elif resource_type == "firewall":
+            firewall_rules = self.client.listFirewallRules({
+                'domain': cfg.DOMAINID
+            })
+            firewall_rules = sort_by_key(firewall_rules, 'ipaddress')
+            firewall_rules.reverse()
+            pretty.firewallrules_print(firewall_rules)
         else:
             print "Not implemented"
 
@@ -267,7 +269,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> request ip
+            cloudstack> request ip
         """
         if request_type == "ip":
             response = self.client.associateIpAddress({
@@ -284,7 +286,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> release ip <release_id>
+            cloudstack> release ip <release_id>
         """
         if request_type == "ip":
             response = self.client.disassociateIpAddress({
@@ -300,15 +302,15 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> portfw <machine id> <ip id> <public port> <private port>
+            cloudstack> portfw <machine id> <ip id> <public port> <private port>
 
         You can get the machine id by using the following command::
 
-            deploy> status
+            cloudstack> status
 
         You can get the listed ip's by using the following command::
 
-            deploy> list ip
+            cloudstack> list ip
         """
 
         self.client.createPortForwardingRule({
@@ -321,25 +323,25 @@ class Provider(api.CmdApi):
         print "added portforward for machine %s (%s -> %s)" % (
             machine_id, public_port, private_port)
 
-    def do_ssh(self, machine_id):
+    def do_ssh(self, machine_id, ssh_public_port):
         """
         Make a machine accessible through ssh.
 
         Usage::
 
-            deploy> ssh <machine_id>
+            cloudstack> ssh <machine_id> <ssh_public_port>
 
         This adds a port forward under the machine id to port 22 on the machine
         eg:
 
         machine id is 5034, after running::
 
-            deploy> ssh 5034
+            cloudstack> ssh 5034 22001
 
         I can now access the machine though ssh on all my registered ip
         addresses as follows::
 
-            ssh ipaddress -p 5034
+            ssh ipaddress -p 22001
         """
         machines = self.client.listVirtualMachines({
             'domainid': cfg.DOMAINID
@@ -352,7 +354,7 @@ class Provider(api.CmdApi):
         portforwards = wrap(self.client.listPortForwardingRules())
 
         def select_ssh_pfwds(pf):
-            return pf.virtualmachineid == machine.id and pf.privateport == '22'
+            return pf.virtualmachineid == machine.id and pf.publicport==ssh_public_port 
         existing_ssh_pfwds = filter(select_ssh_pfwds, portforwards)
 
         # add the port forward to each public ip, if it doesn't exist yet.
@@ -360,19 +362,20 @@ class Provider(api.CmdApi):
         for ip in ips:
             current_fw = find_by_key(existing_ssh_pfwds, ipaddressid=ip.id)
             if current_fw is not None:
-                print "machine %s already has a ssh portforward with ip %s" % (
-                    machine_id, ip.ipaddress)
+                print "machine %s already has a ssh portforward with ip %s to port %s" % (
+                    machine_id, ip.ipaddress, ssh_public_port)
                 continue
             else:
                 self.client.createPortForwardingRule({
                     'ipaddressid': ip.id,
                     'privateport': "22",
-                    'publicport': machine.id,
+                    'publicport': str(ssh_public_port),
                     'protocol': 'TCP',
-                    'virtualmachineid': machine.id
+                    'virtualmachineid': machine.id,
+                    'openfirewall': "True",
                 })
                 print "machine %s is now reachable (via %s:%s)" % (
-                    machine_id, ip.ipaddress, machine_id)
+                    machine_id, ip.ipaddress, ssh_public_port)
 
     def do_kick(self, machine_id=None, role=None):
         """
@@ -384,11 +387,11 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> kick <machine_id>
+            cloudstack> kick <machine_id>
 
         or::
 
-            deploy> kick role=<role>
+            cloudstack> kick role=<role>
 
         """
         KICK_CMD = ['mco', "puppetd", "runonce", "-F"]
@@ -415,7 +418,7 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> quit
+            cloudstack> quit
         """
         return True
 
@@ -425,8 +428,8 @@ class Provider(api.CmdApi):
 
         Usage::
 
-            deploy> mco find all
-            deploy> mco puppetd status -F role=puppetmaster
+            cloudstack> mco find all
+            cloudstack> mco puppetd status -F role=puppetmaster
         """
         command = ['mco'] + list(args) + ['%s=%s' % (key, value) for (key, value) in kwargs.iteritems()]
         check_call_with_timeout(command, 5)

@@ -3,7 +3,7 @@
 
 def machine_print(machines):
     for machine in machines:
-        print "%(displayname)30s %(name)15s %(id)5s  %(state)s" % machine
+        print "%(displayname)30s %(id)40s %(state)10s" % machine
 
 
 def serviceofferings_print(serviceofferings):
@@ -29,12 +29,20 @@ def public_ipaddresses_print(ipaddresses):
 
 def networks_print(networks):
     for network in networks:
-        print "%(id)5s   %(name)15s" % network
+        print "%(id)40s   %(name)15s" % network
 
 PORTFWD_LINE = \
-"%(id)5s   %(ipaddress)15s   %(publicport)5s to %(privateport)5s  on machine %(virtualmachineid)5s-%(virtualmachinedisplayname)s"
+"%(id)37s  %(ipaddress)15s  %(publicport)5s to %(privateport)5s on machine %(virtualmachineid)37s (%(virtualmachinedisplayname)s)"
 
 
 def portforwardings_print(portforwardings):
     for portforwarding in portforwardings:
         print PORTFWD_LINE % portforwarding
+
+FIREWALLRULE_LINE = \
+"%(id)37s   %(ipaddress)15s  %(cidrlist)10s   %(startport)5s to %(endport)5s"
+
+def firewallrules_print(firewall_rules):
+    for firewall_rule in firewall_rules:
+        print FIREWALLRULE_LINE % firewall_rule
+
