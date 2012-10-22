@@ -14,7 +14,7 @@ def run_machine_cleanup(machine):
     # run cleanup but kill the process after CLEANUP_TIMEOUT has passed
     cleanup_cmd = 'mco rpc -v cleanup cleanup -F hostname=%s' % machine.name
     check_call_with_timeout(cleanup_cmd.split(),
-                            timeout_seconds=cfg.CLEANUP_TIMEOUT)
+                            timeout_seconds=int(cfg.CLEANUP_TIMEOUT))
 
 
 def remove_machine_port_forwards(machine, client):

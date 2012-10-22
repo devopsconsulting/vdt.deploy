@@ -129,10 +129,8 @@ class Provider(api.CmdApi):
             if is_puppetmaster(machine.id):
                 print "You are not allowed to destroy the puppetmaster"
                 return
-            # for unknown reasons this is not working expected...
-            # commented out for now
-            #print "running cleanup job on %s." % machine.name
-            #run_machine_cleanup(machine)
+            print "running cleanup job on %s." % machine.name
+            run_machine_cleanup(machine)
 
             print "Destroying machine with id %s" % machine.id
             self.client.destroyVirtualMachine({
