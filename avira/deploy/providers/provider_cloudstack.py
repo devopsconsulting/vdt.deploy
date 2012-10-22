@@ -253,7 +253,13 @@ class Provider(api.CmdApi):
             portforwardings = sort_by_key(portforwardings, 'privateport')
             portforwardings.reverse()
             pretty.portforwardings_print(portforwardings)
-
+        elif resource_type == "firewall":
+            firewall_rules = self.client.listFirewallRules({
+                'domain': cfg.DOMAINID
+            })
+            firewall_rules = sort_by_key(firewall_rules, 'ipaddress')
+            firewall_rules.reverse()
+            pretty.firewallrules_print(firewall_rules)
         else:
             print "Not implemented"
 
@@ -317,25 +323,25 @@ class Provider(api.CmdApi):
         print "added portforward for machine %s (%s -> %s)" % (
             machine_id, public_port, private_port)
 
-    def do_ssh(self, machine_id):
+    def do_ssh(self, machine_id, ssh_public_port):
         """
         Make a machine accessible through ssh.
 
         Usage::
 
-            cloudstack> ssh <machine_id>
+            cloudstack> ssh <machine_id> <ssh_public_port>
 
         This adds a port forward under the machine id to port 22 on the machine
         eg:
 
         machine id is 5034, after running::
 
-            cloudstack> ssh 5034
+            cloudstack> ssh 5034 22001
 
         I can now access the machine though ssh on all my registered ip
         addresses as follows::
 
-            ssh ipaddress -p 5034
+            ssh ipaddress -p 22001
         """
         machines = self.client.listVirtualMachines({
             'domainid': cfg.DOMAINID
@@ -348,7 +354,7 @@ class Provider(api.CmdApi):
         portforwards = wrap(self.client.listPortForwardingRules())
 
         def select_ssh_pfwds(pf):
-            return pf.virtualmachineid == machine.id and pf.privateport == '22'
+            return pf.virtualmachineid == machine.id and pf.publicport==ssh_public_port 
         existing_ssh_pfwds = filter(select_ssh_pfwds, portforwards)
 
         # add the port forward to each public ip, if it doesn't exist yet.
@@ -356,19 +362,20 @@ class Provider(api.CmdApi):
         for ip in ips:
             current_fw = find_by_key(existing_ssh_pfwds, ipaddressid=ip.id)
             if current_fw is not None:
-                print "machine %s already has a ssh portforward with ip %s" % (
-                    machine_id, ip.ipaddress)
+                print "machine %s already has a ssh portforward with ip %s to port %s" % (
+                    machine_id, ip.ipaddress, ssh_public_port)
                 continue
             else:
                 self.client.createPortForwardingRule({
                     'ipaddressid': ip.id,
                     'privateport': "22",
-                    'publicport': machine.id,
+                    'publicport': str(ssh_public_port),
                     'protocol': 'TCP',
-                    'virtualmachineid': machine.id
+                    'virtualmachineid': machine.id,
+                    'openfirewall': "True",
                 })
                 print "machine %s is now reachable (via %s:%s)" % (
-                    machine_id, ip.ipaddress, machine_id)
+                    machine_id, ip.ipaddress, ssh_public_port)
 
     def do_kick(self, machine_id=None, role=None):
         """

@@ -38,3 +38,11 @@ PORTFWD_LINE = \
 def portforwardings_print(portforwardings):
     for portforwarding in portforwardings:
         print PORTFWD_LINE % portforwarding
+
+FIREWALLRULE_LINE = \
+"%(id)37s   %(ipaddress)15s  %(cidrlist)10s   %(startport)5s to %(endport)5s"
+
+def firewallrules_print(firewall_rules):
+    for firewall_rule in firewall_rules:
+        print FIREWALLRULE_LINE % firewall_rule
+

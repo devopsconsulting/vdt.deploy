@@ -18,17 +18,22 @@ def run_machine_cleanup(machine):
 
 
 def remove_machine_port_forwards(machine, client):
-    response = wrap(client.listPortForwardingRules())
-    for portforward in response:
+    portforwardings = wrap(client.listPortForwardingRules())
+    firewall_rules = wrap(client.listFirewallRules())
+    for portforward in portforwardings:
         if portforward.virtualmachineid == machine.id:
             print "Removing portforward %s:%s -> %s" % (
                 portforward.ipaddress,
                 portforward.publicport,
                 portforward.privateport
             )
-
             args = {'id': portforward.id}
             client.deletePortForwardingRule(args)
+            for firewall_rule in firewall_rules:
+                if firewall_rule.startport == portforward.publicport:
+                    print "Removing firewall rule %s" % firewall_rule.id
+                    args = {'id': firewall_rule.id}
+                    client.deleteFirewallRule(args)
 
 
 def clean_fqdn(fqdn, *extra_flags, **extra_kw_flags):
