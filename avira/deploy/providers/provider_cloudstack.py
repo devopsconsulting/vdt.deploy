@@ -1,5 +1,5 @@
-from cloudstack.client import Client
 import subprocess
+from cloudstack.client import Client
 from avira.deploy import api, pretty
 from avira.deploy.clean import run_machine_cleanup, \
     remove_machine_port_forwards, node_clean, clean_foreman
@@ -129,8 +129,10 @@ class Provider(api.CmdApi):
             if is_puppetmaster(machine.id):
                 print "You are not allowed to destroy the puppetmaster"
                 return
-            print "running cleanup job on %s." % machine.name
-            run_machine_cleanup(machine)
+            # for unknown reasons this is not working expected...
+            # commented out for now
+            #print "running cleanup job on %s." % machine.name
+            #run_machine_cleanup(machine)
 
             print "Destroying machine with id %s" % machine.id
             self.client.destroyVirtualMachine({
