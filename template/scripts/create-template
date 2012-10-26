@@ -37,7 +37,7 @@ kpartx -a /dev/loop0
 echo ">> Creating filesystem..."
 losetup /dev/loop1 /dev/mapper/loop0p1
 losetup /dev/loop2 /dev/mapper/loop0p2
-mkfs.ext3 -q /dev/loop1
+mkfs.ext3 -j /dev/loop1
 mkswap /dev/loop2
 
 echo ">> Mounting filesystem..."
