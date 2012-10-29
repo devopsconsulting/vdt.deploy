@@ -71,11 +71,7 @@ echo "root:avira" | chpasswd
 echo ">> Install XEN tools..."
 dpkg -i /root/xe-guest-utilities_6.0.2-762_amd64.deb
 
-echo ">> Configuring Puppet repo..."
-cd /tmp
-wget -O /tmp/puppetlabs-release-precise.deb http://apt.puppetlabs.com/puppetlabs-release-precise.deb
-dpkg -i /tmp/puppetlabs-release-precise.deb
-
+echo ">> Configuring Puppet pinning..."
 cat > /etc/apt/preferences.d/pin-puppet << EOF
 Package: puppet-common
 Pin: version 2.7.19-1puppetlabs2
@@ -97,7 +93,6 @@ Package: puppetmaster-passenger
 Pin: version 2.7.19-1puppetlabs2
 Pin-Priority: 1001
 EOF
-apt-get -q -y update
 
 echo ">> Cleanup..."
 apt-get -q -y clean
