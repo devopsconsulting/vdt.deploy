@@ -73,8 +73,8 @@ dpkg -i /root/xe-guest-utilities_6.0.2-762_amd64.deb
 
 echo ">> Configuring Puppet repo..."
 cd /tmp
-wget http://apt.puppetlabs.com/puppetlabs-release-precise.deb
-dpkg -i /tmp/puppetlabs-release-precies.deb
+wget -O /tmp/puppetlabs-release-precise.deb http://apt.puppetlabs.com/puppetlabs-release-precise.deb
+dpkg -i /tmp/puppetlabs-release-precise.deb
 
 cat > /etc/apt/preferences.d/pin-puppet << EOF
 Package: puppet-common

@@ -44,7 +44,7 @@ echo ">> Mounting filesystem..."
 mount /dev/loop1 $CHROOT
 
 echo ">> Bootstrapping template..."
-debootstrap --exclude=nano --include=ssh,less,wget,vim,sudo precise $CHROOT http://nl.archive.ubuntu.com/ubuntu/
+debootstrap --exclude=nano --include=openssh-server,less,wget,vim,sudo precise $CHROOT http://nl.archive.ubuntu.com/ubuntu/
 
 echo ">> Mounting /dev in chroot environment..."
 mount --bind /dev $CHROOT/dev
@@ -55,7 +55,7 @@ cp /vagrant/scripts/setup-template $CHROOT
 chroot $CHROOT /setup-template
 
 echo ">> Configuring cloud-init..."
-cp /vagrant/tmp/cloud.cfg $CHROOT/etc/cloud.cfg
+cp /vagrant/tmp/cloud.cfg $CHROOT/etc/cloud/cloud.cfg
 rm -f $CHROOT/etc/cloud/cloud.cfg.d/90_dpkg.cfg
 
 echo ">> Cleaning up..."
