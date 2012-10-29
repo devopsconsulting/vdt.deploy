@@ -54,6 +54,10 @@ cp /vagrant/debs/xe-guest-utilities_6.0.2-762_amd64.deb $CHROOT/root
 cp /vagrant/scripts/setup-template $CHROOT
 chroot $CHROOT /setup-template
 
+echo ">> Configuring cloud-init..."
+cp ../avira/deploy/cloudinit\ configs/cloud.cfg $CHROOT/etc/cloud.cfg
+rm -f $CHROOT/etc/cloud/cloud.cfg.d/90_dpkg.cfg
+
 echo ">> Cleaning up..."
 umount $CHROOT/dev
 umount $CHROOT
