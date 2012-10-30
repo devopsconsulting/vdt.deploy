@@ -7,8 +7,8 @@ import subprocess
 from daemon import runner
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from config import cfg
-
+from avira.deploy.config import cfg
+from avira.deploy.certificate import remove_pending_certificate
 
 class PuppetCertificateHandler(FileSystemEventHandler):
     def _certificate_requests(self):
@@ -18,15 +18,6 @@ class PuppetCertificateHandler(FileSystemEventHandler):
             f.close()
             return ids
         return []
-
-    def _clean_certificate(self, machine_id):
-        ids = self._certificate_requests()
-        if machine_id in ids:
-            ids.remove(machine_id)
-        data = "\n".join(ids)
-        f = open(cfg.CERT_REQ, "w")
-        f.write(data)
-        f.close()
 
     def on_created(self, event):
         if not event.is_directory:
@@ -58,7 +49,7 @@ class PuppetCertificateHandler(FileSystemEventHandler):
                                                        certname])
                         syslog.syslog(syslog.LOG_ALERT, res)
                     # clean up
-                    self._clean_certificate(machine_id)
+                    remove_pending_certificate(machine_id)
             except Exception, e:
                 syslog.syslog(syslog.LOG_ALERT, "Error: %s" % e)
 
