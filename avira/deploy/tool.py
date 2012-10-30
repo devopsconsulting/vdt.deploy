@@ -12,7 +12,7 @@ def main():
                 f.write(main_template)
                 f.write(template)
                 f.close()
-            print "Please edit your config at %s" % configfile
+            print "Please edit your config at %s and restat the puppetbot if needed" % configfile
             exit(0)
 
     if not os.path.isfile(configfile):
