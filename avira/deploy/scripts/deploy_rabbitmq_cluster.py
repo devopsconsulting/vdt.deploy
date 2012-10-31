@@ -8,7 +8,7 @@ machine_id = re.split("\s+", output)[4]
 output = subprocess.check_output(["avira-deploy",  "list",  "ip"])
 ip_id = re.split("\s+", output)[0]
 print subprocess.check_output(["avira-deploy",  "portfw",  machine_id,  ip_id, "55672", "55672"]) 
-
-for i in range(1,2):
+sleep(5)
+for i in range(1,20):
     print subprocess.check_output(["avira-deploy",  "deploy",  "rabbitmqramnode%s" % i,  "role=rabbitmqramnode", "environment=oe_dev"])
     sleep(1)
