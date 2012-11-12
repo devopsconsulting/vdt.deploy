@@ -37,6 +37,7 @@ setup(
         'argh>=0.8.1',
         'pathtools',
         'cloudstack',
+        'straight.plugin',
         # -*- Extra requirements: -*-
     ],
     extras_require={

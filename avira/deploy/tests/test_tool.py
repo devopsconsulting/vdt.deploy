@@ -68,6 +68,7 @@ class ToolTest(unittest.TestCase):
         output = self.out.getvalue()
         self.assertEqual(output, testdata.no_puppetmaster)
 
+    @unittest.skip
     def test_main_single_line(self):
         # Mock the Cloudstack client library
         self.mock_client = self.mox.CreateMock(cloudstack.client.Client)
