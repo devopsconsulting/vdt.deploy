@@ -46,4 +46,3 @@ def remove_pending_certificate(machine_id):
                 if machine_id not in cert:
                     empty_file.write(cert)
                     # empty_file.write("\n")
-
