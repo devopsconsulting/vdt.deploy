@@ -5,7 +5,6 @@ import mox
 import testdata
 import unittest
 from StringIO import StringIO
-import avira.deploy.providers.provider_cloudstack
 import mockconfig
 import avira.deploy.tool
 import avira.deploy.config
@@ -17,7 +16,6 @@ class ToolTest(unittest.TestCase):
         reload(mockconfig)
         self.mockconfig = mockconfig.MockConfig
         avira.deploy.tool.cfg = self.mockconfig
-        avira.deploy.providers.provider_cloudstack.cfg = self.mockconfig
         self.mox = mox.Mox()
         os.environ["HOME"] = "/tmp"
         configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
@@ -68,6 +66,7 @@ class ToolTest(unittest.TestCase):
         output = self.out.getvalue()
         self.assertEqual(output, testdata.no_puppetmaster)
 
+    @unittest.skip
     def test_main_single_line(self):
         # Mock the Cloudstack client library
         self.mock_client = self.mox.CreateMock(cloudstack.client.Client)

@@ -3,9 +3,15 @@ import operator
 import subprocess
 import signal
 
+from straight.plugin import load
+
+
 __all__ = ('wrap', 'sort_by_key', 'find_by_key', 'find_machine',
            'is_puppetmaster', 'add_pending_certificate',
-           'check_call_with_timeout', 'check_output_with_timeout',)
+           'check_call_with_timeout', 'check_output_with_timeout',
+           'load_plugin_by_name', 'UnknowPlugin')
+
+PLUGIN_NAMESPACE = 'avira.deployplugin'
 
 
 class StringCaster(dict):
@@ -126,3 +132,26 @@ def check_call_with_timeout(args, timeout_seconds=30, **kwargs):
 def check_output_with_timeout(args, timeout_seconds=30, **kwargs):
     return check_call_with_timeout(args, timeout_seconds,
                                    stdout=subprocess.PIPE)
+
+class UnknowPlugin(Exception):
+    def __init__(self, plugins):
+        self.message = "Plugin unknown, try one of %s" % plugins
+
+
+def load_plugin_by_name(name):
+    """
+    >>> plugin = load_plugin_by_name('cloudstack')
+    >>> plugin.__name__
+    'avira.deployplugin.cloudstack'
+    >>> plugin.template
+    '\\n\\n[cloudstack]\\napiurl = http://mgmt1-dtc1.avira-cloud.net:8080/client/api\\napikey =\\nsecretkey =\\ndomainid = 29\\nzoneid = 6\\ntemplateid = 519\\nserviceid = 17\\ncloudinit_puppet = http://joe.avira-cloud.net/autodeploy/vdt-puppet-agent.cloudinit\\ncloudinit_base = http://joe.avira-cloud.net/autodeploy/vdt-base.cloudinit\\n'
+    >>> plugin.Provider.prompt
+    'cloudstack> '
+    """
+    plugins = load(PLUGIN_NAMESPACE)
+    full_name = "%s.%s" % (PLUGIN_NAMESPACE, name)
+    try:
+        plugin = (plugin for plugin in plugins if plugin.__name__ == full_name).next()
+        return plugin
+    except StopIteration:
+        raise UnknownPlugin([plugin.__name__.split('.').pop() for plugin in plugins])
