@@ -134,8 +134,8 @@ def check_output_with_timeout(args, timeout_seconds=30, **kwargs):
                                    stdout=subprocess.PIPE)
 
 class UnknownPlugin(Exception):
-    def __init__(self, plugins):
-        self.message = "Plugin unknown, try one of %s" % plugins
+    def __init__(self, name, plugins):
+        self.message = "Plugin %s unknown, try one of %s" % (name, plugins)
 
 
 def load_plugin_by_name(name):
@@ -154,4 +154,4 @@ def load_plugin_by_name(name):
         plugin = (plugin for plugin in plugins if plugin.__name__ == full_name).next()
         return plugin
     except StopIteration:
-        raise UnknownPlugin([plugin.__name__.split('.').pop() for plugin in plugins])
+        raise UnknownPlugin(name, [plugin.__name__.split('.').pop() for plugin in plugins])
