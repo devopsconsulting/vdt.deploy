@@ -4,7 +4,7 @@ import os
 import argparse
 
 from avira.deploy.config import cfg, configfile, main_template
-from avira.deploy.utils import load_plugin_by_name, UnknowPlugin
+from avira.deploy.utils import load_plugin_by_name, UnknownPlugin
 
 def main(command=False, gen_config=False):
     if gen_config:
