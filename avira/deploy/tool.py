@@ -43,7 +43,7 @@ def main(command=False, gen_config=False, overrides=[]):
                     deploy.cmdloop()
                 except KeyboardInterrupt:
                     deploy.do_quit('now')
-        except UnknowPlugin as e:
+        except UnknownPlugin as e:
             print e.message
             exit(1)
 
