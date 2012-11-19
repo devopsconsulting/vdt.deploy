@@ -9,7 +9,7 @@ from straight.plugin import load
 __all__ = ('wrap', 'sort_by_key', 'find_by_key', 'find_machine',
            'is_puppetmaster', 'add_pending_certificate',
            'check_call_with_timeout', 'check_output_with_timeout',
-           'load_plugin_by_name', 'UnknowPlugin')
+           'load_plugin_by_name', 'UnknownPlugin')
 
 PLUGIN_NAMESPACE = 'avira.deployplugin'
 
@@ -133,9 +133,9 @@ def check_output_with_timeout(args, timeout_seconds=30, **kwargs):
     return check_call_with_timeout(args, timeout_seconds,
                                    stdout=subprocess.PIPE)
 
-class UnknowPlugin(Exception):
-    def __init__(self, plugins):
-        self.message = "Plugin unknown, try one of %s" % plugins
+class UnknownPlugin(Exception):
+    def __init__(self, name, plugins):
+        self.message = "Plugin %s unknown, try one of %s" % (name, plugins)
 
 
 def load_plugin_by_name(name):
@@ -154,4 +154,4 @@ def load_plugin_by_name(name):
         plugin = (plugin for plugin in plugins if plugin.__name__ == full_name).next()
         return plugin
     except StopIteration:
-        raise UnknownPlugin([plugin.__name__.split('.').pop() for plugin in plugins])
+        raise UnknownPlugin(name, [plugin.__name__.split('.').pop() for plugin in plugins])

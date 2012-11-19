@@ -27,8 +27,11 @@ class Config(object):
             config = ConfigParser.RawConfigParser()
             config.read(configfile)
             for section in config.sections():
-                for item in config.items(section):
-                    setattr(self, item[0].upper(), item[1])
+                for key, value in config.items(section):
+                    setattr(self, key.upper(), value)
 
+    def update(self, overrides):
+        for key, value in overrides:
+            setattr(self, key.upper(), value)
 
 cfg = Config()

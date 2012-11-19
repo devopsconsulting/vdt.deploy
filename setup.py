@@ -38,6 +38,7 @@ setup(
         'pathtools',
         'cloudstack',
         'straight.plugin',
+        'argparse',
         # -*- Extra requirements: -*-
     ],
     extras_require={
