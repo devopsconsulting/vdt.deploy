@@ -1,4 +1,4 @@
-class MockConfig:
+class MockConfig(object):
     PROVIDER = "cloudstack"
     PUPPETMASTER = "localhost"
     PUPPETMASTER_VERIFIED = "1"
@@ -18,3 +18,8 @@ class MockConfig:
     DOMAINID = "1"
     CLOUDINIT_PUPPET = "http://localhost/autodeploy/vdt-puppet-agent.cloudinit"
     CLOUDINIT_BASE = "http://localhost/autodeploy/vdt-puppet-base.cloudinit"
+
+    @classmethod
+    def update(self, values):
+        for key, value in values:
+            setattr(key.upper(), value)

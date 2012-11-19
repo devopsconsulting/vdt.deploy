@@ -17,7 +17,7 @@ def main(command=False, gen_config=False, overrides=[]):
                 f.write(main_template)
                 f.write(provider_plugin.template)
                 f.close()
-            print "Please edit your config at %s and restat the puppetbot if needed" % configfile
+            print "Please edit your config at %s and restart the puppetbot if needed" % configfile
         except UnknownPlugin as e:
             print e.message
         exit(0)
