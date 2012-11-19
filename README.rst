@@ -166,3 +166,50 @@ prefixed with 'do'. (Not in github readme).
 .. automethod:: avira.deploy.tool.CloudstackDeployment.do_quit
 
 .. automethod:: avira.deploy.tool.CloudstackDeployment.do_mco
+
+Override settings from the command line
++++++++++++++++++++++++++++++++++++++++
+
+Most of the stuff in the settings file can be overridden per
+session or per command with a flag. Here is the output of
+avira-deploy -h which let's you know how it works::
+
+    usage: avira-deploy [-h] [--gen-config GEN_CONFIG] [--provider PROVIDER]
+                   [--puppetmaster PUPPETMASTER]
+                   [--verified PUPPETMASTER_VERIFIED]
+                   [--cleanup-timeout CLEANUP_TIMEOUT] [--apiurl APIURL]
+                   [--apikey APIKEY] [--secretkey SECRETKEY] [--domainid DOMAINID]
+                   [--templateid TEMPLATEID] [--serviceid SERVICEID]
+                   [--cloudinit CLOUDINIT_PUPPET]
+                   [command [command ...]]
+
+    Deployment tool for deploying VM's with puppet
+
+    positional arguments:
+      command               the command to run.
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --gen-config GEN_CONFIG
+                            Generate a config file at ~/.aviradeployment.cfg for
+                            the specified provider.
+      --provider PROVIDER   Override provider.
+      --puppetmaster PUPPETMASTER
+                            Override puppetmaster.
+      --verified PUPPETMASTER_VERIFIED
+                            Override the puppetmaster verified flag.
+      --cleanup-timeout CLEANUP_TIMEOUT
+                            Override the mcollective cleanup timeout. (runs when
+                            destroying a VM)
+      --apiurl APIURL       Override the api url.
+      --apikey APIKEY       Override the api key.
+      --secretkey SECRETKEY
+                            Override the secret key.
+      --domainid DOMAINID   Override the domain.
+      --templateid TEMPLATEID
+                            Override the template.
+      --serviceid SERVICEID
+                            Override the service offering.
+      --cloudinit CLOUDINIT_PUPPET
+                            Override the cloudinit file.
+
