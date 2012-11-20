@@ -23,7 +23,7 @@ class ToolTest(unittest.TestCase):
         avira.deploy.config.configfile = configfile
         # this generates a system exit, we catch it now
         try:
-            avira.deploy.tool.main(gen_config='cloudstack')
+            avira.deploy.tool.run(gen_config='cloudstack')
         except:
             pass
         self.saved_stdout = sys.stdout
