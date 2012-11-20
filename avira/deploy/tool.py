@@ -7,7 +7,8 @@ import operator
 from avira.deploy.config import cfg, configfile, main_template
 from avira.deploy.utils import load_plugin_by_name, UnknownPlugin
 
-def main(command=False, gen_config=False, overrides=[]):
+
+def run(command=False, gen_config=False, overrides=[]):
     cfg.update(overrides)
 
     if gen_config:
@@ -47,7 +48,8 @@ def main(command=False, gen_config=False, overrides=[]):
             print e.message
             exit(1)
 
-if __name__ == '__main__':
+
+def main():
     p = argparse.ArgumentParser(description="Deployment tool for deploying VM's with puppet")
     p.add_argument("command", default=False, nargs='*', help="the command to run.")
     p.add_argument("--gen-config", default=False,
@@ -69,4 +71,8 @@ if __name__ == '__main__':
     args = p.parse_args()
 
     overrides = filter(operator.itemgetter(1), args._get_kwargs())[2:]
-    main(args.command, args.gen_config, overrides)
+    run(args.command, args.gen_config, overrides)
+
+
+if __name__ == '__main__':
+    main()
