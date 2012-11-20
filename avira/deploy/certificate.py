@@ -1,7 +1,7 @@
 import os
 
 from avira.deploy.config import cfg
-from avira.deploy.lock import mutex
+from mutexlock import mutexlock 
 
 def add_pending_certificate(machine_id):
     """
@@ -13,7 +13,7 @@ def add_pending_certificate(machine_id):
     >>> os.remove('/tmp/693c404e9852f2dc8117183bc04db6a0fd975401')
     """
     machine_id = str(machine_id)
-    with mutex():
+    with mutexlock():
         if not os.path.exists(cfg.CERT_REQ):
             f = open(cfg.CERT_REQ, 'w') 
             f.close()
@@ -36,7 +36,7 @@ def remove_pending_certificate(machine_id):
     >>> os.remove('/tmp/693c404e9852f2dc8117183bc04db6a0fd975401')
     """
     machine_id = str(machine_id)
-    with mutex():
+    with mutexlock():
         certs = []
         with open(cfg.CERT_REQ, 'r') as pending_certificates:
             certs = pending_certificates.readlines()
