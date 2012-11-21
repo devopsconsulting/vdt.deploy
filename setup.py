@@ -39,6 +39,7 @@ setup(
         'cloudstack',
         'straight.plugin',
         'argparse',
+        'mutexlock',
         # -*- Extra requirements: -*-
     ],
     extras_require={
