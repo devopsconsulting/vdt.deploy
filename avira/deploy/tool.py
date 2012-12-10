@@ -64,6 +64,7 @@ def main():
     p.add_argument("--apikey", help="Override the api key.")
     p.add_argument("--secretkey", help="Override the secret key.")
     p.add_argument("--domainid", help="Override the domain.")
+    p.add_argument("--zoneid", help="Override the zone.")
     p.add_argument("--templateid", help="Override the template.")
     p.add_argument("--serviceid", help="Override the service offering.")
     p.add_argument("--cloudinit", dest="cloudinit_puppet", help="Override the cloudinit file.")
