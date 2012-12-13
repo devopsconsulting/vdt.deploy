@@ -71,7 +71,7 @@ def main():
     
     args = p.parse_args()
 
-    overrides = filter(operator.itemgetter(1), args._get_kwargs())[2:]
+    overrides = filter(operator.itemgetter(1), args._get_kwargs())
     run(args.command, args.gen_config, overrides)
 
 
