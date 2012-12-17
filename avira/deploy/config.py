@@ -9,7 +9,7 @@ main_template = """# configuration setting for avira-deploy
 provider = cloudstack
 puppetmaster =
 puppetmaster_verified =
-cleanup_timeout = 20
+cleanup_timeout = 600
 
 [puppetbot]
 puppet_binary = /usr/bin/puppet
