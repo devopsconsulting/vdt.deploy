@@ -18,11 +18,14 @@ class UserData(dict):
         self['puppetmaster'] = puppetmaster
         self.update(kwargs)
 
-    def base64(self):
+    def formatted_data(self):
         userdata = StringIO()
         userdata.write("#include %s\n" % self.cloud_init_url)
         for data_pair in self.items():
             userdata.write("#%s=%s\n" % data_pair)
-        return encodestring(userdata.getvalue())
+        return userdata.getvalue()
+
+    def base64(self):
+        return encodestring(self.formatted_data())
 
     __unicode__ = __str__ = base64
