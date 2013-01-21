@@ -2,3 +2,6 @@
 *pyo
 .ropeproject
 avira.deploy.egg-info/
+.settings
+.project
+.pydevproject
