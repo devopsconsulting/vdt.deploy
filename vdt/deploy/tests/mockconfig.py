@@ -22,4 +22,4 @@ class MockConfig(object):
     @classmethod
     def update(self, values):
         for key, value in values:
-            setattr(key.upper(), value)
+            setattr(self, key.upper(), value)
