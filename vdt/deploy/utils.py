@@ -144,7 +144,7 @@ def load_plugin_by_name(name):
     >>> plugin.__name__
     'vdt.deployplugin.cloudstack'
     >>> plugin.template
-    '\\n\\n[cloudstack]\\napiurl = http://mgmt1-dtc1.vdt-cloud.net:8080/client/api\\napikey =\\nsecretkey =\\ndomainid = 29\\nzoneid = 6\\ntemplateid = 519\\nserviceid = 17\\ncloudinit_puppet = http://joe.vdt-cloud.net/autodeploy/vdt-puppet-agent.cloudinit\\ncloudinit_base = http://joe.vdt-cloud.net/autodeploy/vdt-base.cloudinit\\n'
+    '\\n\\n[cloudstack]\\napiurl = http://example.com:8080/client/api\\napikey =\\nsecretkey =\\ndomainid = 29\\nzoneid = 6\\ntemplateid = 519\\nserviceid = 17\\ncloudinit_puppet = http://example.com/vdt-puppet-agent.cloudinit\\ncloudinit_base = http://example.com/vdt-base.cloudinit\\n'
     >>> plugin.Provider.prompt
     'cloudstack> '
     """

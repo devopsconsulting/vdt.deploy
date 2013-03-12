@@ -32,15 +32,15 @@ Initially vdt.deploy will create this file for you but not configured yet:
 .. code-block:: ini
 
     [deployment]
-    apiurl = http://mgmt1-dtc1.vdt-cloud.net:8080/client/api
+    apiurl = http://example.com:8080/client/api
     apikey = 
     secretkey = 
     domainid = 29
     zoneid = 6
     templateid = 392
     serviceid = 17
-    cloudinit_puppet = http://joe.vdt-cloud.net/autodeploy/vdt-puppet-agent.cloudinit
-    cloudinit_base = http://joe.vdt-cloud.net/autodeploy/vdt-base.cloudinit
+    cloudinit_puppet = http://example.com/vdt-puppet-agent.cloudinit
+    cloudinit_base = http://example.com/vdt-base.cloudinit
     puppetmaster = 
     puppetmaster_verified = 0
     cleanup_timeout = 20
