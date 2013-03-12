@@ -7,8 +7,8 @@ import subprocess
 from daemon import runner
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from avira.deploy.config import cfg
-from avira.deploy.certificate import remove_pending_certificate
+from vdt.deploy.config import cfg
+from vdt.deploy.certificate import remove_pending_certificate
 
 class PuppetCertificateHandler(FileSystemEventHandler):
     def _certificate_requests(self):

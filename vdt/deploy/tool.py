@@ -4,8 +4,8 @@ import os
 import argparse
 import operator
 
-from avira.deploy.config import cfg, configfile, main_template
-from avira.deploy.utils import load_plugin_by_name, UnknownPlugin
+from vdt.deploy.config import cfg, configfile, main_template
+from vdt.deploy.utils import load_plugin_by_name, UnknownPlugin
 
 
 def run(command=False, gen_config=False, overrides=[]):
@@ -24,7 +24,7 @@ def run(command=False, gen_config=False, overrides=[]):
         exit(0)
 
     if not os.path.isfile(configfile):
-        print "Please run avira-deploy --gen-config=<provider> first\n"
+        print "Please run vdt-deploy --gen-config=<provider> first\n"
         sys.exit(0)
 
     if not cfg.PUPPETMASTER_VERIFIED == '1':
@@ -53,7 +53,7 @@ def main():
     p = argparse.ArgumentParser(description="Deployment tool for deploying VM's with puppet")
     p.add_argument("command", default=False, nargs='*', help="the command to run.")
     p.add_argument("--gen-config", default=False,
-                   help="Generate a config file at ~/.aviradeployment.cfg for the specified provider.")
+                   help="Generate a config file at ~/.vdtdeployment.cfg for the specified provider.")
 
     #overrides
     p.add_argument("--provider", help="Override provider.")

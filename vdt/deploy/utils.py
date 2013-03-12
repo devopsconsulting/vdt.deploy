@@ -11,7 +11,7 @@ __all__ = ('wrap', 'sort_by_key', 'find_by_key', 'find_machine',
            'check_call_with_timeout', 'check_output_with_timeout',
            'load_plugin_by_name', 'UnknownPlugin')
 
-PLUGIN_NAMESPACE = 'avira.deployplugin'
+PLUGIN_NAMESPACE = 'vdt.deployplugin'
 
 
 class StringCaster(dict):
@@ -142,9 +142,9 @@ def load_plugin_by_name(name):
     """
     >>> plugin = load_plugin_by_name('cloudstack')
     >>> plugin.__name__
-    'avira.deployplugin.cloudstack'
+    'vdt.deployplugin.cloudstack'
     >>> plugin.template
-    '\\n\\n[cloudstack]\\napiurl = http://mgmt1-dtc1.avira-cloud.net:8080/client/api\\napikey =\\nsecretkey =\\ndomainid = 29\\nzoneid = 6\\ntemplateid = 519\\nserviceid = 17\\ncloudinit_puppet = http://joe.avira-cloud.net/autodeploy/vdt-puppet-agent.cloudinit\\ncloudinit_base = http://joe.avira-cloud.net/autodeploy/vdt-base.cloudinit\\n'
+    '\\n\\n[cloudstack]\\napiurl = http://mgmt1-dtc1.vdt-cloud.net:8080/client/api\\napikey =\\nsecretkey =\\ndomainid = 29\\nzoneid = 6\\ntemplateid = 519\\nserviceid = 17\\ncloudinit_puppet = http://joe.vdt-cloud.net/autodeploy/vdt-puppet-agent.cloudinit\\ncloudinit_base = http://joe.vdt-cloud.net/autodeploy/vdt-base.cloudinit\\n'
     >>> plugin.Provider.prompt
     'cloudstack> '
     """

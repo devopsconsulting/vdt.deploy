@@ -2,9 +2,9 @@
 import ConfigParser
 import os
 
-configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
+configfile = "%s/.vdtdeployment.cfg" % os.path.expanduser("~")
 
-main_template = """# configuration setting for avira-deploy
+main_template = """# configuration setting for vdt-deploy
 [main]
 provider = cloudstack
 puppetmaster =

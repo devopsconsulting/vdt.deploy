@@ -4,7 +4,7 @@ import os.path
 import shlex
 
 from config import cfg
-from avira.deploy.utils import wrap, check_call_with_timeout
+from vdt.deploy.utils import wrap, check_call_with_timeout
 
 __all__ = ('run_machine_cleanup', 'remove_machine_port_forwards', 'clean_fqdn',
            'node_clean', 'clean_foreman')

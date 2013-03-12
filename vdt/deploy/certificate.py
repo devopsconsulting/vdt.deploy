@@ -1,11 +1,11 @@
 import os
 
-from avira.deploy.config import cfg
+from vdt.deploy.config import cfg
 from mutexlock import mutexlock 
 
 def add_pending_certificate(machine_id):
     """
-    >>> from avira.deploy.config import cfg
+    >>> from vdt.deploy.config import cfg
     >>> cfg.CERT_REQ = '/tmp/693c404e9852f2dc8117183bc04db6a0fd975401'
     >>> add_pending_certificate('hai')
     >>> open('/tmp/693c404e9852f2dc8117183bc04db6a0fd975401').read()
@@ -24,7 +24,7 @@ def add_pending_certificate(machine_id):
 
 def remove_pending_certificate(machine_id):
     """
-    >>> from avira.deploy.config import cfg
+    >>> from vdt.deploy.config import cfg
     >>> cfg.CERT_REQ = '/tmp/693c404e9852f2dc8117183bc04db6a0fd975401'
     >>> add_pending_certificate('hai')
     >>> open('/tmp/693c404e9852f2dc8117183bc04db6a0fd975401').read()
