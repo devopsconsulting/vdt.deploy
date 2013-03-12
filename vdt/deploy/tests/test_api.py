@@ -1,10 +1,10 @@
 from unittest import TestCase
-import avira.deploy.api
+import vdt.deploy.api
 import sys
 from StringIO import StringIO
 
 
-class CmdApiTester(avira.deploy.api.CmdApi):
+class CmdApiTester(vdt.deploy.api.CmdApi):
     """
     Helper class to test the CmdApi class.
     """
@@ -72,7 +72,7 @@ class CmdApiTest(TestCase):
                     "This message should be shown if arguments are not ok\n")
 
     def test_args_params_incorrect_with_debug(self):
-        avira.deploy.api.traceback.print_exc = print_exc_return_nothing
+        vdt.deploy.api.traceback.print_exc = print_exc_return_nothing
         self.cmd.debug = True
         self.cmd.cmdqueue = ["test_args thisparam=notcorrect", "exit"]
         self.cmd.cmdloop()

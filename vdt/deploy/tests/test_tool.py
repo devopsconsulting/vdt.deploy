@@ -6,8 +6,8 @@ import testdata
 import unittest
 from StringIO import StringIO
 import mockconfig
-import avira.deploy.tool
-import avira.deploy.config
+import vdt.deploy.tool
+import vdt.deploy.config
 
 
 class ToolTest(unittest.TestCase):
@@ -15,15 +15,15 @@ class ToolTest(unittest.TestCase):
     def setUp(self):
         reload(mockconfig)
         self.mockconfig = mockconfig.MockConfig
-        avira.deploy.tool.cfg = self.mockconfig
+        vdt.deploy.tool.cfg = self.mockconfig
         self.mox = mox.Mox()
         os.environ["HOME"] = "/tmp"
-        configfile = "%s/.aviradeployment.cfg" % os.path.expanduser("~")
-        avira.deploy.tool.configfile = configfile
-        avira.deploy.config.configfile = configfile
+        configfile = "%s/.vdtdeployment.cfg" % os.path.expanduser("~")
+        vdt.deploy.tool.configfile = configfile
+        vdt.deploy.config.configfile = configfile
         # this generates a system exit, we catch it now
         try:
-            avira.deploy.tool.run(gen_config='cloudstack')
+            vdt.deploy.tool.run(gen_config='cloudstack')
         except:
             pass
         self.saved_stdout = sys.stdout
@@ -34,17 +34,17 @@ class ToolTest(unittest.TestCase):
         self.mox.UnsetStubs()
         sys.stdout = self.saved_stdout
         self.out = None
-        if os.path.exists("/tmp/.aviradeployment.cfg"):
-            os.remove("/tmp/.aviradeployment.cfg")
+        if os.path.exists("/tmp/.vdtdeployment.cfg"):
+            os.remove("/tmp/.vdtdeployment.cfg")
 
     def test_main_unverified_puppetmaster(self):
         # test that we cannot start the tool without a verified puppetmaster
         self.mockconfig.PUPPETMASTER_VERIFIED = "0"
-        avira.deploy.tool.cfg = self.mockconfig
+        vdt.deploy.tool.cfg = self.mockconfig
 
-        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+        vdt.deploy.tool.sys.argv = [vdt.deploy.tool.sys.argv[0], "status"]
         try:
-            avira.deploy.tool.main()
+            vdt.deploy.tool.main()
         except SystemExit:
             pass
         output = self.out.getvalue()
@@ -53,10 +53,10 @@ class ToolTest(unittest.TestCase):
     def test_main_no_puppetmaster(self):
        # test that we cannot start the tool without the puppetmaster specified
         self.mockconfig.PUPPETMASTER = ""
-        avira.deploy.tool.cfg = self.mockconfig
-        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+        vdt.deploy.tool.cfg = self.mockconfig
+        vdt.deploy.tool.sys.argv = [vdt.deploy.tool.sys.argv[0], "status"]
         try:
-            avira.deploy.tool.main()
+            vdt.deploy.tool.main()
         except SystemExit:
             pass
         output = self.out.getvalue()
@@ -66,9 +66,9 @@ class ToolTest(unittest.TestCase):
     def test_main_single_line(self):
         # Mock the Cloudstack client library
         self.mock_client = self.mox.CreateMock(cloudstack.client.Client)
-        self.mox.StubOutWithMock(avira.deploy.providers.provider_cloudstack,
+        self.mox.StubOutWithMock(vdt.deploy.providers.provider_cloudstack,
                                  "Client")
-        avira.deploy.providers.provider_cloudstack.Client("apiurl",
+        vdt.deploy.providers.provider_cloudstack.Client("apiurl",
                                  "apikey",
                                  "secret").AndReturn(self.mock_client)
 
@@ -76,9 +76,9 @@ class ToolTest(unittest.TestCase):
         self.mock_client.listVirtualMachines({'domainid': '1'}).\
                          AndReturn(testdata.listVirtualMachines_output)
         self.mox.ReplayAll()
-        avira.deploy.tool.sys.argv = [avira.deploy.tool.sys.argv[0], "status"]
+        vdt.deploy.tool.sys.argv = [vdt.deploy.tool.sys.argv[0], "status"]
         try:
-            avira.deploy.tool.main()
+            vdt.deploy.tool.main()
         except SystemExit:
             pass
         output = self.out.getvalue()
@@ -87,10 +87,10 @@ class ToolTest(unittest.TestCase):
 
     def test_generate_config(self):
         # this is generated in the setup of this test
-        self.assertEqual(os.path.isfile("/tmp/.aviradeployment.cfg"), True)
+        self.assertEqual(os.path.isfile("/tmp/.vdtdeployment.cfg"), True)
         # import something from config, it should have read it from the
         # generated configfile
-        from avira.deploy.config import Config
+        from vdt.deploy.config import Config
         cfg = Config()
         print cfg.PUPPETMASTER
         self.assertEqual(cfg.PUPPETMASTER, "")
