@@ -1,7 +1,7 @@
-avira.deploy
+vdt.deploy
 ============
 
-avira.deployment provides a command line tool for deploying VM's in Cloudstack
+vdt.deployment provides a command line tool for deploying VM's in Cloudstack
 with a puppet role. The puppet role defines the installation and configuration
 of the server. For example a server with the role *lvs* will be installed and
 configured as an lvs load balancer.
@@ -16,31 +16,31 @@ Deployment of a server is a 3 phase process.
    role. Puppet will install and configure the machine and register with
    the load balancer.
 
-.. index:: Configuration, avira.deploy; configuration
+.. index:: Configuration, vdt.deploy; configuration
 
-.. _avira-deploy-configuration:
+.. _vdt-deploy-configuration:
 
 Configuration
 +++++++++++++
 
-avira.deploy uses a configuration file located at::
+vdt.deploy uses a configuration file located at::
 
-    ~/.aviradeployment.cfg
+    ~/.vdtdeployment.cfg
 
-Initially avira.deploy will create this file for you but not configured yet:
+Initially vdt.deploy will create this file for you but not configured yet:
 
 .. code-block:: ini
 
     [deployment]
-    apiurl = http://mgmt1-dtc1.avira-cloud.net:8080/client/api
+    apiurl = http://mgmt1-dtc1.vdt-cloud.net:8080/client/api
     apikey = 
     secretkey = 
     domainid = 29
     zoneid = 6
     templateid = 392
     serviceid = 17
-    cloudinit_puppet = http://joe.avira-cloud.net/autodeploy/vdt-puppet-agent.cloudinit
-    cloudinit_base = http://joe.avira-cloud.net/autodeploy/vdt-base.cloudinit
+    cloudinit_puppet = http://joe.vdt-cloud.net/autodeploy/vdt-puppet-agent.cloudinit
+    cloudinit_base = http://joe.vdt-cloud.net/autodeploy/vdt-base.cloudinit
     puppetmaster = 
     puppetmaster_verified = 0
     cleanup_timeout = 20
@@ -68,15 +68,15 @@ You've got to enter your cloudstack apikey and secretkey. Options are::
                             only wait cleanup_timeout seconds before continuing
                             the destruction process.
 
-.. index:: Usage, avira.deploy; usage
+.. index:: Usage, vdt.deploy; usage
 
-.. _avira-deploy-usage:
+.. _vdt-deploy-usage:
 
 Usage
 +++++
 
-Now that avira.deploy is configured to use the proper coudstack domain, it is
-ready for use. avira.deploy can run in both single command as interactive mode.
+Now that vdt.deploy is configured to use the proper coudstack domain, it is
+ready for use. vdt.deploy can run in both single command as interactive mode.
 
 Let's start with interactive mode::
     
@@ -96,9 +96,9 @@ Let's start with interactive mode::
     deploy>
 
 .. index::
-    single: avira.deploy; help
+    single: vdt.deploy; help
 
-.. _avira-deploy-help:
+.. _vdt-deploy-help:
 
 Typing ``help`` shows you all available commands. typing::
 
@@ -118,63 +118,63 @@ shows you what a command does and what parameters it requires::
 
 So status will show you the running instances.
 
-.. _avira-deploy-commands:
+.. _vdt-deploy-commands:
 
 .. index::
-    single: avira.deploy; status
-    single: avira.deploy; deploy
-    single: avira.deploy; destroy
-    single: avira.deploy; start
-    single: avira.deploy; stop
-    single: avira.deploy; reboot
-    single: avira.deploy; list
-    single: avira.deploy; request
-    single: avira.deploy; release
-    single: avira.deploy; portfw
-    single: avira.deploy; ssh
-    single: avira.deploy; kick
-    single: avira.deploy; quit
-	single: avira.deploy; mco
+    single: vdt.deploy; status
+    single: vdt.deploy; deploy
+    single: vdt.deploy; destroy
+    single: vdt.deploy; start
+    single: vdt.deploy; stop
+    single: vdt.deploy; reboot
+    single: vdt.deploy; list
+    single: vdt.deploy; request
+    single: vdt.deploy; release
+    single: vdt.deploy; portfw
+    single: vdt.deploy; ssh
+    single: vdt.deploy; kick
+    single: vdt.deploy; quit
+	single: vdt.deploy; mco
 
 The help for each command is shown below, but the names of the commands are
 prefixed with 'do'. (Not in github readme).
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_status
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_status
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_deploy
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_deploy
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_start
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_start
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_stop
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_stop
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_reboot
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_reboot
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_destroy
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_destroy
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_list
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_list
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_request
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_request
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_release
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_release
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_portfw
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_portfw
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_ssh
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_ssh
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_kick
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_kick
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_quit
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_quit
 
-.. automethod:: avira.deployplugin.cloudstack.provider.Provider.do_mco
+.. automethod:: vdt.deployplugin.cloudstack.provider.Provider.do_mco
 
 Override settings from the command line
 +++++++++++++++++++++++++++++++++++++++
 
 Most of the stuff in the settings file can be overridden per
 session or per command with a flag. Here is the output of
-avira-deploy -h which let's you know how it works::
+vdt-deploy -h which let's you know how it works::
 
-    usage: avira-deploy [-h] [--gen-config GEN_CONFIG] [--provider PROVIDER]
+    usage: vdt-deploy [-h] [--gen-config GEN_CONFIG] [--provider PROVIDER]
                    [--puppetmaster PUPPETMASTER]
                    [--verified PUPPETMASTER_VERIFIED]
                    [--cleanup-timeout CLEANUP_TIMEOUT] [--apiurl APIURL]
@@ -191,7 +191,7 @@ avira-deploy -h which let's you know how it works::
     optional arguments:
       -h, --help            show this help message and exit
       --gen-config GEN_CONFIG
-                            Generate a config file at ~/.aviradeployment.cfg for
+                            Generate a config file at ~/.vdtdeployment.cfg for
                             the specified provider.
       --provider PROVIDER   Override provider.
       --puppetmaster PUPPETMASTER

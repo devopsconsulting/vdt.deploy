@@ -1,8 +1,8 @@
 """
-avira.deploy
+vdt.deploy
 ============
 
-avira.deployment provides a command line tool for deploying VM's in Cloudstack
+vdt.deployment provides a command line tool for deploying VM's in Cloudstack
 with a puppet role. The puppet role defines the installation and configuration
 of the server. For example a server with the role *lvs* will be installed and
 configured as an lvs load balancer.
@@ -14,9 +14,9 @@ from setuptools import find_packages
 version = '1.1.11'
 
 setup(
-    name='avira.deploy',
+    name='vdt.deploy',
     version=version,
-    description="Avira Deployment Tool",
+    description="Vdt Deployment Tool",
     long_description=__doc__,
     classifiers=[],
     # Get strings from
@@ -24,10 +24,10 @@ setup(
     keywords='',
     author='Martijn Jacobs',
     author_email='martijn@fourdigits.nl',
-    url='https://github.dtc.avira.com/VDT/avira.deploy',
-    license='Avira VDT 2012',
+    url='https://github.com/devopsconsulting/vdt.deploy',
+    license='BSD',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-    namespace_packages=['avira'],
+    namespace_packages=['vdt'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
@@ -46,6 +46,6 @@ setup(
         'fabric': ['fabric'],
     },
     entry_points={'console_scripts': [
-        'avira-deploy=avira.deploy.tool:main',
-        'avira-puppetbot=avira.deploy.puppetbot:main']},
+        'vdt-deploy=vdt.deploy.tool:main',
+        'vdt-puppetbot=vdt.deploy.puppetbot:main']},
 )
