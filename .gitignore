@@ -1,7 +1,7 @@
 *pyc
 *pyo
 .ropeproject
-avira.deploy.egg-info/
+*.egg-info/
 .settings
 .project
 .pydevproject
