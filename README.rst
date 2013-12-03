@@ -213,10 +213,17 @@ vdt-deploy -h which let's you know how it works::
       --cloudinit CLOUDINIT_PUPPET
                             Override the cloudinit file.
 
-Run the tests from the command line
-+++++++++++++++++++++++++++++++++++
+Installation and running tests
+++++++++++++++++++++++++++++++
+In your virtualenv first install python-lockfile: 
 
-You van run these tests by installing nose and mox : 
+    pip install  -e git+ssh://git@github.com/devopsconsulting/python-mutexlock.git#egg=mutexlock
+
+The install this egg as a development egg: 
+    
+    python setup.py develop
+
+You van run these tests by installing nose and mox: 
 
     pip install nose
     pip install mox
