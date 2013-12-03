@@ -213,3 +213,15 @@ vdt-deploy -h which let's you know how it works::
       --cloudinit CLOUDINIT_PUPPET
                             Override the cloudinit file.
 
+Run the tests from the command line
++++++++++++++++++++++++++++++++++++
+
+You van run these tests by installing nose and mox : 
+
+    pip install nose
+    pip install mox
+
+
+Run the tests as following : 
+
+    nosetests -s --verbosity=2 vdt/deploy/tests 

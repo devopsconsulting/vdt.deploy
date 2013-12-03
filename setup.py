@@ -36,7 +36,6 @@ setup(
         'python-daemon',
         'argh>=0.8.1',
         'pathtools',
-        'cloudstack',
         'straight.plugin',
         'argparse',
         'mutexlock',
