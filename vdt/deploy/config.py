@@ -6,7 +6,7 @@ configfile = "%s/.vdtdeployment.cfg" % os.path.expanduser("~")
 
 main_template = """# configuration setting for vdt-deploy
 [main]
-provider = cloudstack
+provider = xen
 puppetmaster =
 puppetmaster_verified =
 cleanup_timeout = 600
